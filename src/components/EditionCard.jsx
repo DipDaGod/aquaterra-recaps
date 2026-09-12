@@ -9,7 +9,7 @@ export default function EditionCard({ edition, featured = false, id }) {
   return (
     <Link
       id={id}
-      to={`/recaps/${year}/${slug}`}
+      to={`/${year}/${slug}`}
       className={cx(
         "group relative flex h-full flex-col overflow-hidden rounded-3xl border bg-cream-soft transition-shadow",
         edition.isLatest ? "border-green shadow-[0_0_0_3px_var(--color-pastel-green)]" : "border-line",

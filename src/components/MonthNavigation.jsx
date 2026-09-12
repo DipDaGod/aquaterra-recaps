@@ -40,7 +40,7 @@ export default function MonthNavigation({ edition }) {
 
           if (match && !isCurrent) {
             return (
-              <Link key={`${year}-${slug}`} to={`/recaps/${year}/${slug}`}>
+              <Link key={`${year}-${slug}`} to={`/${year}/${slug}`}>
                 {content}
               </Link>
             );

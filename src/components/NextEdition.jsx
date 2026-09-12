@@ -13,7 +13,7 @@ export default function NextEdition({ next, prevYear }) {
               {next.month} {next.year} is already taking shape.
             </h2>
             <Link
-              to={`/recaps/${next.year}/${next.slug}`}
+              to={`/${next.year}/${next.slug}`}
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-green px-6 py-3 text-sm font-medium text-cream-soft transition-transform hover:-translate-y-0.5"
             >
               Explore {next.month}
@@ -33,7 +33,7 @@ export default function NextEdition({ next, prevYear }) {
         )}
 
         <div className="mt-6">
-          <Link to="/recaps" className="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink">
+          <Link to="/" className="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink">
             <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
             All editions
           </Link>

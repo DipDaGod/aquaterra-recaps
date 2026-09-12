@@ -18,7 +18,7 @@ export default function LatestNotice() {
       </p>
 
       <Link
-        to={`/recaps/${latestEdition.year}/${latestEdition.slug}`}
+        to={`/${latestEdition.year}/${latestEdition.slug}`}
         className="mt-6 inline-flex items-center gap-2 rounded-full bg-cream-soft px-5 py-2.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
       >
         Read the issue

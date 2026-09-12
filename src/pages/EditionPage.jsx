@@ -19,7 +19,7 @@ export default function EditionPage() {
     window.scrollTo(0, 0);
   }, [year, month]);
 
-  if (!edition) return <Navigate to="/recaps" replace />;
+  if (!edition) return <Navigate to="/" replace />;
 
   const { next } = neighbours(edition);
 

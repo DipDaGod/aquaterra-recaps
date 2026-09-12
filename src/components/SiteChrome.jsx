@@ -28,7 +28,7 @@ export function TopBar() {
   return (
     <div className="border-b border-line/80 bg-cream-soft">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-10">
-        <Link to="/recaps" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3">
           <Logo />
           <span className="text-sm font-medium tracking-tight">
             AquaTerra

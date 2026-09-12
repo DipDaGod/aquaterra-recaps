@@ -6,7 +6,7 @@ export default function EditionHero({ edition }) {
   return (
     <header className="mx-auto max-w-6xl px-6 pt-10 sm:px-10">
       <Link
-        to="/recaps"
+        to="/"
         className="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />

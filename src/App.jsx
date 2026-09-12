@@ -8,10 +8,9 @@ export default function App() {
     <div className="min-h-screen bg-cream">
       <TopBar />
       <Routes>
-        <Route path="/" element={<Navigate to="/recaps" replace />} />
-        <Route path="/recaps" element={<RecapArchive />} />
-        <Route path="/recaps/:year/:month" element={<EditionPage />} />
-        <Route path="*" element={<Navigate to="/recaps" replace />} />
+        <Route path="/" element={<RecapArchive />} />
+        <Route path="/:year/:month" element={<EditionPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer />
     </div>
