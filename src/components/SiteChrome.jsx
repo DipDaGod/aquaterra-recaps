@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Globe2, Users2, PenSquare, Hash } from "lucide-react";
-import Mascot from "./Mascot";
 
 // Renders the real logo once it exists at /public/assets/logo.png; falls
 // back to a simple monogram so the build/site never breaks on a missing file.
@@ -94,10 +93,6 @@ export function Footer() {
             <code className="rounded bg-paper px-1.5 py-0.5">src/data/editions.js</code> before publishing.
           </p>
         </div>
-      </div>
-
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-10">
-        <Mascot className="pointer-events-none absolute -top-14 right-6 h-12 w-12 sm:right-10" />
       </div>
     </footer>
   );
