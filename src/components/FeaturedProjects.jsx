@@ -7,7 +7,7 @@ export default function FeaturedProjects({ edition }) {
 
   // Each filter carries its own count, so it's clear what a tab will show
   // before it's tapped.
-  const projects = useMemo(() => edition.projects ?? [], [edition.projects]);
+  const projects = useMemo(() => edition.featured ?? [], [edition.featured]);
 
   const categories = useMemo(() => {
     const counts = new Map();
@@ -26,9 +26,11 @@ export default function FeaturedProjects({ edition }) {
   return (
     <Section>
       <SectionHeading
-        eyebrow="Featured this month"
-        title="A closer look at the work we did this month."
-        aside={`${projects.length} ${projects.length === 1 ? "project" : "projects"}`}
+        eyebrow="Featured"
+        caps="THE"
+        accent="drives"
+        lead="welfare, events, the student businesses, media — everything the month actually held, not just the drives."
+        aside={`${projects.length} ${projects.length === 1 ? "story" : "stories"}`}
       />
 
       {categories.length > 2 && (

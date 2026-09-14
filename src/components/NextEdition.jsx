@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import Section from "./Section";
+import Lockup, { Meta } from "./Lockup";
 
 function NeighbourLink({ edition, direction }) {
   const isPrev = direction === "prev";
@@ -16,9 +17,9 @@ function NeighbourLink({ edition, direction }) {
         <Icon className="h-4 w-4 shrink-0 text-ink-soft transition-colors group-hover:text-green" strokeWidth={2} />
       )}
       <span className="min-w-0 flex-1">
-        <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-ink-soft">
+        <Meta className="block text-ink-soft">
           {isPrev ? "Previous edition" : "Next edition"}
-        </span>
+        </Meta>
         <span className="mt-1 block truncate text-xl font-semibold tracking-tight">
           {edition.month} {edition.year}
         </span>
@@ -33,24 +34,26 @@ function NeighbourLink({ edition, direction }) {
 export default function NextEdition({ prev, next }) {
   return (
     <Section>
-      <div className="rounded-[2rem] border border-line bg-pastel-yellow/60 p-6 sm:p-10 lg:p-14">
+      <div className="rounded-[2rem] border border-line bg-tint-yellow/70 p-6 sm:p-10 lg:p-14">
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-soft">
-            What&apos;s next?
-          </p>
+          <Meta className="text-ink-soft">What&apos;s next</Meta>
 
           {next ? (
-            <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-              {next.month} {next.year} is already taking shape.
-            </h2>
+            <Lockup
+              caps={`${next.month.toUpperCase()} ${next.year} IS ALREADY`}
+              accent="taking shape"
+              className="mt-4 text-3xl sm:text-4xl"
+            />
           ) : (
             <>
-              <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-                The next edition is still being written.
-              </h2>
-              <p className="mt-3 inline-flex items-center gap-2 text-sm text-ink-soft">
+              <Lockup
+                caps="THE NEXT ISSUE IS STILL BEING"
+                accent="written"
+                className="mt-4 text-3xl sm:text-4xl"
+              />
+              <p className="mt-4 inline-flex items-center gap-2 text-sm text-ink-soft">
                 <Clock className="h-4 w-4" strokeWidth={1.75} />
-                Check back once the month wraps up.
+                issues go up once the month wraps.
               </p>
             </>
           )}

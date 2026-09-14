@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Play, Download } from "lucide-react";
 import Photo from "./Photo";
+import Lockup, { Meta, MetaRow } from "./Lockup";
 
-// "Watch recap" and "Download PDF" used to render unconditionally and do
-// nothing at all when clicked. They're now driven by optional `video` / `pdf`
-// fields on the edition, so a button only appears when there's something
-// behind it.
+// "Watch recap" and "Download PDF" are driven by optional `video` / `pdf`
+// fields — a button only appears when there's something behind it.
 function HeroActions({ edition }) {
   if (!edition.video && !edition.pdf) return null;
 
@@ -37,7 +36,11 @@ function HeroActions({ edition }) {
 }
 
 export default function EditionHero({ edition }) {
-  const [, second, third] = edition.moments || [];
+  // The issue's own headline carries the page; the month and edition number
+  // move into the meta line where the parent site puts them.
+  const lockup = edition.lockup || { caps: edition.month?.toUpperCase(), accent: String(edition.year) };
+  const [second, third] = edition.photography?.gallery || [];
+  const cover = edition.cover;
 
   return (
     <header className="mx-auto max-w-6xl px-5 pt-8 sm:px-8 sm:pt-10 lg:px-10">
@@ -50,36 +53,40 @@ export default function EditionHero({ edition }) {
       </Link>
 
       <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span className="rounded-full bg-pastel-green px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-green-deep">
-          Edition {String(edition.editionNumber).padStart(2, "0")}
+        <span className="rounded-full bg-green px-3 py-1.5 text-cream-soft">
+          <Meta>Edition {String(edition.editionNumber).padStart(2, "0")}</Meta>
         </span>
-        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-soft">
-          Monthly recap
-        </span>
+        <MetaRow
+          className="text-ink-soft"
+          items={[
+            `${edition.month} ${edition.year}`,
+            edition.kind === "orientation" ? "Orientation issue" : "Monthly recap",
+          ]}
+        />
       </div>
 
-      <h1 className="mt-4 text-[clamp(2.25rem,10vw,6rem)] font-semibold uppercase leading-[0.9] tracking-tight">
-        {edition.month}
-        <span className="ml-2 align-top text-[0.4em] font-medium normal-case text-ink-soft sm:ml-3">
-          {edition.year}
-        </span>
-      </h1>
+      <Lockup
+        as="h1"
+        caps={lockup.caps}
+        accent={lockup.accent}
+        className="mt-5 text-[clamp(2.5rem,10vw,6rem)]"
+      />
 
-      <p className="mt-4 max-w-xl text-balance font-hand text-2xl text-green-deep sm:text-3xl">
-        {edition.tagline}
-      </p>
+      {edition.tagline && (
+        <p className="mt-5 max-w-xl text-balance text-xl text-ink-soft sm:text-2xl">
+          {edition.tagline}
+        </p>
+      )}
 
-      {/* Cover collage. Aspect-driven so it scales instead of being pinned to
-          a fixed 480px that squashed the side tiles on small screens. */}
       <div className="mt-9 grid aspect-[4/3] grid-cols-6 grid-rows-6 gap-2.5 sm:aspect-[16/9] sm:gap-3">
         <div className="col-span-6 row-span-4 overflow-hidden rounded-3xl sm:col-span-4 sm:row-span-6">
-          <Photo item={edition.cover} />
+          <Photo item={cover} />
         </div>
         <div className="col-span-3 row-span-2 overflow-hidden rounded-2xl sm:col-span-2 sm:row-span-3">
-          <Photo item={second || edition.cover} />
+          <Photo item={second || cover} />
         </div>
         <div className="col-span-3 row-span-2 overflow-hidden rounded-2xl sm:col-span-2 sm:row-span-3">
-          <Photo item={third || edition.cover} />
+          <Photo item={third || cover} />
         </div>
       </div>
 

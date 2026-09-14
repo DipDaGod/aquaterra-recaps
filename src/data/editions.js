@@ -2,381 +2,245 @@
 // AQUATERRA RECAPS — DATA MODEL
 // ---------------------------------------------------------------------------
 // This file is the ONLY place a new monthly edition needs to be added.
-// The archive grid and every /recaps/:year/:month page render from this
-// object — there is no per-month page component.
+// The archive grid and every /:year/:month page render from this object —
+// there is no per-month page component.
 //
-// ⚠️  PLACEHOLDER DATA: none of the names, descriptions, photos or figures
-// below are real AquaTerra statistics or claims. They're clearly-marked
-// sample content so the layout can be reviewed, and are meant to be
-// swapped out for real copy + photography before this goes live.
-// Bracketed fields like "[Project name]" are the ones to replace first.
+// RULE 0 (aq.md §0): never invent an AquaTerra fact. Every unverified value
+// below is a [bracketed placeholder]. Figures that ARE verified against the
+// live site are marked `// verified` and may be used as-is.
+//
+// This file previously carried eight fabricated 2026-01..2026-08 recaps with
+// unbracketed figures ("14 Projects", "310+ People", progress bars at 91%).
+// None of those months existed and none of those numbers were real, so they
+// are gone. Per aq.md §5 the magazine starts at Edition 1 in October 2026.
 // ---------------------------------------------------------------------------
 
-// A photo entry. `src` is left null everywhere — drop a real file into
-// /public/recaps/<year>/<month>/ and set src to that path, and the
-// <Photo> component will use it automatically instead of the placeholder tile.
-function photo(tone, icon, label, size = "md") {
-  return { src: null, tone, icon, label, size };
+// A photo entry. `src` is null everywhere — drop a real file into
+// /public/recaps/<year>/<month>/ and point `src` at it, and <Photo> uses it
+// instead of the placeholder tile. `credit` names the member who shot it and
+// must come from the desk, never from a guess.
+function photo(tone, icon, label, { size = "md", credit = null } = {}) {
+  return { src: null, tone, icon, label, size, credit };
 }
 
+// Categories span everything AquaTerra actually does, not just welfare —
+// student businesses, events, media and openings all carry equal weight.
 export const CATEGORIES = [
-  "Welfare", "Climate", "Education", "Environment",
-  "Community", "Fundraising", "Workshop", "Plantation", "Distribution",
+  "Welfare", "Events", "Student business", "Workshop",
+  "Collabs", "Social", "Photography", "Openings",
 ];
 
-const LATEST_KEY = "2026-08";
+const LATEST_KEY = "2026-10";
+
+// The 8 teams. Names, casing, kinds and member counts are verified (aq.md §2).
+// One-liners are the site's own copy. Team keys map to identity colours in
+// src/lib/utils.js — each team owns exactly one.
+export const TEAM_ROSTER = [
+  { key: "welfare", members: 62, blurb: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips. Dog feeding." },
+  { key: "social", members: 29, blurb: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra. Reels." },
+  { key: "events", members: 3, blurb: "Paradox. Disco Diwali. Starry Nights. Every fundraiser AQ has ever run." },
+  { key: "collabs", members: 2, blurb: "School collabs, college collabs, NGO partnerships, outreach." },
+  { key: "hr", members: 6, blurb: "Recruitment, onboarding, certificates, Letters of Recommendation." },
+  { key: "shikshaq", members: 2, blurb: "Tuition discovery platform built by AQ members for Kolkata students." },
+  { key: "ventures", members: 23, blurb: "Helps student entrepreneurs turn ideas into visible ventures." },
+  { key: "crftd", members: 1, blurb: "Student-run streetwear brand. Design, production, sales. Profits fund AQ welfare." },
+];
 
 export const editions = {
-  "2026-01": {
-    key: "2026-01", slug: "january", month: "January", year: 2026, editionNumber: 1,
-    tagline: "New year, same mission.",
-    cardStats: [{ value: "9", label: "Projects" }, { value: "210+", label: "People" }, { value: "5", label: "Locations" }],
-    cover: photo("green", "Sprout", "[Cover — January highlight]"),
-    glance: [
-      { value: "9", label: "Projects run" },
-      { value: "5", label: "Locations" },
-      { value: "210+", label: "People involved" },
-      { value: "3", label: "New teams onboarded" },
-    ],
-    projects: [
-      { title: "[Winter welfare drive]", category: "Welfare", date: "Jan 2026", location: "[Locality, Kolkata]", people: "[40+] volunteers", description: "[Short description of what this project involved and who it reached.]", image: photo("yellow", "HeartHandshake", "[Welfare drive]") },
-      { title: "[School stationery drive]", category: "Education", date: "Jan 2026", location: "[School name]", people: "[60+] students", description: "[Placeholder summary — replace with the real project description.]", image: photo("blue", "GraduationCap", "[Stationery drive]") },
-      { title: "[Riverbank clean-up]", category: "Environment", date: "Jan 2026", location: "[Ghat name]", people: "[25] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("green", "Waves", "[River clean-up]") },
-    ],
-    inside: [
-      { type: "Team", title: "[Team spotlight name]", description: "[What this team worked on this month.]", meta: "[Team]", image: photo("lavender", "Users", "[Team]") },
-      { type: "Diary", title: "[Groundwork Diaries entry title]", description: "[One line on what the diary entry covers.]", meta: "Groundwork Diaries", image: photo("cream", "PenSquare", "[Diary]") },
-    ],
-    moments: [
-      photo("green", "Camera", "[Field moment]", "lg"), photo("yellow", "Camera", "[Candid]", "sm"),
-      photo("blue", "Camera", "[Workshop]", "md"), photo("lavender", "Camera", "[Team]", "sm"),
-      photo("cream", "Camera", "[Event]", "md"),
-    ],
-    impact: {
-      headline: "[What changed because of this month]",
-      description: "[A short, human explanation of the month's impact — not a KPI dump.]",
-      metrics: [{ value: "[Number]", label: "[Metric label]" }, { value: "[Number]", label: "[Metric label]" }],
-      progress: [{ label: "[Yearly goal name]", percent: 20 }],
-    },
-    people: [
-      { name: "[Volunteer name]", role: "[Team / role]", quote: "[A short quote about their month.]", image: photo("green", "User", "[Portrait]") },
-    ],
-  },
-
-  "2026-02": {
-    key: "2026-02", slug: "february", month: "February", year: 2026, editionNumber: 2,
-    tagline: "Small drives, steady momentum.",
-    cardStats: [{ value: "11", label: "Projects" }, { value: "260+", label: "People" }, { value: "6", label: "Locations" }],
-    cover: photo("blue", "Droplets", "[Cover — February highlight]"),
-    glance: [
-      { value: "11", label: "Projects run" },
-      { value: "6", label: "Locations" },
-      { value: "260+", label: "People involved" },
-      { value: "2", label: "New collaborations" },
-    ],
-    projects: [
-      { title: "[Water access workshop]", category: "Workshop", date: "Feb 2026", location: "[Locality]", people: "[30] participants", description: "[Placeholder summary — replace with the real project description.]", image: photo("blue", "Droplets", "[Workshop]") },
-      { title: "[Community health camp]", category: "Community", date: "Feb 2026", location: "[Locality]", people: "[150+] attendees", description: "[Placeholder summary — replace with the real project description.]", image: photo("yellow", "HeartHandshake", "[Health camp]") },
-      { title: "[Sapling distribution]", category: "Plantation", date: "Feb 2026", location: "[Locality]", people: "[35] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("green", "TreePine", "[Plantation]") },
-    ],
-    inside: [
-      { type: "Event", title: "[Open house event]", description: "[What happened at this event.]", meta: "Event", image: photo("blue", "CalendarDays", "[Event]") },
-      { type: "Workshop", title: "[Leadership workshop]", description: "[What members learned or built.]", meta: "Workshop", image: photo("lavender", "Wrench", "[Workshop]") },
-    ],
-    moments: [
-      photo("blue", "Camera", "[Field moment]", "md"), photo("green", "Camera", "[Candid]", "lg"),
-      photo("yellow", "Camera", "[Workshop]", "sm"), photo("cream", "Camera", "[Team]", "md"),
-    ],
-    impact: {
-      headline: "[What changed because of this month]",
-      description: "[A short, human explanation of the month's impact.]",
-      metrics: [{ value: "[Number]", label: "[Metric label]" }, { value: "[Number]", label: "[Metric label]" }],
-      progress: [{ label: "[Yearly goal name]", percent: 32 }],
-    },
-    people: [
-      { name: "[Volunteer name]", role: "[Team / role]", quote: "[A short quote about their month.]", image: photo("blue", "User", "[Portrait]") },
-    ],
-  },
-
-  "2026-03": {
-    key: "2026-03", slug: "march", month: "March", year: 2026, editionNumber: 3,
-    tagline: "Exams, drives, and everything in between.",
-    cardStats: [{ value: "10", label: "Projects" }, { value: "230+", label: "People" }, { value: "5", label: "Locations" }],
-    cover: photo("lavender", "GraduationCap", "[Cover — March highlight]"),
-    glance: [
-      { value: "10", label: "Projects run" },
-      { value: "5", label: "Locations" },
-      { value: "230+", label: "People involved" },
-      { value: "1", label: "New school partner" },
-    ],
-    projects: [
-      { title: "[Exam-season tutoring circle]", category: "Education", date: "Mar 2026", location: "[Locality]", people: "[45] students", description: "[Placeholder summary — replace with the real project description.]", image: photo("lavender", "GraduationCap", "[Tutoring]") },
-      { title: "[Fundraising bake sale]", category: "Fundraising", date: "Mar 2026", location: "[Locality]", people: "[20] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("yellow", "HandCoins", "[Fundraiser]") },
-      { title: "[Coastal clean-up trip]", category: "Environment", date: "Mar 2026", location: "[Location]", people: "[18] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("green", "Waves", "[Clean-up]") },
-    ],
-    inside: [
-      { type: "Blog", title: "[Groundwork Diaries entry title]", description: "[One line on what the diary entry covers.]", meta: "Groundwork Diaries", image: photo("cream", "PenSquare", "[Diary]") },
-      { type: "Team", title: "[Team spotlight name]", description: "[What this team worked on this month.]", meta: "Team", image: photo("blue", "Users", "[Team]") },
-    ],
-    moments: [
-      photo("lavender", "Camera", "[Field moment]", "md"), photo("yellow", "Camera", "[Candid]", "md"),
-      photo("green", "Camera", "[Event]", "lg"), photo("blue", "Camera", "[Workshop]", "sm"),
-    ],
-    impact: {
-      headline: "[What changed because of this month]",
-      description: "[A short, human explanation of the month's impact.]",
-      metrics: [{ value: "[Number]", label: "[Metric label]" }, { value: "[Number]", label: "[Metric label]" }],
-      progress: [{ label: "[Yearly goal name]", percent: 41 }],
-    },
-    people: [
-      { name: "[Volunteer name]", role: "[Team / role]", quote: "[A short quote about their month.]", image: photo("lavender", "User", "[Portrait]") },
-    ],
-  },
-
-  "2026-04": {
-    key: "2026-04", slug: "april", month: "April", year: 2026, editionNumber: 4,
-    tagline: "Warmer days, bigger drives.",
-    cardStats: [{ value: "13", label: "Projects" }, { value: "290+", label: "People" }, { value: "6", label: "Locations" }],
-    cover: photo("yellow", "Sun", "[Cover — April highlight]"),
-    glance: [
-      { value: "13", label: "Projects run" },
-      { value: "6", label: "Locations" },
-      { value: "290+", label: "People involved" },
-      { value: "4", label: "New volunteers onboarded" },
-    ],
-    projects: [
-      { title: "[Summer distribution drive]", category: "Distribution", date: "Apr 2026", location: "[Locality]", people: "[50] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("yellow", "Package", "[Distribution]") },
-      { title: "[Climate awareness workshop]", category: "Climate", date: "Apr 2026", location: "[School / venue]", people: "[80] students", description: "[Placeholder summary — replace with the real project description.]", image: photo("green", "Sprout", "[Climate workshop]") },
-      { title: "[Community kitchen support]", category: "Welfare", date: "Apr 2026", location: "[Locality]", people: "[22] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("blue", "HeartHandshake", "[Community kitchen]") },
-    ],
-    inside: [
-      { type: "Workshop", title: "[Skills workshop]", description: "[What members learned or built.]", meta: "Workshop", image: photo("lavender", "Wrench", "[Workshop]") },
-      { type: "Event", title: "[Community fair]", description: "[What happened at this event.]", meta: "Event", image: photo("yellow", "CalendarDays", "[Event]") },
-    ],
-    moments: [
-      photo("yellow", "Camera", "[Field moment]", "lg"), photo("green", "Camera", "[Candid]", "sm"),
-      photo("blue", "Camera", "[Workshop]", "sm"), photo("lavender", "Camera", "[Team]", "md"),
-    ],
-    impact: {
-      headline: "[What changed because of this month]",
-      description: "[A short, human explanation of the month's impact.]",
-      metrics: [{ value: "[Number]", label: "[Metric label]" }, { value: "[Number]", label: "[Metric label]" }],
-      progress: [{ label: "[Yearly goal name]", percent: 53 }],
-    },
-    people: [
-      { name: "[Volunteer name]", role: "[Team / role]", quote: "[A short quote about their month.]", image: photo("yellow", "User", "[Portrait]") },
-    ],
-  },
-
-  "2026-05": {
-    key: "2026-05", slug: "may", month: "May", year: 2026, editionNumber: 5,
-    tagline: "Heat, holidays, and hard work.",
-    cardStats: [{ value: "12", label: "Projects" }, { value: "270+", label: "People" }, { value: "7", label: "Locations" }],
-    cover: photo("green", "TreePine", "[Cover — May highlight]"),
-    glance: [
-      { value: "12", label: "Projects run" },
-      { value: "7", label: "Locations" },
-      { value: "270+", label: "People involved" },
-      { value: "3", label: "Partner schools" },
-    ],
-    projects: [
-      { title: "[Plantation drive]", category: "Plantation", date: "May 2026", location: "[Locality]", people: "[60] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("green", "TreePine", "[Plantation]") },
-      { title: "[Summer camp for kids]", category: "Education", date: "May 2026", location: "[Venue]", people: "[70] children", description: "[Placeholder summary — replace with the real project description.]", image: photo("blue", "GraduationCap", "[Summer camp]") },
-      { title: "[Heatwave relief drive]", category: "Welfare", date: "May 2026", location: "[Locality]", people: "[40] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("yellow", "HeartHandshake", "[Relief drive]") },
-    ],
-    inside: [
-      { type: "Diary", title: "[Groundwork Diaries entry title]", description: "[One line on what the diary entry covers.]", meta: "Groundwork Diaries", image: photo("cream", "PenSquare", "[Diary]") },
-      { type: "Team", title: "[Team spotlight name]", description: "[What this team worked on this month.]", meta: "Team", image: photo("lavender", "Users", "[Team]") },
-    ],
-    moments: [
-      photo("green", "Camera", "[Field moment]", "md"), photo("yellow", "Camera", "[Candid]", "lg"),
-      photo("blue", "Camera", "[Event]", "sm"), photo("lavender", "Camera", "[Workshop]", "sm"),
-    ],
-    impact: {
-      headline: "[What changed because of this month]",
-      description: "[A short, human explanation of the month's impact.]",
-      metrics: [{ value: "[Number]", label: "[Metric label]" }, { value: "[Number]", label: "[Metric label]" }],
-      progress: [{ label: "[Yearly goal name]", percent: 64 }],
-    },
-    people: [
-      { name: "[Volunteer name]", role: "[Team / role]", quote: "[A short quote about their month.]", image: photo("green", "User", "[Portrait]") },
-    ],
-  },
-
-  "2026-06": {
-    key: "2026-06", slug: "june", month: "June", year: 2026, editionNumber: 6,
-    tagline: "Monsoon prep, new members.",
-    cardStats: [{ value: "13", label: "Projects" }, { value: "300+", label: "People" }, { value: "7", label: "Locations" }],
-    cover: photo("blue", "CloudRain", "[Cover — June highlight]"),
-    glance: [
-      { value: "13", label: "Projects run" },
-      { value: "7", label: "Locations" },
-      { value: "300+", label: "People involved" },
-      { value: "5", label: "New members onboarded" },
-    ],
-    projects: [
-      { title: "[Monsoon preparedness drive]", category: "Climate", date: "Jun 2026", location: "[Locality]", people: "[45] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("blue", "CloudRain", "[Monsoon prep]") },
-      { title: "[Book donation drive]", category: "Education", date: "Jun 2026", location: "[School name]", people: "[55] students", description: "[Placeholder summary — replace with the real project description.]", image: photo("lavender", "GraduationCap", "[Book drive]") },
-      { title: "[Community mural project]", category: "Community", date: "Jun 2026", location: "[Locality]", people: "[15] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("yellow", "Users", "[Mural]") },
-    ],
-    inside: [
-      { type: "Event", title: "[New member orientation]", description: "[What happened at this event.]", meta: "Event", image: photo("green", "CalendarDays", "[Event]") },
-      { type: "Blog", title: "[Groundwork Diaries entry title]", description: "[One line on what the diary entry covers.]", meta: "Groundwork Diaries", image: photo("cream", "PenSquare", "[Diary]") },
-    ],
-    moments: [
-      photo("blue", "Camera", "[Field moment]", "lg"), photo("green", "Camera", "[Candid]", "sm"),
-      photo("yellow", "Camera", "[Workshop]", "md"), photo("lavender", "Camera", "[Team]", "sm"),
-    ],
-    impact: {
-      headline: "[What changed because of this month]",
-      description: "[A short, human explanation of the month's impact.]",
-      metrics: [{ value: "[Number]", label: "[Metric label]" }, { value: "[Number]", label: "[Metric label]" }],
-      progress: [{ label: "[Yearly goal name]", percent: 74 }],
-    },
-    people: [
-      { name: "[Volunteer name]", role: "[Team / role]", quote: "[A short quote about their month.]", image: photo("blue", "User", "[Portrait]") },
-    ],
-  },
-
-  "2026-07": {
-    key: "2026-07", slug: "july", month: "July", year: 2026, editionNumber: 7,
-    tagline: "Rain, roots, and reading circles.",
-    cardStats: [{ value: "12", label: "Projects" }, { value: "280+", label: "People" }, { value: "6", label: "Locations" }],
-    cover: photo("lavender", "BookOpen", "[Cover — July highlight]"),
-    glance: [
-      { value: "12", label: "Projects run" },
-      { value: "6", label: "Locations" },
-      { value: "280+", label: "People involved" },
-      { value: "2", label: "New collaborations" },
-    ],
-    projects: [
-      { title: "[Reading circle launch]", category: "Education", date: "Jul 2026", location: "[Locality]", people: "[35] children", description: "[Placeholder summary — replace with the real project description.]", image: photo("lavender", "BookOpen", "[Reading circle]") },
-      { title: "[Mangrove restoration trip]", category: "Environment", date: "Jul 2026", location: "[Location]", people: "[20] volunteers", description: "[Placeholder summary — replace with the real project description.]", image: photo("green", "Sprout", "[Restoration]") },
-      { title: "[Fundraising gala prep]", category: "Fundraising", date: "Jul 2026", location: "[Venue]", people: "[10] organisers", description: "[Placeholder summary — replace with the real project description.]", image: photo("yellow", "HandCoins", "[Fundraiser]") },
-    ],
-    inside: [
-      { type: "Team", title: "[Team spotlight name]", description: "[What this team worked on this month.]", meta: "Team", image: photo("blue", "Users", "[Team]") },
-      { type: "Workshop", title: "[Storytelling workshop]", description: "[What members learned or built.]", meta: "Workshop", image: photo("green", "Wrench", "[Workshop]") },
-    ],
-    moments: [
-      photo("lavender", "Camera", "[Field moment]", "md"), photo("blue", "Camera", "[Candid]", "md"),
-      photo("green", "Camera", "[Event]", "sm"), photo("yellow", "Camera", "[Workshop]", "lg"),
-    ],
-    impact: {
-      headline: "[What changed because of this month]",
-      description: "[A short, human explanation of the month's impact.]",
-      metrics: [{ value: "[Number]", label: "[Metric label]" }, { value: "[Number]", label: "[Metric label]" }],
-      progress: [{ label: "[Yearly goal name]", percent: 83 }],
-    },
-    people: [
-      { name: "[Volunteer name]", role: "[Team / role]", quote: "[A short quote about their month.]", image: photo("lavender", "User", "[Portrait]") },
-    ],
-  },
-
   // -------------------------------------------------------------------------
-  // AUGUST 2026 — the fully-populated demo edition. Same schema as every
-  // other month above; this one just has every section filled in richly
-  // to show what the system looks like at full depth.
+  // EDITION 01 — October 2026. The orientation issue, not a recap (aq.md §5):
+  // what AquaTerra is, the 8 teams, how roles work.
   // -------------------------------------------------------------------------
-  "2026-08": {
-    key: "2026-08", slug: "august", month: "August", year: 2026, editionNumber: 8,
-    tagline: "Fourteen projects. One very full month.",
-    cardStats: [{ value: "14", label: "Projects" }, { value: "310+", label: "People" }, { value: "7", label: "Locations" }],
-    cover: photo("green", "Waves", "[Cover — August highlight]"),
+  "2026-10": {
+    key: "2026-10", slug: "october", month: "October", year: 2026, editionNumber: 1,
+    kind: "orientation",
+
+    // Headline lockup: caps + one italic accent word + a period (aq.md §4).
+    lockup: { caps: "WHAT IS", accent: "aquaterra" },
+    tagline: "started in Kolkata. got out of hand.", // verified — site tagline
+
+    cover: photo("green", "Sprout", "[Cover — orientation issue]"),
+
+    // verified (aq.md §2). Re-check against the live site before publishing.
+    cardStats: [
+      { value: "8", label: "teams" },
+      { value: "1,300+", label: "members" },
+      { value: "540+", label: "drives" },
+    ],
     glance: [
-      { value: "14", label: "Projects run" },
-      { value: "7", label: "Locations" },
-      { value: "310+", label: "People involved" },
-      { value: "6", label: "Partner organisations" },
+      { value: "8", label: "teams" },
+      { value: "1,300+", label: "members, ages 14–19" },
+      { value: "540+", label: "drives written up" },
+      { value: "4,000+", label: "saplings planted" },
     ],
-    projects: [
+
+    // The orientation issue leads on the teams, so the roster is the spine of
+    // the page rather than a footnote.
+    teams: {
+      lockup: { caps: "PICK A LANE, THEN", accent: "turn up" },
+      lead: "eight teams. five run on volunteers, three are student businesses. every one of them is run by members aged 14–19.",
+      roster: TEAM_ROSTER,
+    },
+
+    featured: [
       {
-        title: "[Riverbank restoration — phase 2]", category: "Environment", date: "Aug 3, 2026",
-        location: "[Ghat name, Kolkata]", people: "[65+] volunteers",
-        description: "[Placeholder description of the second phase of this clean-up and restoration effort, including what was cleared and replanted.]",
-        image: photo("green", "Waves", "[Riverbank restoration]"),
+        title: "[Feature headline]", category: "Events", team: "events",
+        date: "[Date]", location: "[Venue]", people: "[N] members",
+        description: "[What happened, in two or three plain sentences. Concrete numbers, no adjectives.]",
+        image: photo("blue", "PartyPopper", "[Events feature]"),
       },
       {
-        title: "[Back-to-school supply drive]", category: "Education", date: "Aug 6, 2026",
-        location: "[School name]", people: "[300+] students",
-        description: "[Placeholder description of the supply drive — what was distributed and to how many students.]",
-        image: photo("blue", "GraduationCap", "[Supply drive]"),
+        title: "[Feature headline]", category: "Student business", team: "crftd",
+        date: "[Date]", location: "[Where]", people: "[N] members",
+        description: "[What the drop was, what sold, where the profit went.]",
+        image: photo("cream", "Shirt", "[Crftd feature]"),
       },
       {
-        title: "[Community health & nutrition camp]", category: "Welfare", date: "Aug 9, 2026",
-        location: "[Locality, Kolkata]", people: "[180] attendees",
-        description: "[Placeholder description of the health camp's services and turnout.]",
-        image: photo("yellow", "HeartHandshake", "[Health camp]"),
+        title: "[Feature headline]", category: "Student business", team: "shikshaq",
+        date: "[Date]", location: "[Where]", people: "[N] members",
+        description: "[What shipped on the platform this month.]",
+        image: photo("yellow", "GraduationCap", "[ShikshAQ feature]"),
       },
       {
-        title: "[Monsoon plantation drive]", category: "Plantation", date: "Aug 12, 2026",
-        location: "[Location]", people: "[70] volunteers",
-        description: "[Placeholder description of the saplings planted and the site chosen.]",
-        image: photo("green", "TreePine", "[Plantation]"),
+        title: "[Feature headline]", category: "Welfare", team: "welfare",
+        date: "[Date]", location: "[Locality, Kolkata]", people: "[N] volunteers",
+        description: "[What the drive did and who turned up.]",
+        image: photo("green", "HeartHandshake", "[Welfare feature]"),
       },
       {
-        title: "[Independence Day community fair]", category: "Community", date: "Aug 15, 2026",
-        location: "[Locality]", people: "[400+] attendees",
-        description: "[Placeholder description of the fair — stalls, performances, turnout.]",
-        image: photo("lavender", "PartyPopper", "[Community fair]"),
+        title: "[Feature headline]", category: "Collabs", team: "collabs",
+        date: "[Date]", location: "[School / college]", people: "[N] members",
+        description: "[Who AQ partnered with and what came of it.]",
+        image: photo("green", "Handshake", "[Collabs feature]"),
       },
       {
-        title: "[Ration & essentials distribution]", category: "Distribution", date: "Aug 22, 2026",
-        location: "[Locality]", people: "[120] families",
-        description: "[Placeholder description of what was distributed and to whom.]",
-        image: photo("yellow", "Package", "[Distribution]"),
+        title: "[Feature headline]", category: "Social", team: "social",
+        date: "[Date]", location: "[Online]", people: "[N] members",
+        description: "[What went out, and how it did.]",
+        image: photo("lavender", "Camera", "[Social feature]"),
       },
     ],
+
+    // Photography is its own section now, with a credited photo of the month.
+    // Credits must come from the desk — never attribute a photo to a name you
+    // have not been given.
+    photography: {
+      lockup: { caps: "SHOT BY", accent: "members" },
+      lead: "one frame a month, picked by the desk. everything here was shot by an AquaTerra member on the ground.",
+      featured: photo("green", "Camera", "[Photo of the month]", { credit: "[Member name]" }),
+      featuredCaption: "[One line on what this frame is and where it was taken.]",
+      gallery: [
+        photo("yellow", "Camera", "[Frame 01]", { size: "lg", credit: "[Member name]" }),
+        photo("blue", "Camera", "[Frame 02]", { size: "sm", credit: "[Member name]" }),
+        photo("lavender", "Camera", "[Frame 03]", { size: "md", credit: "[Member name]" }),
+        photo("green", "Camera", "[Frame 04]", { size: "sm", credit: "[Member name]" }),
+        photo("pink", "Camera", "[Frame 05]", { size: "md", credit: "[Member name]" }),
+        photo("cream", "Camera", "[Frame 06]", { size: "sm", credit: "[Member name]" }),
+      ],
+    },
+
+    // Mini games. Every answer below is a verified figure from aq.md §2 — a
+    // quiz is only fun if the answers are true. Re-check before publishing.
+    games: {
+      lockup: { caps: "HOW WELL DO YOU KNOW", accent: "aq" },
+      lead: "eight questions. no prizes, no leaderboard, no sign-up. just find out how much you actually picked up.",
+      quiz: [
+        {
+          question: "how many teams does AquaTerra run?",
+          options: ["4", "6", "8", "12"],
+          answer: 2,
+          note: "five volunteer teams and three student businesses.",
+        },
+        {
+          question: "how many members, and how old are they?",
+          options: ["300+, ages 18–25", "1,300+, ages 14–19", "1,300+, ages 18–25", "800+, ages 16–21"],
+          answer: 1,
+          note: "every one of them is still at school or just out of it.",
+        },
+        {
+          question: "what year did AquaTerra start?",
+          options: ["2019", "2020", "2021", "2023"],
+          answer: 2,
+          note: "June 2021. sixteen students.",
+        },
+        {
+          question: "how many students founded it?",
+          options: ["3", "8", "16", "40"],
+          answer: 2,
+          note: "sixteen.",
+        },
+        {
+          question: "what is the student-run streetwear brand called?",
+          // Distractors are the other real AQ ventures, never the org's old
+          // clothing-label name — aq.md §2 bans that string outright, and a
+          // wrong answer still puts it on the page.
+          options: ["ShikshAQ", "AQ.Ventures", "Crftd", "Groundwork Diaries"],
+          answer: 2,
+          note: "Crftd. profits fund AQ welfare.",
+        },
+        {
+          question: "how many bananas has AQ handed out?",
+          options: ["500+", "3,000+", "15,000+", "60,000+"],
+          answer: 2,
+          note: "fifteen thousand. nobody planned it that way.",
+        },
+        {
+          question: "how many saplings planted?",
+          options: ["400+", "1,000+", "4,000+", "9,000+"],
+          answer: 2,
+          note: "4,000+ and counting.",
+        },
+        {
+          question: "how many Sundarbans relief trips?",
+          options: ["2", "5", "8", "14"],
+          answer: 2,
+          note: "eight, all run by the Welfare Team.",
+        },
+      ],
+    },
+
+    // Openings — the HR team's recruitment, which is how a student actually
+    // joins. Roles must come from HR, not from a guess.
+    openings: {
+      lockup: { caps: "COME AND DO SOMETHING", accent: "real" },
+      lead: "pick a team, show up, and get to work. no fees, no application essay.",
+      roles: [
+        { team: "welfare", role: "[Role title]", blurb: "[What you'd actually do.]" },
+        { team: "social", role: "[Role title]", blurb: "[What you'd actually do.]" },
+        { team: "events", role: "[Role title]", blurb: "[What you'd actually do.]" },
+      ],
+      href: "https://www.ngoaquaterra.com/teams", // verified — live route
+    },
+
     inside: [
       {
-        type: "Team", title: "[Field Ops team — August spotlight]",
-        description: "[A short highlight of what this student team ran or coordinated this month.]",
-        meta: "Team", image: photo("green", "Users", "[Team]"),
+        type: "Diary", meta: "Groundwork Diaries", title: "[Diary entry title]",
+        description: "[One line on what the entry covers, and who wrote it.]",
+        image: photo("cream", "PenSquare", "[Diary]"),
       },
       {
-        type: "Blog", title: "[Groundwork Diaries: “A day on the riverbank”]",
-        description: "[One line summarising this month's Groundwork Diaries entry.]",
-        meta: "Groundwork Diaries", image: photo("cream", "PenSquare", "[Diary entry]"),
-      },
-      {
-        type: "Workshop", title: "[Volunteer onboarding workshop]",
-        description: "[What new volunteers learned in this session.]",
-        meta: "Workshop", image: photo("lavender", "Wrench", "[Workshop]"),
-      },
-      {
-        type: "Event", title: "[Monthly member meet-up]",
-        description: "[What was discussed or celebrated at this gathering.]",
-        meta: "Event", image: photo("blue", "CalendarDays", "[Meet-up]"),
+        type: "Workshop", meta: "Workshop", title: "[Workshop title]",
+        description: "[What members learned or built.]",
+        image: photo("lavender", "Wrench", "[Workshop]"),
       },
     ],
-    moments: [
-      photo("green", "Camera", "[Riverbank clean-up, morning]", "lg"),
-      photo("yellow", "Camera", "[Kids at the supply drive]", "sm"),
-      photo("blue", "Camera", "[Health camp check-in]", "md"),
-      photo("lavender", "Camera", "[Volunteers planting saplings]", "md"),
-      photo("cream", "Camera", "[Community fair stall]", "sm"),
-      photo("green", "Camera", "[Team huddle before the drive]", "sm"),
-      photo("blue", "Camera", "[Distribution day queue]", "md"),
-      photo("yellow", "Camera", "[Candid — end of day]", "lg"),
-    ],
+
     impact: {
-      headline: "[A one-line summary of what August's work actually changed]",
-      description: "[A short, human paragraph on the month's impact — written for someone who wasn't there, not a KPI table.]",
+      headline: "[One line on what this issue's work actually changed]",
+      description: "[A short, human paragraph — written for someone who wasn't there, not a KPI table.]",
       metrics: [
-        { value: "[Number]", label: "[e.g. saplings planted]" },
-        { value: "[Number]", label: "[e.g. families reached]" },
-        { value: "[Number]", label: "[e.g. kilos of waste cleared]" },
+        { value: "[Number]", label: "[Metric label]" },
+        { value: "[Number]", label: "[Metric label]" },
       ],
       progress: [
-        { label: "[Yearly plantation goal]", percent: 91 },
-        { label: "[Yearly welfare-reach goal]", percent: 68 },
+        { label: "[Goal name]", percent: null },
       ],
     },
+
+    // aq.md §2: no member names, photos or quotes unless the desk supplies
+    // them. Everything here stays bracketed until then.
     people: [
-      { name: "[Volunteer name]", role: "[Field Ops, Class XI]", quote: "[A short quote about carrying saplings before sunrise.]", image: photo("green", "User", "[Portrait]") },
-      { name: "[Volunteer name]", role: "[Team lead, Welfare]", quote: "[A short quote about the health camp turnout.]", image: photo("blue", "User", "[Portrait]") },
-      { name: "[Volunteer name]", role: "[Groundwork Diaries]", quote: "[A short quote about writing the diary entry.]", image: photo("yellow", "User", "[Portrait]") },
-      { name: "[Volunteer name]", role: "[New member]", quote: "[A short quote about their first month.]", image: photo("lavender", "User", "[Portrait]") },
+      { name: "[Member name]", role: "[Team · year]", quote: "[A short quote, in their own words.]", image: photo("green", "User", "[Portrait]") },
     ],
   },
 };
@@ -395,7 +259,7 @@ export function editionsForYear(year) {
   return editionList.filter((e) => String(e.year) === String(year));
 }
 
-export const AVAILABLE_YEARS = [2025, 2026, 2027];
+export const AVAILABLE_YEARS = [2026, 2027];
 
 export function neighbours(edition) {
   const idx = editionList.findIndex((e) => e.key === edition.key);

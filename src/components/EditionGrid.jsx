@@ -17,9 +17,9 @@ export default function EditionGrid({ editions, year }) {
           <span className="grid h-12 w-12 place-items-center rounded-full bg-paper text-ink-soft">
             <CalendarOff className="h-5 w-5" strokeWidth={1.5} />
           </span>
-          <p className="mt-4 text-lg font-medium">Nothing published for {year} yet.</p>
+          <p className="mt-4 text-lg font-medium">nothing published for {year} yet.</p>
           <p className="mt-1.5 max-w-sm text-sm text-ink-soft">
-            Recaps go up once a month has wrapped. Pick another year above to read
+            issues go up once a month has wrapped. pick another year above to read
             back through the archive.
           </p>
         </div>

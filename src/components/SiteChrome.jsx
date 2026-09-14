@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowUpRight, Globe2, Users2, PenSquare, Hash } from "lucide-react";
+import { Meta } from "./Lockup";
 
 // Renders the real logo once it exists at /public/assets/logo.png; falls
 // back to a simple monogram so the build/site never breaks on a missing file.
@@ -38,7 +39,7 @@ export function TopBar() {
           <Logo />
           <span className="flex items-center gap-2 text-sm font-semibold tracking-tight">
             AquaTerra
-            <span className="rounded-full bg-green px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-cream-soft">
+            <span className="rounded-full bg-green px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-cream-soft">
               Recaps
             </span>
           </span>
@@ -60,10 +61,10 @@ export function TopBar() {
 }
 
 const quickLinks = [
-  { label: "Projects", href: "https://www.ngoaquaterra.com/projects", icon: Globe2, tone: "bg-pastel-green text-green-deep" },
-  { label: "Teams", href: "https://www.ngoaquaterra.com/teams", icon: Users2, tone: "bg-pastel-blue text-ink" },
-  { label: "Blog", href: "https://www.ngoaquaterra.com/blog", icon: PenSquare, tone: "bg-pastel-lavender text-ink" },
-  { label: "Members", href: "https://www.ngoaquaterra.com/members", icon: Hash, tone: "bg-pastel-yellow text-ink" },
+  { label: "Projects", href: "https://www.ngoaquaterra.com/projects", icon: Globe2, tone: "bg-tint-green text-green-deep" },
+  { label: "Teams", href: "https://www.ngoaquaterra.com/teams", icon: Users2, tone: "bg-tint-blue text-ink" },
+  { label: "Groundwork Diaries", href: "https://www.ngoaquaterra.com/blog", icon: PenSquare, tone: "bg-tint-lavender text-ink" },
+  { label: "Members", href: "https://www.ngoaquaterra.com/members", icon: Hash, tone: "bg-tint-yellow text-ink" },
 ];
 
 export function Footer() {
@@ -72,11 +73,15 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-14 lg:px-10">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
           <div className="max-w-md">
-            <p className="font-accent text-3xl italic text-green-deep">Same people. Bigger stories.</p>
-            <p className="mt-3 text-pretty text-sm text-ink-soft">
-              AquaTerra Recaps is a monthly record of the projects, teams and people
-              behind AquaTerra — a student-led community and NGO in Kolkata.
+            {/* Both lines below are the parent site's own copy (aq.md §2). */}
+            <p className="font-accent text-3xl italic text-green">
+              started in Kolkata. got out of hand.
             </p>
+            <p className="mt-3 text-pretty text-sm text-ink-soft">
+              Free forever. No donations, no fees. Pick a team, show up, and get to work.
+            </p>
+            {/* aq.md §4: the script face is used exactly once, for the sign-off. */}
+            <p className="mt-5 font-hand text-2xl text-green">love, the AquaTerra team</p>
           </div>
 
           <nav aria-label="AquaTerra elsewhere" className="grid w-full grid-cols-2 gap-3 sm:w-auto sm:grid-cols-4">
@@ -95,11 +100,11 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-line/80 pt-6 text-xs text-ink-soft sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} AquaTerra · Kolkata</p>
-          <p>
-            Sample content — real recaps and photography are on the way.
-          </p>
+        <div className="mt-10 flex flex-col gap-2 border-t border-line/80 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <Meta className="text-ink-soft">
+            © {new Date().getFullYear()} AQUATERRA · OPEN COMMUNITY, NO RIGHTS RESERVED.
+          </Meta>
+          <Meta className="text-ink-soft/70">Ages 14–19 · Kolkata</Meta>
         </div>
       </div>
     </footer>

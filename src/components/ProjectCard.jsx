@@ -1,8 +1,11 @@
 import { MapPin, Users } from "lucide-react";
 import Photo from "./Photo";
-import { cx } from "../lib/utils";
+import { Meta } from "./Lockup";
+import { TEAMS, cx } from "../lib/utils";
 
 export default function ProjectCard({ project, wide = false }) {
+  const team = TEAMS[project.team];
+
   return (
     <article
       className={cx(
@@ -21,10 +24,12 @@ export default function ProjectCard({ project, wide = false }) {
 
       <div className={cx("flex flex-1 flex-col p-5 sm:p-6", wide && "lg:min-h-64 lg:justify-center lg:p-8")}>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <span className="rounded-full bg-pastel-green px-3 py-1 text-xs font-semibold text-green-deep">
-            {project.category}
+          {/* Chip wears the owning team's identity colour, so the mix of work
+              on the page is legible at a glance rather than uniformly green. */}
+          <span className={cx("rounded-full px-3 py-1.5", team?.bg ?? "bg-paper", team?.on ?? "text-ink")}>
+            <Meta>{project.category}</Meta>
           </span>
-          <span className="text-xs font-medium text-ink-soft">{project.date}</span>
+          <Meta className="text-ink-soft">{project.date}</Meta>
         </div>
 
         <h3

@@ -3,6 +3,10 @@
 A standalone monthly recap / digital-magazine site for AquaTerra, built with
 React, Vite, Tailwind CSS v4 and React Router.
 
+**Read `aq.md` before changing anything.** It carries the non-negotiable rules
+for this repo — chiefly: never invent an AquaTerra fact. `CLAUDE.md` imports it
+so it loads automatically in Claude Code sessions.
+
 ## Run it
 
 ```bash
@@ -37,6 +41,24 @@ Then open the printed local URL and go to `/recaps`.
 2. Copy an existing month's object (e.g. `"2026-08"`), rename the key to
    `"2026-09"`, and update `slug`, `month`, `editionNumber`, and content.
 3. Save — the archive grid and month navigation pick it up automatically.
+
+## Sections an edition can carry
+
+Every section renders only when the edition supplies data for it, so a month
+with no student-business news simply doesn't show that strand. There are no
+per-edition components — add a field, not a file.
+
+| Field | Section |
+|---|---|
+| `glance` | the numbers |
+| `teams` | the 8 teams, each in its identity colour |
+| `featured` | the month's stories, mixed across teams |
+| `photography` | credited photo of the month + frame wall |
+| `games` | playable quiz (answers must be verified facts) |
+| `inside` | Groundwork Diaries, workshops |
+| `impact` | metrics + goal progress |
+| `openings` | roles to join, from HR |
+| `people` | member profiles |
 
 ## Optional per-edition extras
 

@@ -30,7 +30,7 @@ export default function Photo({ item, className = "", imgClassName = "" }) {
     >
       <Icon className={`h-6 w-6 shrink-0 ${tones.fg} opacity-70`} strokeWidth={1.5} />
       {label && (
-        <span className={`text-balance text-center font-hand text-lg leading-tight ${tones.fg} opacity-80`}>
+        <span className={`text-balance text-center font-mono text-[0.7rem] leading-snug tracking-[0.04em] ${tones.fg} opacity-70`}>
           {label}
         </span>
       )}

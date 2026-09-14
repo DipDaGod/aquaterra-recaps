@@ -1,3 +1,4 @@
+import Lockup, { Meta } from "./Lockup";
 import { useReveal } from "../lib/useReveal";
 import { cx } from "../lib/utils";
 
@@ -21,24 +22,30 @@ export default function Section({ id, children, className = "", tight = false, r
   );
 }
 
-// Shared heading block: eyebrow + title + optional lead and right-hand slot.
-// Replaces the four slightly-different heading markups the sections each had.
-export function SectionHeading({ eyebrow, title, lead, aside, className = "" }) {
+// Shared heading block. `caps` + `accent` build the house lockup (aq.md §4);
+// every section opener on the site uses it, so it is not optional here.
+export function SectionHeading({
+  eyebrow,
+  caps,
+  accent,
+  accentClassName,
+  lead,
+  aside,
+  className = "",
+}) {
   return (
     <div className={cx("mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3", className)}>
       <div className="max-w-xl">
-        {eyebrow && (
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-green">{eyebrow}</p>
-        )}
-        <h2 className={cx(
-          "text-balance text-3xl font-semibold tracking-tight sm:text-4xl",
-          eyebrow && "mt-2.5"
-        )}>
-          {title}
-        </h2>
-        {lead && <p className="mt-2.5 text-pretty text-ink-soft">{lead}</p>}
+        {eyebrow && <Meta className="block text-green">{eyebrow}</Meta>}
+        <Lockup
+          caps={caps}
+          accent={accent}
+          accentClassName={accentClassName}
+          className={cx("text-3xl sm:text-4xl", eyebrow && "mt-3")}
+        />
+        {lead && <p className="mt-3 text-pretty text-ink-soft">{lead}</p>}
       </div>
-      {aside && <div className="shrink-0 text-sm text-ink-soft">{aside}</div>}
+      {aside && <Meta className="max-w-full text-ink-soft">{aside}</Meta>}
     </div>
   );
 }

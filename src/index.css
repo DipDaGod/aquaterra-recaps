@@ -9,31 +9,59 @@
 @import "@fontsource/instrument-serif/400-italic.css";
 
 @theme {
+  /* Type. Families are NOT confirmed against the parent site's CSS — aq.md §4
+     flags them as needing verification. Roles are correct; families are the
+     repo's existing choices carried forward, except --font-mono which is a
+     neutral system stack rather than a guessed brand face. */
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-hand: "Caveat", cursive;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-accent: "Instrument Serif", serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --font-hand: "Caveat", cursive;
 
-  --color-cream: #f6f1e3;
+  /* Paper + ink. --color-cream is the one hex aq.md marks confirmed exactly
+     (the parent site's theme-color meta). The rest of this palette is
+     eyeballed from screenshots and still needs confirming. */
+  --color-cream: #f4efe0;
   --color-cream-soft: #fbf8ef;
-  --color-paper: #efe8d4;
-  --color-ink: #17251d;
-  --color-ink-soft: #3f4a41;
-  --color-near-black: #14170f;
-  --color-green: #2f6b45;
-  --color-green-deep: #1e4a30;
-  --color-green-bright: #4c8c5f;
-  --color-pastel-green: #dceedd;
-  --color-pastel-yellow: #fbeec2;
-  --color-pastel-blue: #dceaf6;
-  --color-pastel-lavender: #eae0f6;
-  --color-gold: #f5b91a;
-  --color-coral: #ef6540;
-  --color-line: #e1d6b8;
+  --color-paper: #ebe4d2;
+  --color-ink: #0b0b0b;
+  --color-ink-soft: #4a4a46;
+  --color-near-black: #0b0b0b;
+  --color-line: #ded2b4;
 
-  /* Elevation. Warm-tinted rather than neutral grey, so shadows sit on
-     the cream ground instead of muddying it. */
-  --shadow-card: 0 1px 2px rgb(23 37 29 / 0.04), 0 8px 24px -12px rgb(23 37 29 / 0.14);
-  --shadow-card-hover: 0 2px 4px rgb(23 37 29 / 0.05), 0 18px 40px -16px rgb(23 37 29 / 0.22);
+  /* Team identity colours. Each of the 8 teams owns exactly one — these are
+     identity, not decoration. Do not reassign, do not add a ninth, do not use
+     one for something that isn't that team. Welfare's green is inferred by
+     elimination (aq.md lists green as the primary accent and assigns the
+     other seven explicitly); confirm it. */
+  --color-team-welfare: #1b7a4b;
+  --color-team-events: #3aa0f0;
+  --color-team-shikshaq: #f5c518;
+  --color-team-hr: #ff3d8b;
+  --color-team-social: #8b5cf6;
+  --color-team-collabs: #0e8c8c;
+  --color-team-ventures: #ff4a2b;
+  --color-team-crftd: #000000;
+
+  /* Green doubles as the primary accent: active nav pill, primary CTA,
+     italic accent words. */
+  --color-green: #1b7a4b;
+  --color-green-deep: #145937;
+  --color-green-bright: #2f9d63;
+
+  --color-gold: #f5c518;
+  --color-coral: #ff4a2b;
+
+  /* Quiet tints, used only behind placeholder photo tiles. */
+  --color-tint-green: #dfeee5;
+  --color-tint-yellow: #fbefc9;
+  --color-tint-blue: #dfecfa;
+  --color-tint-lavender: #e9e2f8;
+  --color-tint-pink: #fbe0ec;
+
+  --shadow-card: 0 1px 2px rgb(11 11 11 / 0.04), 0 8px 24px -12px rgb(11 11 11 / 0.14);
+  --shadow-card-hover: 0 2px 4px rgb(11 11 11 / 0.05), 0 18px 40px -16px rgb(11 11 11 / 0.22);
 }
 
 html {

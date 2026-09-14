@@ -1,5 +1,6 @@
 import Photo from "./Photo";
 import Section, { SectionHeading } from "./Section";
+import { Meta } from "./Lockup";
 
 export default function InsideAquaterra({ edition }) {
   const items = edition.inside || [];
@@ -8,8 +9,10 @@ export default function InsideAquaterra({ edition }) {
   return (
     <Section>
       <SectionHeading
-        title="Inside AquaTerra"
-        lead="Teams, diaries, workshops and everything happening beyond the projects."
+        eyebrow="Inside"
+        caps="GROUNDWORK"
+        accent="diaries"
+        lead="written by the members who were actually there."
       />
 
       <ul className="flex flex-col gap-4">
@@ -20,9 +23,7 @@ export default function InsideAquaterra({ edition }) {
                 <Photo item={item.image} />
               </div>
               <div className="min-w-0 flex-1">
-                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-green">
-                  {item.meta}
-                </span>
+                <Meta className="text-green">{item.meta}</Meta>
                 <h3 className="mt-1.5 text-balance text-xl font-semibold tracking-tight">
                   {item.title}
                 </h3>

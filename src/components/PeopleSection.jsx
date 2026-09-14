@@ -67,8 +67,10 @@ export default function PeopleSection({ edition }) {
   return (
     <Section>
       <SectionHeading
-        title="People behind the month"
-        lead={`A few of the volunteers who made ${edition.month} happen.`}
+        eyebrow="The people"
+        caps="THE ONES WHO"
+        accent="turned up"
+        lead="not the org account, not the desk — the members who showed up."
       />
 
       <ul className={cx("grid gap-4", columns)}>

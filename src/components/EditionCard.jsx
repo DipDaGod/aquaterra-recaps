@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import Photo from "./Photo";
+import Lockup, { Meta } from "./Lockup";
 import { cx } from "../lib/utils";
 
 // Two layouts, one card. `featured` lays the cover beside the text on large
@@ -8,7 +9,8 @@ import { cx } from "../lib/utils";
 // from their content — no fixed heights — and stretch to fill their grid
 // row, so a row of cards lines up without any one of them ballooning.
 export default function EditionCard({ edition, featured = false, id }) {
-  const { year, slug, month, editionNumber, tagline, cover, cardStats, isLatest } = edition;
+  const { year, slug, month, editionNumber, tagline, cover, cardStats, isLatest, lockup } = edition;
+  const title = lockup || { caps: month?.toUpperCase(), accent: String(year) };
 
   return (
     <Link
@@ -36,9 +38,9 @@ export default function EditionCard({ edition, featured = false, id }) {
         </div>
 
         {isLatest && (
-          <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-near-black/85 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-cream-soft backdrop-blur-sm">
+          <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-near-black/85 px-3 py-1.5 text-cream-soft backdrop-blur-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-green-bright" />
-            Latest
+            <Meta>Latest</Meta>
           </span>
         )}
       </div>
@@ -46,18 +48,15 @@ export default function EditionCard({ edition, featured = false, id }) {
       <div className={cx("flex flex-1 flex-col p-5 sm:p-6", featured && "lg:min-h-[21rem] lg:p-9")}>
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-soft">
-              Edition {String(editionNumber).padStart(2, "0")}
-            </p>
-            <h3
-              className={cx(
-                "mt-1.5 font-semibold leading-none tracking-tight",
-                featured ? "text-4xl sm:text-5xl" : "text-3xl"
-              )}
-            >
-              {month}
-              <span className="ml-2 align-baseline text-base font-medium text-ink-soft">{year}</span>
-            </h3>
+            <Meta className="text-ink-soft">
+              Edition {String(editionNumber).padStart(2, "0")} · {month} {year}
+            </Meta>
+            <Lockup
+              as="h3"
+              caps={title.caps}
+              accent={title.accent}
+              className={cx("mt-2", featured ? "text-4xl sm:text-5xl" : "text-2xl")}
+            />
           </div>
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-ink/15 text-ink-soft transition-colors duration-300 group-hover:border-green group-hover:bg-green group-hover:text-cream-soft">
             <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />
@@ -66,8 +65,8 @@ export default function EditionCard({ edition, featured = false, id }) {
 
         <p
           className={cx(
-            "mt-3 font-hand leading-snug text-green-deep",
-            featured ? "text-2xl sm:text-3xl" : "text-xl"
+            "mt-3 text-pretty leading-snug text-ink-soft",
+            featured ? "text-lg sm:text-xl" : "text-sm"
           )}
         >
           {tagline}
@@ -79,8 +78,8 @@ export default function EditionCard({ edition, featured = false, id }) {
           {cardStats.map((s) => (
             <div key={s.label} className="flex items-baseline gap-1.5">
               <dt className="sr-only">{s.label}</dt>
-              <dd className="font-semibold tabular-nums">{s.value}</dd>
-              <span className="text-ink-soft">{s.label}</span>
+              <dd className="font-display font-bold tabular-nums">{s.value}</dd>
+              <Meta className="text-ink-soft">{s.label}</Meta>
             </div>
           ))}
         </dl>

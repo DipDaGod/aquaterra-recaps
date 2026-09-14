@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import Mascot from "./Mascot";
+import { Meta } from "./Lockup";
 import { latestEdition } from "../data/editions";
 
 // The "what's new" banner. Sits full-width under the hero so it reads as an
 // announcement strip rather than competing with the headline as a side card.
 export default function LatestNotice() {
-  const { month, year, slug, tagline, editionNumber, cardStats } = latestEdition;
+  const { month, year, slug, tagline, editionNumber, cardStats, lockup } = latestEdition;
 
   return (
     <div className="relative overflow-hidden rounded-[2rem] bg-near-black text-cream-soft">
@@ -19,29 +20,31 @@ export default function LatestNotice() {
       <div className="relative flex flex-col gap-7 px-7 py-8 sm:px-10 sm:py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-cream-soft/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-cream-soft/80">
+            <span className="inline-flex items-center gap-2 rounded-full bg-cream-soft/10 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.12em] text-cream-soft/80">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-bright opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-bright" />
               </span>
               Now live
             </span>
-            <span className="text-xs font-medium uppercase tracking-[0.12em] text-cream-soft/45">
+            <Meta className="text-cream-soft/45">
               Edition {String(editionNumber).padStart(2, "0")} · {month} {year}
-            </span>
+            </Meta>
           </div>
 
-          <p className="mt-4 max-w-xl text-balance text-2xl font-semibold leading-snug sm:text-3xl">
-            {month} is live.{" "}
-            <span className="font-accent italic text-gold">{tagline}</span>
+          <p className="mt-4 max-w-xl text-balance font-display text-3xl font-bold uppercase leading-[0.95] tracking-[-0.02em] sm:text-4xl">
+            {lockup?.caps ?? month}{" "}
+            <em className="font-accent lowercase italic text-gold">{lockup?.accent ?? "is live"}</em>
+            <span aria-hidden="true">.</span>
           </p>
+          <p className="mt-3 max-w-lg text-pretty text-cream-soft/70">{tagline}</p>
 
           <dl className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-cream-soft/60">
             {cardStats.map((s) => (
               <div key={s.label} className="flex items-baseline gap-1.5">
                 <dt className="sr-only">{s.label}</dt>
-                <dd className="font-semibold tabular-nums text-cream-soft">{s.value}</dd>
-                <span>{s.label}</span>
+                <dd className="font-display font-bold tabular-nums text-cream-soft">{s.value}</dd>
+                <Meta>{s.label}</Meta>
               </div>
             ))}
           </dl>
