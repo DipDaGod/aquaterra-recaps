@@ -1,53 +1,115 @@
-import { ArrowUpRight } from "lucide-react";
 import Section, { SectionHeading } from "./Section";
-import { Meta, MetaRow } from "./Lockup";
+import { Meta } from "./Lockup";
 import { TEAMS, cx } from "../lib/utils";
 
-// The 8 teams, each in its own identity colour. Names, casing, kinds and
-// member counts are verified facts (aq.md §2) — do not normalise or retype
-// them here; they come from TEAM_ROSTER + the TEAMS registry.
-function TeamCard({ entry }) {
-  const team = TEAMS[entry.key];
-  if (!team) return null;
+const FACES_SHOWN = 4;
+
+// The avatar stack from the parent site's team cards. The real one shows
+// member photos and initials; those are real people, so nothing here is
+// invented or hotlinked — the tiles are neutral until the desk supplies
+// avatars. The "+N" overflow IS real, derived from the verified member count.
+function Roster({ members, team }) {
+  const shown = Math.min(FACES_SHOWN, members);
+  const rest = members - shown;
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-cream-soft shadow-(--shadow-card)">
-      {/* Solid team-colour block on top, per the parent site's team cards. */}
-      <div className={cx("p-5 pb-4", team.bg, team.on)}>
-        <h3 className="font-display text-2xl font-bold leading-none tracking-[-0.02em]">
-          {team.caps}
-        </h3>
-      </div>
-
-      <div className="flex flex-1 flex-col p-5">
-        <MetaRow
-          className="text-ink-soft"
-          items={[team.kind, `${entry.members} members`]}
-        />
-        <p className="mt-3 text-pretty text-sm leading-relaxed text-ink-soft">{entry.blurb}</p>
-        <a
-          href="https://www.ngoaquaterra.com/teams"
-          target="_blank"
-          rel="noreferrer"
+    <div className="mt-4 flex items-center" aria-hidden="true">
+      {Array.from({ length: shown }, (_, i) => (
+        <span
+          key={i}
           className={cx(
-            "mt-auto inline-flex items-center gap-1.5 pt-5 font-mono text-xs tracking-[0.08em]",
-            team.text
+            "-ml-2 grid h-8 w-8 place-items-center rounded-full border-2 border-cream-soft first:ml-0",
+            team.bg
           )}
-        >
-          {team.name}
-          <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-        </a>
-      </div>
-    </article>
+          style={{ opacity: 0.25 + i * 0.08 }}
+        />
+      ))}
+      {rest > 0 && (
+        <span className="-ml-2 grid h-8 min-w-8 place-items-center rounded-full border-2 border-cream-soft bg-paper px-1.5 font-mono text-[0.6rem] tabular-nums text-ink-soft">
+          +{rest}
+        </span>
+      )}
+    </div>
   );
 }
 
+function TeamCard({ entry, tilt }) {
+  const team = TEAMS[entry.key];
+  if (!team) return null;
+
+  const open = entry.openRoles > 0;
+
+  return (
+    <a
+      href={entry.href}
+      target="_blank"
+      rel="noreferrer"
+      style={{ "--tilt": `${tilt}deg` }}
+      className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-cream-soft shadow-(--shadow-card) transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:rotate-(--tilt) hover:shadow-(--shadow-card-hover)"
+    >
+      {/* Solid team-colour head with the card-fan motif and a go arrow. */}
+      <div className={cx("relative flex h-24 items-center justify-between px-5", team.bg, team.on)}>
+        <span className="relative flex h-14 w-20 items-end justify-center" aria-hidden="true">
+          <span className="absolute bottom-1 left-1 h-11 w-8 -rotate-12 rounded-lg bg-cream-soft/25" />
+          <span className="absolute bottom-1 right-1 h-11 w-8 rotate-12 rounded-lg bg-cream-soft/25" />
+          <span className="relative grid h-12 w-9 place-items-center rounded-lg bg-cream-soft/90 text-lg shadow-sm">
+            {team.emoji}
+          </span>
+        </span>
+        <span
+          aria-hidden="true"
+          className="text-xl transition-transform duration-300 group-hover:translate-x-1"
+        >
+          →
+        </span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-5">
+        {/* Canonical casing, matching the site's own card titles — and the
+            reason no CSS uppercase may ever touch this line. */}
+        <h3 className="text-xl font-semibold tracking-tight">{team.name}</h3>
+
+        {/* "volunteer team · N members", exactly as the site writes it. The
+            separator is bound to the count with non-breaking spaces so a wrap
+            never leaves the middle dot stranded at the end of a line. */}
+        <Meta className="mt-1.5 block text-[0.65rem] tracking-[0.1em] text-ink-soft">
+          {team.kind}
+          {"\u00A0·\u00A0"}
+          {entry.members}&nbsp;{entry.members === 1 ? "member" : "members"}
+        </Meta>
+
+        <Roster members={entry.members} team={team} />
+
+        <p className="mt-4 line-clamp-4 text-pretty text-sm leading-relaxed text-ink-soft">
+          {entry.blurb}
+        </p>
+
+        <div className="mt-auto pt-5">
+          {open ? (
+            <span className={cx("font-mono text-xs tracking-[0.08em]", team.ink)}>
+              {entry.openRoles} {entry.openRoles === 1 ? "role" : "roles"} open →
+            </span>
+          ) : (
+            <span className="font-mono text-xs tracking-[0.08em] text-ink-soft/50">
+              nothing open
+            </span>
+          )}
+        </div>
+      </div>
+    </a>
+  );
+}
+
+// Subtle alternating rotation, as on the parent site's grid.
+const TILTS = [-0.6, 0.8, -0.4];
+
 export default function TeamsSection({ edition }) {
   const teams = edition.teams;
-  if (!teams?.roster?.length) return null;
+  const roster = teams?.roster || [];
+  if (roster.length === 0) return null;
 
-  const volunteer = teams.roster.filter((t) => TEAMS[t.key]?.kind === "volunteer team").length;
-  const businesses = teams.roster.length - volunteer;
+  const volunteer = roster.filter((t) => TEAMS[t.key]?.kind === "volunteer team").length;
+  const openRoles = roster.reduce((sum, t) => sum + (t.openRoles || 0), 0);
 
   return (
     <Section id="teams">
@@ -56,18 +118,18 @@ export default function TeamsSection({ edition }) {
         caps={teams.lockup?.caps}
         accent={teams.lockup?.accent}
         lead={teams.lead}
-        aside={`${volunteer} volunteer teams · ${businesses} student businesses`}
+        aside={`${volunteer} volunteer teams · ${roster.length - volunteer} student businesses · ${openRoles} roles open`}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {teams.roster.map((entry) => (
-          <TeamCard key={entry.key} entry={entry} />
+        {roster.map((entry, i) => (
+          <TeamCard key={entry.key} entry={entry} tilt={TILTS[i % TILTS.length]} />
         ))}
       </div>
 
       <p className="mt-6">
         <Meta className="text-ink-soft/70">
-          Member counts verified against ngoaquaterra.com · re-check before publishing
+          Team data mirrored from ngoaquaterra.com · re-check before publishing
         </Meta>
       </p>
     </Section>

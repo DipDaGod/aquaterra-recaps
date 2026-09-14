@@ -29,18 +29,17 @@ export const TONES = {
 // The 8 teams, exactly as aq.md §2 casts them. Names and casing are verified
 // facts — do not normalise, title-case or expand them. Each owns one identity
 // colour; `accent` is the token name, `text`/`bg` the Tailwind utilities.
-// `name` is the canonical casing — use it in prose and nav, always.
-// `caps` is the display-caps form and is NOT a naive uppercase(): aq.md §2
-// permits CRFTD as a display heading but bans SHIKSHAQ, and AQ.Ventures keeps
-// its period and mixed case everywhere. Never run a CSS `uppercase` over a
-// team name; render `caps` when you want the display form.
+// Team names in their canonical casing — the only form that ever renders.
+// The parent site's own team cards set the title in canonical case, not
+// display caps, which also removes any chance of printing SHIKSHAQ or
+// AQ.VENTURES. Never run a CSS `uppercase` over a team name.
 export const TEAMS = {
-  welfare: { name: "Welfare Team", caps: "WELFARE TEAM", kind: "volunteer team", text: "text-team-welfare", bg: "bg-team-welfare", on: "text-cream-soft" },
-  social: { name: "Social Media", caps: "SOCIAL MEDIA", kind: "volunteer team", text: "text-team-social", bg: "bg-team-social", on: "text-cream-soft" },
-  events: { name: "Events Team", caps: "EVENTS TEAM", kind: "volunteer team", text: "text-team-events", bg: "bg-team-events", on: "text-ink" },
-  collabs: { name: "Collabs Team", caps: "COLLABS TEAM", kind: "volunteer team", text: "text-team-collabs", bg: "bg-team-collabs", on: "text-cream-soft" },
-  hr: { name: "Human Resources", caps: "HUMAN RESOURCES", kind: "volunteer team", text: "text-team-hr", bg: "bg-team-hr", on: "text-cream-soft" },
-  shikshaq: { name: "ShikshAQ", caps: "ShikshAQ", kind: "student business", text: "text-team-shikshaq", bg: "bg-team-shikshaq", on: "text-ink" },
-  ventures: { name: "AQ.Ventures", caps: "AQ.Ventures", kind: "student business", text: "text-team-ventures", bg: "bg-team-ventures", on: "text-cream-soft" },
-  crftd: { name: "Crftd", caps: "CRFTD", kind: "student business", text: "text-team-crftd", bg: "bg-team-crftd", on: "text-cream-soft" },
+  welfare: { name: "Welfare Team", kind: "volunteer team", emoji: "🌱", bg: "bg-team-welfare", on: "text-cream-soft", ink: "text-team-welfare-ink" },
+  social: { name: "Social Media", kind: "volunteer team", emoji: "✍️", bg: "bg-team-social", on: "text-cream-soft", ink: "text-team-social-ink" },
+  collabs: { name: "Collabs Team", kind: "volunteer team", emoji: "⚙️", bg: "bg-team-collabs", on: "text-cream-soft", ink: "text-team-collabs-ink" },
+  shikshaq: { name: "ShikshAQ", kind: "student business", emoji: "⚡", bg: "bg-team-shikshaq", on: "text-ink", ink: "text-team-shikshaq-ink" },
+  hr: { name: "Human Resources", kind: "volunteer team", emoji: "⚙️", bg: "bg-team-hr", on: "text-cream-soft", ink: "text-team-hr-ink" },
+  events: { name: "Events Team", kind: "volunteer team", emoji: "🎪", bg: "bg-team-events", on: "text-ink", ink: "text-team-events-ink" },
+  ventures: { name: "AQ.Ventures", kind: "student business", emoji: "⚙️", bg: "bg-team-ventures", on: "text-cream-soft", ink: "text-team-ventures-ink" },
+  crftd: { name: "Crftd", kind: "student business", emoji: "✍️", bg: "bg-team-crftd", on: "text-cream-soft", ink: "text-team-crftd-ink" },
 };

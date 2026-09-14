@@ -32,18 +32,60 @@ export const CATEGORIES = [
 
 const LATEST_KEY = "2026-10";
 
-// The 8 teams. Names, casing, kinds and member counts are verified (aq.md §2).
-// One-liners are the site's own copy. Team keys map to identity colours in
-// src/lib/utils.js — each team owns exactly one.
+// The 8 teams, mirrored from the parent site's own teams grid — order, links,
+// member counts, bios and open-role counts all copied from its live markup.
+// aq.md §2: the live site wins, so this is the source for team data.
+//
+// `href` points at each team's real page on ngoaquaterra.com. `openRoles` is
+// the site's own count; 0 renders as "nothing open".
+//
+// NOTE for the desk: the Human Resources bio below says "1,100+ members" while
+// the site's headline figure is 1,300+. Both are the site's own copy, so both
+// are reproduced verbatim rather than reconciled by guesswork — please confirm
+// which is current.
+const TEAM_URL = "https://www.ngoaquaterra.com/teams";
+
 export const TEAM_ROSTER = [
-  { key: "welfare", members: 62, blurb: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips. Dog feeding." },
-  { key: "social", members: 29, blurb: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra. Reels." },
-  { key: "events", members: 3, blurb: "Paradox. Disco Diwali. Starry Nights. Every fundraiser AQ has ever run." },
-  { key: "collabs", members: 2, blurb: "School collabs, college collabs, NGO partnerships, outreach." },
-  { key: "hr", members: 6, blurb: "Recruitment, onboarding, certificates, Letters of Recommendation." },
-  { key: "shikshaq", members: 2, blurb: "Tuition discovery platform built by AQ members for Kolkata students." },
-  { key: "ventures", members: 23, blurb: "Helps student entrepreneurs turn ideas into visible ventures." },
-  { key: "crftd", members: 1, blurb: "Student-run streetwear brand. Design, production, sales. Profits fund AQ welfare." },
+  {
+    key: "welfare", members: 62, openRoles: 2,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000002`,
+    blurb: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips. Dog feeding drives across Kolkata. 4,000+ saplings planted. This is the impact core.",
+  },
+  {
+    key: "social", members: 29, openRoles: 3,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000003`,
+    blurb: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra. Reels, carousels, copy, strategy. Not a school club. A real brand account.",
+  },
+  {
+    key: "collabs", members: 2, openRoles: 0,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000004`,
+    blurb: "School collabs, college collabs, NGO partnerships, outreach. AQ grows through peer networks. This team builds those networks.",
+  },
+  {
+    key: "shikshaq", members: 2, openRoles: 1,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000007`,
+    blurb: "Tuition discovery platform built by AQ members for Kolkata students. Launched 2026. Product, design, content, growth. Still early. The team is small.",
+  },
+  {
+    key: "hr", members: 6, openRoles: 0,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000008`,
+    blurb: "Recruitment, onboarding, certificates, Letters of Recommendation. HR runs the intake pipeline for 1,100+ members.",
+  },
+  {
+    key: "events", members: 3, openRoles: 2,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000001`,
+    blurb: "Paradox. Disco Diwali. Starry Nights. Every fundraiser AQ has ever run. Paradox 3.0 had 300 attendees and crossed 6-digit revenue. This team ran it.",
+  },
+  {
+    key: "ventures", members: 23, openRoles: 0,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000006`,
+    blurb: "Aquaterra Ventures exists to help student entrepreneurs turn great ideas into visible brands. For the first three months we provide full marketing support completely free: strategy, content, branding and promotion, tailored to your business.",
+  },
+  {
+    key: "crftd", members: 1, openRoles: 0,
+    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000005`,
+    blurb: "Student-run streetwear brand. Design, production, sales. Profits fund AQ welfare projects and events. The brand is real. The revenue is real.",
+  },
 ];
 
 export const editions = {

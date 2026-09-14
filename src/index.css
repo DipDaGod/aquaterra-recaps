@@ -35,14 +35,29 @@
      one for something that isn't that team. Welfare's green is inferred by
      elimination (aq.md lists green as the primary accent and assigns the
      other seven explicitly); confirm it. */
-  --color-team-welfare: #1b7a4b;
-  --color-team-events: #3aa0f0;
-  --color-team-shikshaq: #f5c518;
-  --color-team-hr: #ff3d8b;
-  --color-team-social: #8b5cf6;
-  --color-team-collabs: #0e8c8c;
-  --color-team-ventures: #ff4a2b;
-  --color-team-crftd: #000000;
+  /* Block colours. The parent site names these --welfare, --sky, --lemon,
+     --pink, --grape, --teal, --tomato and --ink; the mapping is kept in the
+     comment beside each so the two stay legible against one another. */
+  --color-team-welfare: #1b7a4b;  /* --welfare */
+  --color-team-events: #3aa0f0;   /* --sky     */
+  --color-team-shikshaq: #f5c518; /* --lemon   */
+  --color-team-hr: #ff3d8b;       /* --pink    */
+  --color-team-social: #8b5cf6;   /* --grape   */
+  --color-team-collabs: #0e8c8c;  /* --teal    */
+  --color-team-ventures: #ff4a2b; /* --tomato  */
+  --color-team-crftd: #000000;    /* --ink     */
+
+  /* Text-safe variants (the site's --*-ink), for a team-coloured link sitting
+     on cream. The block colours themselves are chosen for fills and several
+     of them — lemon above all — fail contrast as text. */
+  --color-team-welfare-ink: #16613c;
+  --color-team-events-ink: #1a6fb5;
+  --color-team-shikshaq-ink: #8a6b00;
+  --color-team-hr-ink: #c9195f;
+  --color-team-social-ink: #6d3fd4;
+  --color-team-collabs-ink: #0b7070;
+  --color-team-ventures-ink: #cc2f12;
+  --color-team-crftd-ink: #0b0b0b;
 
   /* Green doubles as the primary accent: active nav pill, primary CTA,
      italic accent words. */
