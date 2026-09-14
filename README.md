@@ -22,6 +22,12 @@ Then open the printed local URL and go to `/recaps`.
   `<Photo>` component shows an on-brand placeholder tile instead.
 - `src/components/` — all UI building blocks (hero, grid, cards, gallery,
   lightbox, impact section, etc.), each reusable across every edition.
+  `Section.jsx` holds the shared page rhythm and section heading.
+- `src/lib/photoIcons.js` — the icons a placeholder tile may name. Icons are
+  imported explicitly rather than via `import * as Icons`, which keeps the
+  whole Lucide set out of the bundle. **Using a new icon name in
+  `editions.js` means adding it here too**, or the tile falls back to the
+  generic image icon.
 - `src/pages/RecapArchive.jsx` and `src/pages/EditionPage.jsx` — the two
   routes: `/recaps` and `/recaps/:year/:month`.
 
@@ -31,6 +37,11 @@ Then open the printed local URL and go to `/recaps`.
 2. Copy an existing month's object (e.g. `"2026-08"`), rename the key to
    `"2026-09"`, and update `slug`, `month`, `editionNumber`, and content.
 3. Save — the archive grid and month navigation pick it up automatically.
+
+## Optional per-edition extras
+
+An edition may set `video` (a URL) and/or `pdf` (a file path). Each renders a
+button in that month's hero; leave them off and no button appears.
 
 ## Replacing placeholder content
 

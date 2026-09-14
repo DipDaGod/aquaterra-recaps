@@ -2,54 +2,88 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Play, Download } from "lucide-react";
 import Photo from "./Photo";
 
-export default function EditionHero({ edition }) {
+// "Watch recap" and "Download PDF" used to render unconditionally and do
+// nothing at all when clicked. They're now driven by optional `video` / `pdf`
+// fields on the edition, so a button only appears when there's something
+// behind it.
+function HeroActions({ edition }) {
+  if (!edition.video && !edition.pdf) return null;
+
   return (
-    <header className="mx-auto max-w-6xl px-6 pt-10 sm:px-10">
+    <div className="mt-7 flex flex-wrap gap-3">
+      {edition.video && (
+        <a
+          href={edition.video}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-green px-6 py-3 text-sm font-semibold text-cream-soft transition-transform hover:-translate-y-0.5 active:translate-y-0"
+        >
+          <Play className="h-4 w-4" strokeWidth={2} fill="currentColor" />
+          Watch the recap
+        </a>
+      )}
+      {edition.pdf && (
+        <a
+          href={edition.pdf}
+          download
+          className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-ink/40 hover:bg-cream-soft"
+        >
+          <Download className="h-4 w-4" strokeWidth={1.75} />
+          Download as PDF
+        </a>
+      )}
+    </div>
+  );
+}
+
+export default function EditionHero({ edition }) {
+  const [, second, third] = edition.moments || [];
+
+  return (
+    <header className="mx-auto max-w-6xl px-5 pt-8 sm:px-8 sm:pt-10 lg:px-10">
       <Link
         to="/"
-        className="inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft transition-colors hover:text-ink"
       >
-        <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
-        Back to all editions
+        <ArrowLeft className="h-4 w-4" strokeWidth={2} />
+        All editions
       </Link>
 
-      <p className="mt-8 text-sm font-medium uppercase tracking-[0.2em] text-green">Monthly recap</p>
-      <h1 className="mt-3 text-[15vw] font-semibold uppercase leading-[0.9] tracking-tight sm:text-7xl">
+      <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="rounded-full bg-pastel-green px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-green-deep">
+          Edition {String(edition.editionNumber).padStart(2, "0")}
+        </span>
+        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-soft">
+          Monthly recap
+        </span>
+      </div>
+
+      <h1 className="mt-4 text-[clamp(2.25rem,10vw,6rem)] font-semibold uppercase leading-[0.9] tracking-tight">
         {edition.month}
-        <span className="ml-4 align-top text-2xl font-medium normal-case text-ink-soft sm:text-3xl">
+        <span className="ml-2 align-top text-[0.4em] font-medium normal-case text-ink-soft sm:ml-3">
           {edition.year}
         </span>
       </h1>
-      <p className="mt-4 text-xl text-ink-soft">Projects. People. Progress.</p>
 
-      <div className="mt-10 grid h-[480px] grid-cols-6 grid-rows-4 gap-3 overflow-hidden rounded-3xl sm:h-[440px]">
-        <div className="col-span-6 row-span-3 overflow-hidden rounded-2xl sm:col-span-4 sm:row-span-4">
+      <p className="mt-4 max-w-xl text-balance font-hand text-2xl text-green-deep sm:text-3xl">
+        {edition.tagline}
+      </p>
+
+      {/* Cover collage. Aspect-driven so it scales instead of being pinned to
+          a fixed 480px that squashed the side tiles on small screens. */}
+      <div className="mt-9 grid aspect-[4/3] grid-cols-6 grid-rows-6 gap-2.5 sm:aspect-[16/9] sm:gap-3">
+        <div className="col-span-6 row-span-4 overflow-hidden rounded-3xl sm:col-span-4 sm:row-span-6">
           <Photo item={edition.cover} />
         </div>
-        <div className="col-span-3 row-span-1 overflow-hidden rounded-2xl sm:col-span-2 sm:row-span-2">
-          <Photo item={edition.moments?.[1] || edition.cover} />
+        <div className="col-span-3 row-span-2 overflow-hidden rounded-2xl sm:col-span-2 sm:row-span-3">
+          <Photo item={second || edition.cover} />
         </div>
-        <div className="col-span-3 row-span-1 overflow-hidden rounded-2xl sm:col-span-2 sm:row-span-2">
-          <Photo item={edition.moments?.[2] || edition.cover} />
+        <div className="col-span-3 row-span-2 overflow-hidden rounded-2xl sm:col-span-2 sm:row-span-3">
+          <Photo item={third || edition.cover} />
         </div>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-4">
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 rounded-full bg-green px-6 py-3 text-sm font-medium text-cream-soft transition-transform hover:-translate-y-0.5"
-        >
-          <Play className="h-4 w-4" strokeWidth={2} fill="currentColor" />
-          Watch recap
-        </button>
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-6 py-3 text-sm font-medium text-ink transition-colors hover:border-ink/40"
-        >
-          <Download className="h-4 w-4" strokeWidth={1.75} />
-          Download PDF
-        </button>
-      </div>
+      <HeroActions edition={edition} />
     </header>
   );
 }

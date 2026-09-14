@@ -1,32 +1,54 @@
-import { ArrowUpRight, MapPin, Users } from "lucide-react";
+import { MapPin, Users } from "lucide-react";
 import Photo from "./Photo";
+import { cx } from "../lib/utils";
 
 export default function ProjectCard({ project, wide = false }) {
   return (
     <article
-      className={`group flex flex-col overflow-hidden rounded-3xl border border-line bg-cream-soft transition-shadow hover:shadow-lg ${
-        wide ? "sm:flex-row" : ""
-      }`}
+      className={cx(
+        "flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-cream-soft shadow-(--shadow-card)",
+        wide && "lg:flex-row"
+      )}
     >
-      <div className={`overflow-hidden ${wide ? "sm:w-1/2" : "aspect-[4/3]"}`}>
-        <div className={`h-full w-full transition-transform duration-500 group-hover:scale-[1.04] ${wide ? "min-h-[220px]" : ""}`}>
-          <Photo item={project.image} />
-        </div>
+      <div
+        className={cx(
+          "shrink-0 overflow-hidden",
+          wide ? "aspect-[16/9] lg:aspect-auto lg:w-1/2" : "aspect-[3/2]"
+        )}
+      >
+        <Photo item={project.image} />
       </div>
-      <div className={`flex flex-1 flex-col gap-3 p-6 ${wide ? "sm:w-1/2" : ""}`}>
-        <div className="flex items-center justify-between gap-3">
-          <span className="rounded-full bg-pastel-green px-3 py-1 text-xs font-medium text-green-deep">
+
+      <div className={cx("flex flex-1 flex-col p-5 sm:p-6", wide && "lg:min-h-64 lg:justify-center lg:p-8")}>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span className="rounded-full bg-pastel-green px-3 py-1 text-xs font-semibold text-green-deep">
             {project.category}
           </span>
-          <span className="text-xs text-ink-soft">{project.date}</span>
+          <span className="text-xs font-medium text-ink-soft">{project.date}</span>
         </div>
-        <h3 className="text-xl font-semibold leading-snug tracking-tight">{project.title}</h3>
-        <p className="text-sm text-ink-soft">{project.description}</p>
-        <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-4 text-xs text-ink-soft">
-          <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" strokeWidth={1.75} />{project.location}</span>
-          <span className="inline-flex items-center gap-1"><Users className="h-3.5 w-3.5" strokeWidth={1.75} />{project.people}</span>
-          <ArrowUpRight className="h-4 w-4 shrink-0 text-ink-soft transition-colors group-hover:text-green" strokeWidth={1.75} />
-        </div>
+
+        <h3
+          className={cx(
+            "mt-3 text-balance font-semibold leading-snug tracking-tight",
+            wide ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"
+          )}
+        >
+          {project.title}
+        </h3>
+        <p className="mt-2 text-pretty text-sm leading-relaxed text-ink-soft">{project.description}</p>
+
+        <dl className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-xs text-ink-soft">
+          <div className="inline-flex items-center gap-1.5">
+            <dt className="sr-only">Location</dt>
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-green" strokeWidth={1.75} />
+            <dd>{project.location}</dd>
+          </div>
+          <div className="inline-flex items-center gap-1.5">
+            <dt className="sr-only">People</dt>
+            <Users className="h-3.5 w-3.5 shrink-0 text-green" strokeWidth={1.75} />
+            <dd>{project.people}</dd>
+          </div>
+        </dl>
       </div>
     </article>
   );

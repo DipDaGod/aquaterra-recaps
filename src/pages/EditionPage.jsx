@@ -19,9 +19,19 @@ export default function EditionPage() {
     window.scrollTo(0, 0);
   }, [year, month]);
 
+  // Gives each edition its own browser-tab title and history entry, so back
+  // through several months reads as months rather than eight identical rows.
+  useEffect(() => {
+    if (!edition) return;
+    document.title = `${edition.month} ${edition.year} | AquaTerra Recaps`;
+    return () => {
+      document.title = "AquaTerra Recaps | Monthly Recaps Archive";
+    };
+  }, [edition]);
+
   if (!edition) return <Navigate to="/" replace />;
 
-  const { next } = neighbours(edition);
+  const { prev, next } = neighbours(edition);
 
   return (
     <main>
@@ -33,7 +43,7 @@ export default function EditionPage() {
       <MomentsGallery edition={edition} />
       <ImpactSection edition={edition} />
       <PeopleSection edition={edition} />
-      <NextEdition next={next} />
+      <NextEdition prev={prev} next={next} />
     </main>
   );
 }

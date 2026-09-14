@@ -1,44 +1,72 @@
 import AnimatedNumber from "./AnimatedNumber";
+import Section from "./Section";
+import { useReveal } from "../lib/useReveal";
+
+// Bars fill from zero once the panel scrolls into view, instead of being
+// painted at full width before anyone sees them move.
+function ProgressBar({ label, percent }) {
+  const [ref, revealed] = useReveal({ threshold: 0.3 });
+  const pct = Math.max(0, Math.min(100, percent));
+
+  return (
+    <div ref={ref}>
+      <div className="mb-2 flex items-center justify-between gap-4 text-sm">
+        <span className="text-pretty text-cream-soft/80">{label}</span>
+        <span className="shrink-0 tabular-nums text-cream-soft/60">{pct}%</span>
+      </div>
+      <div
+        className="h-2.5 w-full overflow-hidden rounded-full bg-cream-soft/15"
+        role="progressbar"
+        aria-label={label}
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div
+          className="h-full rounded-full bg-green-bright transition-[width] duration-1000 ease-out"
+          style={{ width: revealed ? `${pct}%` : "0%" }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function ImpactSection({ edition }) {
   const { impact } = edition;
+  if (!impact) return null;
+
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
-      <div className="rounded-[2rem] bg-ink px-8 py-12 text-cream-soft sm:px-14 sm:py-16">
-        <p className="text-sm font-medium uppercase tracking-[0.18em] text-pastel-green">The impact</p>
-        <h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-snug tracking-tight sm:text-4xl">
+    <Section>
+      <div className="rounded-[2rem] bg-ink px-6 py-10 text-cream-soft sm:px-10 sm:py-14 lg:px-14">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-pastel-green">
+          The impact
+        </p>
+        <h2 className="mt-4 max-w-2xl text-balance text-3xl font-semibold leading-snug tracking-tight sm:text-4xl">
           {impact.headline}
         </h2>
-        <p className="mt-4 max-w-xl text-cream-soft/70">{impact.description}</p>
+        <p className="mt-4 max-w-xl text-pretty text-cream-soft/70">{impact.description}</p>
 
-        <div className="mt-10 grid gap-8 sm:grid-cols-3">
-          {impact.metrics.map((m) => (
-            <div key={m.label}>
-              <p className="text-5xl font-semibold tracking-tight">
+        {/* auto-fit rather than a hard 3 columns: an edition with two metrics
+            used to leave a third of the row empty. */}
+        <dl className="mt-10 grid gap-8 [grid-template-columns:repeat(auto-fit,minmax(11rem,1fr))]">
+          {impact.metrics.map((m, i) => (
+            <div key={`${m.label}-${i}`}>
+              <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">
                 <AnimatedNumber value={m.value} />
-              </p>
-              <p className="mt-2 text-sm text-cream-soft/70">{m.label}</p>
+              </dd>
+              <dt className="mt-2 text-pretty text-sm text-cream-soft/70">{m.label}</dt>
             </div>
           ))}
-        </div>
+        </dl>
 
-        <div className="mt-10 flex flex-col gap-5 border-t border-cream-soft/15 pt-8">
-          {impact.progress.map((p) => (
-            <div key={p.label}>
-              <div className="mb-2 flex items-center justify-between text-sm">
-                <span className="text-cream-soft/80">{p.label}</span>
-                <span className="text-cream-soft/60">{p.percent}%</span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-cream-soft/15">
-                <div
-                  className="h-full rounded-full bg-green-bright transition-all duration-1000"
-                  style={{ width: `${p.percent}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+        {impact.progress?.length > 0 && (
+          <div className="mt-10 flex flex-col gap-5 border-t border-cream-soft/15 pt-8">
+            {impact.progress.map((p, i) => (
+              <ProgressBar key={`${p.label}-${i}`} label={p.label} percent={p.percent} />
+            ))}
+          </div>
+        )}
       </div>
-    </section>
+    </Section>
   );
 }

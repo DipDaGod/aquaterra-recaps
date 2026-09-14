@@ -1,4 +1,4 @@
-import * as Icons from "lucide-react";
+import { PHOTO_ICONS, FALLBACK_ICON } from "../lib/photoIcons";
 import { TONES } from "../lib/utils";
 
 // Renders a real photo when `src` is present (drop files into
@@ -8,7 +8,7 @@ import { TONES } from "../lib/utils";
 export default function Photo({ item, className = "", imgClassName = "" }) {
   const { src, tone = "cream", icon = "Image", label, alt } = item || {};
   const tones = TONES[tone] || TONES.cream;
-  const Icon = Icons[icon] || Icons.Image;
+  const Icon = PHOTO_ICONS[icon] || FALLBACK_ICON;
 
   if (src) {
     return (
@@ -17,19 +17,20 @@ export default function Photo({ item, className = "", imgClassName = "" }) {
         alt={alt || label || ""}
         className={`h-full w-full object-cover ${imgClassName}`}
         loading="lazy"
+        decoding="async"
       />
     );
   }
 
   return (
     <div
-      className={`relative flex h-full w-full flex-col items-center justify-center gap-2 border ${tones.line} ${tones.bg} ${className}`}
+      className={`relative flex h-full w-full flex-col items-center justify-center gap-2 border p-3 ${tones.line} ${tones.bg} ${className}`}
       role="img"
       aria-label={label || "Placeholder photo"}
     >
-      <Icon className={`h-6 w-6 ${tones.fg} opacity-70`} strokeWidth={1.5} />
+      <Icon className={`h-6 w-6 shrink-0 ${tones.fg} opacity-70`} strokeWidth={1.5} />
       {label && (
-        <span className={`px-4 text-center font-hand text-lg leading-none ${tones.fg} opacity-80`}>
+        <span className={`text-balance text-center font-hand text-lg leading-tight ${tones.fg} opacity-80`}>
           {label}
         </span>
       )}

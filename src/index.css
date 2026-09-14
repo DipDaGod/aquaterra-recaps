@@ -29,16 +29,30 @@
   --color-gold: #f5b91a;
   --color-coral: #ef6540;
   --color-line: #e1d6b8;
+
+  /* Elevation. Warm-tinted rather than neutral grey, so shadows sit on
+     the cream ground instead of muddying it. */
+  --shadow-card: 0 1px 2px rgb(23 37 29 / 0.04), 0 8px 24px -12px rgb(23 37 29 / 0.14);
+  --shadow-card-hover: 0 2px 4px rgb(23 37 29 / 0.05), 0 18px 40px -16px rgb(23 37 29 / 0.22);
 }
 
 html {
   scroll-behavior: smooth;
+  /* Anchor targets (e.g. #august) clear the sticky month bar. */
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: var(--color-cream);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Locked while the lightbox is open, so the page behind doesn't scroll. */
+body[data-scroll-locked] {
+  overflow: hidden;
 }
 
 ::selection {
@@ -55,6 +69,18 @@ button:focus-visible,
   border-radius: 4px;
 }
 
+/* Sections fade up as they enter the viewport. The class is only added by
+   useReveal() once the observer fires, so no-JS / reduced-motion users keep
+   fully visible content. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.reveal {
+  animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -64,8 +90,17 @@ button:focus-visible,
   }
 }
 
-/* horizontal scrollers: hide scrollbar but keep function */
+/* horizontal scrollers: keep the scrollbar functional but visually quiet */
 .scroll-quiet {
   scrollbar-width: thin;
   scrollbar-color: var(--color-line) transparent;
+}
+
+.scroll-quiet::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-quiet::-webkit-scrollbar-thumb {
+  background-color: var(--color-line);
+  border-radius: 999px;
 }

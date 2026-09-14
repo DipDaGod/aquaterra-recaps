@@ -1,27 +1,33 @@
 import AnimatedNumber from "./AnimatedNumber";
+import Section, { SectionHeading } from "./Section";
 
-const tones = ["bg-pastel-green", "bg-pastel-yellow", "bg-pastel-blue", "bg-pastel-lavender"];
+const tones = [
+  "bg-pastel-green border-green/15",
+  "bg-pastel-yellow border-gold/20",
+  "bg-pastel-blue border-ink/10",
+  "bg-pastel-lavender border-ink/10",
+];
 
 export default function StatsGrid({ edition }) {
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
-      <div className="mb-8 flex items-end justify-between">
-        <h2 className="text-3xl font-semibold tracking-tight">Month at a glance</h2>
-        <p className="hidden text-sm text-ink-soft sm:block">{edition.month} {edition.year}</p>
-      </div>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <Section tight>
+      <SectionHeading
+        title="Month at a glance"
+        aside={`${edition.month} ${edition.year}`}
+      />
+      <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {edition.glance.map((stat, i) => (
           <div
             key={stat.label}
-            className={`flex flex-col justify-between rounded-3xl border border-ink/10 p-6 ${tones[i % tones.length]}`}
+            className={`flex min-h-36 flex-col justify-between rounded-3xl border p-5 sm:min-h-40 sm:p-6 ${tones[i % tones.length]}`}
           >
-            <p className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            <dd className="text-4xl font-semibold tracking-tight sm:text-5xl">
               <AnimatedNumber value={stat.value} />
-            </p>
-            <p className="mt-3 text-sm text-ink-soft">{stat.label}</p>
+            </dd>
+            <dt className="mt-3 text-pretty text-sm font-medium text-ink-soft">{stat.label}</dt>
           </div>
         ))}
-      </div>
-    </section>
+      </dl>
+    </Section>
   );
 }
