@@ -40,7 +40,12 @@ export default function EditionPage() {
 
   const { prev, next } = neighbours(edition);
   const sections = issueSections(edition);
-  const at = (id) => sectionMeta(sections, id);
+  // The manifest's `accent` is a colour key, but Section's `accent` prop is the
+  // italic accent word — rename on the way through so they cannot collide.
+  const at = (id) => {
+    const { accent, ...rest } = sectionMeta(sections, id);
+    return { ...rest, accentKey: accent };
+  };
 
   return (
     <main data-issue={edition.key} style={issueAccentVars(edition.accent)}>

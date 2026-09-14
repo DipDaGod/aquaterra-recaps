@@ -62,3 +62,22 @@ export function issueAccentVars(key) {
   const a = ISSUE_ACCENTS[key] || ISSUE_ACCENTS.green;
   return { "--issue-accent": a.accent, "--issue-accent-ink": a.ink };
 }
+
+// Section accents. `on` is the text-safe variant for cream grounds, `bright`
+// the block colour for dark ones. See issueSections.js for why the team
+// palette is used editorially here.
+export const SECTION_ACCENTS = {
+  green: { on: "text-team-welfare-ink", bright: "text-green-bright", rule: "bg-team-welfare" },
+  tomato: { on: "text-team-ventures-ink", bright: "text-team-ventures", rule: "bg-team-ventures" },
+  grape: { on: "text-team-social-ink", bright: "text-team-social", rule: "bg-team-social" },
+  sky: { on: "text-team-events-ink", bright: "text-team-events", rule: "bg-team-events" },
+  teal: { on: "text-team-collabs-ink", bright: "text-team-collabs", rule: "bg-team-collabs" },
+  pink: { on: "text-team-hr-ink", bright: "text-team-hr", rule: "bg-team-hr" },
+  lemon: { on: "text-team-shikshaq-ink", bright: "text-team-shikshaq", rule: "bg-team-shikshaq" },
+  ink: { on: "text-ink", bright: "text-cream-soft", rule: "bg-ink" },
+};
+
+export function sectionAccent(key, onDark = false) {
+  const a = SECTION_ACCENTS[key] || SECTION_ACCENTS.green;
+  return { text: onDark ? a.bright : a.on, rule: a.rule };
+}

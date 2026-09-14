@@ -284,8 +284,9 @@ article-reading needs the main site doesn't have. Ask before inventing there.
 ## 5. Publishing model
 
 - Editions are monthly.
-- **Edition 1 — "What is AquaTerra"** ships at the start of **October 2026**. It's the orientation
+- **Edition 1 — "What is AquaTerra"** is the **September 2026** issue. It's the orientation
   issue: what AquaTerra is, the 8 teams, how roles work. Not a recap.
+  (Corrected from October by the desk, 14 Sep 2026.)
 - **Edition 2 onward** publish at **month end** and recap the month just finished — drives run,
   internal updates, what's cooking.
 - Slugs, IDs and ordering follow whatever `src/data/editions.js` already does. Read it; don't

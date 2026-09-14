@@ -3,7 +3,7 @@ import ProjectCard from "./ProjectCard";
 import Section from "./Section";
 import { cx } from "../lib/utils";
 
-export default function FeaturedProjects({ edition, index, label }) {
+export default function FeaturedProjects({ edition, index, label, accentKey, variant, ground }) {
 
   // Each filter carries its own count, so it's clear what a tab will show
   // before it's tapped.
@@ -28,7 +28,9 @@ export default function FeaturedProjects({ edition, index, label }) {
       id="featured"
       index={index}
       label={label}
-      size="lead"
+      accentKey={accentKey}
+      variant={variant}
+      ground={ground}
       caps="THE"
       accent="drives"
       lead="welfare, events, the student businesses, media — everything the month actually held, not just the drives."

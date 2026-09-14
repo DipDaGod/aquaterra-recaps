@@ -4,7 +4,7 @@ import { TEAMS, cx } from "../lib/utils";
 
 // How a student actually joins. The parent site's own line — "Pick a team,
 // show up, and get to work" — is the whole pitch, so the section stays short.
-export default function OpeningsSection({ edition, index, label }) {
+export default function OpeningsSection({ edition, index, label, accentKey, variant, ground }) {
   const openings = edition.openings;
   const roles = openings?.roles || [];
   if (roles.length === 0) return null;
@@ -14,6 +14,9 @@ export default function OpeningsSection({ edition, index, label }) {
       id="openings"
       index={index}
       label={label}
+      accentKey={accentKey}
+      variant={variant}
+      ground={ground}
       caps={openings.lockup?.caps}
       accent={openings.lockup?.accent}
       lead={openings.lead}

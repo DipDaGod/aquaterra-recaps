@@ -8,7 +8,7 @@ import { cx } from "../lib/utils";
 // nothing is stored, nothing is sent. Every answer is a verified AquaTerra
 // figure (aq.md §2) — a quiz whose answers are invented would be the rule-0
 // violation with a scoreboard attached.
-export default function MiniGames({ edition, index, label }) {
+export default function MiniGames({ edition, index, label, accentKey, variant, ground }) {
   const games = edition.games;
   const quiz = games?.quiz || [];
 
@@ -45,13 +45,16 @@ export default function MiniGames({ edition, index, label }) {
       id="games"
       index={index}
       label={label}
+      accentKey={accentKey}
+      variant={variant}
+      ground={ground}
       caps={games.lockup?.caps}
       accent={games.lockup?.accent}
       lead={games.lead}
       aside={`${quiz.length} questions`}
     >
 
-      <div className="overflow-hidden rounded-[2rem] bg-ink text-cream-soft">
+      <div className="overflow-hidden rounded-[2rem] border border-cream-soft/15 bg-cream-soft/[0.04]">
         {done ? (
           <div className="px-6 py-14 text-center sm:px-10">
             <Meta className="text-cream-soft/50">Your score</Meta>

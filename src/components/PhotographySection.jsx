@@ -20,7 +20,7 @@ function columnsFor(count) {
 
 const ratio = { lg: "aspect-[4/5]", md: "aspect-square", sm: "aspect-[4/3]" };
 
-export default function PhotographySection({ edition, index, label }) {
+export default function PhotographySection({ edition, index, label, accentKey, variant, ground }) {
   const [openIndex, setOpenIndex] = useState(null);
   const p = edition.photography;
   const gallery = p?.gallery || [];
@@ -32,8 +32,9 @@ export default function PhotographySection({ edition, index, label }) {
       id="photography"
       index={index}
       label={label}
-      size="lead"
-      ground="major"
+      accentKey={accentKey}
+      variant={variant}
+      ground={ground}
       caps={p.lockup?.caps}
       accent={p.lockup?.accent}
       lead={p.lead}

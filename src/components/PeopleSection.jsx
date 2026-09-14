@@ -50,7 +50,7 @@ function PersonCard({ person, featured = false }) {
   );
 }
 
-export default function PeopleSection({ edition, index, label }) {
+export default function PeopleSection({ edition, index, label, accentKey, variant, ground }) {
   const people = edition.people || [];
   if (people.length === 0) return null;
 
@@ -69,6 +69,9 @@ export default function PeopleSection({ edition, index, label }) {
       id="people"
       index={index}
       label={label}
+      accentKey={accentKey}
+      variant={variant}
+      ground={ground}
       caps="THE ONES WHO"
       accent="turned up"
       lead="not the org account, not the desk — the members who showed up."

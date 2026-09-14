@@ -103,7 +103,7 @@ function TeamCard({ entry, tilt }) {
 // Subtle alternating rotation, as on the parent site's grid.
 const TILTS = [-0.6, 0.8, -0.4];
 
-export default function TeamsSection({ edition, index, label }) {
+export default function TeamsSection({ edition, index, label, accentKey, variant, ground }) {
   const teams = edition.teams;
   const roster = teams?.roster || [];
   if (roster.length === 0) return null;
@@ -116,8 +116,9 @@ export default function TeamsSection({ edition, index, label }) {
       id="teams"
       index={index}
       label={label}
-      size="lead"
-      ground="major"
+      accentKey={accentKey}
+      variant={variant}
+      ground={ground}
       caps={teams.lockup?.caps}
       accent={teams.lockup?.accent}
       lead={teams.lead}

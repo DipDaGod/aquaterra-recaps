@@ -1,66 +1,124 @@
 import { useReveal } from "../lib/useReveal";
-import { cx } from "../lib/utils";
-import Lockup, { SectionNumber } from "./Lockup";
+import { cx, sectionAccent } from "../lib/utils";
+import Lockup, { Meta } from "./Lockup";
 
-// One vertical rhythm for the whole site, plus three weights of section so a
-// long issue reads as a ranked document instead of eleven equal slabs:
+// One rhythm, three grounds, three opener treatments — so nine sections in a
+// row stop reading as the same heading nine times.
 //
-//   "major"  — a full tinted band, for the strands an issue is built around
-//   "panel"  — a dark inset panel, for the set pieces (impact, the quiz)
-//   "plain"  — cream ground, the default
+//   ground  "plain"  cream page
+//           "band"   inset tinted band
+//           "ink"    full-bleed dark, knockout type
 //
-// `size` controls the opener: "lead" for a major strand, "sub" for the rest.
+//   variant "rule"    number + hairline + label, heading beneath  (workhorse)
+//           "numeral" oversized numeral set in Neutral Face Regular alongside
+//           "centre"  centred opener, for the set pieces
 const GROUNDS = {
   plain: "",
-  major: "bg-cream-soft/70 border-y border-line/70",
-  panel: "",
+  band: "bg-cream-soft/70 border-y border-line/70",
+  ink: "bg-ink text-cream-soft",
 };
 
+function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, onDark }) {
+  const a = sectionAccent(accentKey, onDark);
+  const num = index ? String(index).padStart(2, "0") : null;
+  const leadClass = cx("mt-4 max-w-xl text-pretty", onDark ? "text-cream-soft/70" : "text-ink-2");
+  const asideEl = aside && (
+    <Meta className={onDark ? "text-cream-soft/50" : "text-ink-3"}>{aside}</Meta>
+  );
+
+  // Oversized numeral, set in the display face's REGULAR weight — the one
+  // weight nothing else on the page uses, which is what stops it competing
+  // with the heavy heading beside it.
+  if (variant === "numeral") {
+    return (
+      <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
+        {num && (
+          <span
+            aria-hidden="true"
+            className={cx(
+              "font-display text-[clamp(3.5rem,9vw,6.5rem)] font-normal leading-[0.8] tracking-[-0.03em]",
+              a.text
+            )}
+          >
+            {num}
+          </span>
+        )}
+        <div className="min-w-0 flex-1">
+          {label && <Meta className={cx("block", a.text)}>{label}</Meta>}
+          {caps && (
+            <Lockup caps={caps} accent={accent} accentClassName={a.text}
+              className={cx("mt-2 text-(length:--text-display-l)", onDark && "text-cream-soft")} />
+          )}
+          {lead && <p className={leadClass}>{lead}</p>}
+        </div>
+        {asideEl && <div className="shrink-0 sm:pt-3">{asideEl}</div>}
+      </div>
+    );
+  }
+
+  if (variant === "centre") {
+    return (
+      <div className="mb-10 flex flex-col items-center text-center">
+        <div className="flex items-center gap-3">
+          {num && <Meta className={a.text}>{num}</Meta>}
+          <span aria-hidden="true" className={cx("h-px w-8", a.rule, "opacity-40")} />
+          {label && <Meta className={onDark ? "text-cream-soft/60" : "text-ink-3"}>{label}</Meta>}
+        </div>
+        {caps && (
+          <Lockup caps={caps} accent={accent} accentClassName={a.text}
+            className={cx("mt-4 text-(length:--text-display-l)", onDark && "text-cream-soft")} />
+        )}
+        {lead && <p className={cx(leadClass, "mx-auto text-center")}>{lead}</p>}
+        {asideEl && <div className="mt-4">{asideEl}</div>}
+      </div>
+    );
+  }
+
+  // "rule" — the workhorse
+  return (
+    <div className="mb-9 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+      <div className="max-w-2xl">
+        <div className="mb-4 flex items-center gap-3">
+          {num && <Meta className={a.text}>{num}</Meta>}
+          <span aria-hidden="true" className={cx("h-px w-8 shrink-0", a.rule, "opacity-40")} />
+          {label && <Meta className={onDark ? "text-cream-soft/60" : "text-ink-3"}>{label}</Meta>}
+        </div>
+        {caps && (
+          <Lockup caps={caps} accent={accent} accentClassName={a.text}
+            className={cx("text-(length:--text-display-m)", onDark && "text-cream-soft")} />
+        )}
+        {lead && <p className={leadClass}>{lead}</p>}
+      </div>
+      {asideEl}
+    </div>
+  );
+}
+
 export default function Section({
-  id,
-  index,
-  label,
-  caps,
-  accent,
-  lead,
-  aside,
-  size = "sub",
-  ground = "plain",
-  children,
-  className = "",
-  reveal = true,
+  id, index, label, caps, accent, lead, aside,
+  accentKey = "green", variant = "rule", ground = "plain",
+  children, className = "", reveal = true,
 }) {
   const [ref, revealClass] = useReveal();
-  const heading = caps || lead || aside || index;
+  const onDark = ground === "ink";
+  const hasOpener = caps || lead || aside || index;
 
   return (
     <section
       id={id}
       ref={reveal ? ref : undefined}
       className={cx(
-        ground === "major" ? "py-14 sm:py-20" : "py-12 sm:py-16",
+        ground === "plain" ? "py-12 sm:py-16" : "py-14 sm:py-20",
         GROUNDS[ground],
         reveal && revealClass
       )}
     >
       <div className={cx("mx-auto max-w-6xl px-5 sm:px-8 lg:px-10", className)}>
-        {heading && (
-          <div className="mb-9 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-            <div className="max-w-2xl">
-              <SectionNumber index={index} label={label} />
-              {caps && (
-                <Lockup
-                  caps={caps}
-                  accent={accent}
-                  className={size === "lead" ? "text-(length:--text-display-l)" : "text-(length:--text-display-m)"}
-                />
-              )}
-              {lead && <p className="mt-4 max-w-xl text-pretty text-ink-2">{lead}</p>}
-            </div>
-            {aside && (
-              <p className="u-mono max-w-full text-ink-3">{aside}</p>
-            )}
-          </div>
+        {hasOpener && (
+          <Opener
+            index={index} label={label} caps={caps} accent={accent} lead={lead}
+            aside={aside} variant={variant} accentKey={accentKey} onDark={onDark}
+          />
         )}
         {children}
       </div>

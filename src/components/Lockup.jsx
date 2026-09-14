@@ -59,11 +59,11 @@ export function MetaRow({ items, className = "" }) {
 // beside a hairline rule. This is the main thing giving the page a spine: it
 // tells you where you are in the issue and ranks the openers above the card
 // headings beneath them.
-export function SectionNumber({ index, label, onDark = false }) {
+export function SectionNumber({ index, label, onDark = false, accentClassName }) {
   if (!index) return null;
   return (
     <div className="mb-4 flex items-center gap-3">
-      <Meta className={onDark ? "text-cream-soft" : "text-(--issue-accent-ink)"}>
+      <Meta className={accentClassName || (onDark ? "text-cream-soft" : "text-(--issue-accent-ink)")}>
         {String(index).padStart(2, "0")}
       </Meta>
       <span

@@ -2,7 +2,7 @@ import Photo from "./Photo";
 import Section from "./Section";
 import { Meta } from "./Lockup";
 
-export default function InsideAquaterra({ edition, index, label }) {
+export default function InsideAquaterra({ edition, index, label, accentKey, variant, ground }) {
   const items = edition.inside || [];
   if (items.length === 0) return null;
 
@@ -11,6 +11,9 @@ export default function InsideAquaterra({ edition, index, label }) {
       id="diaries"
       index={index}
       label={label}
+      accentKey={accentKey}
+      variant={variant}
+      ground={ground}
       caps="GROUNDWORK"
       accent="diaries"
       lead="written by the members who were actually there."

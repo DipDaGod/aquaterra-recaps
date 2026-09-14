@@ -12,7 +12,7 @@
 // This file previously carried eight fabricated 2026-01..2026-08 recaps with
 // unbracketed figures ("14 Projects", "310+ People", progress bars at 91%).
 // None of those months existed and none of those numbers were real, so they
-// are gone. Per aq.md §5 the magazine starts at Edition 1 in October 2026.
+// are gone. The magazine starts at Edition 1, September 2026.
 // ---------------------------------------------------------------------------
 
 // A photo entry. `src` is null everywhere — drop a real file into
@@ -30,7 +30,7 @@ export const CATEGORIES = [
   "Collabs", "Social", "Photography", "Openings",
 ];
 
-const LATEST_KEY = "2026-10";
+const LATEST_KEY = "2026-09";
 
 // The 8 teams, mirrored from the parent site's own teams grid — order, links,
 // member counts, bios and open-role counts all copied from its live markup.
@@ -89,11 +89,12 @@ export const TEAM_ROSTER = [
 
 export const editions = {
   // -------------------------------------------------------------------------
-  // EDITION 01 — October 2026. The orientation issue, not a recap (aq.md §5):
-  // what AquaTerra is, the 8 teams, how roles work.
+  // EDITION 01 — September 2026. The orientation issue, not a recap: what
+  // AquaTerra is, the 8 teams, how roles work. (aq.md §5 said October; the
+  // desk corrected it to September.)
   // -------------------------------------------------------------------------
-  "2026-10": {
-    key: "2026-10", slug: "october", month: "October", year: 2026, editionNumber: 1,
+  "2026-09": {
+    key: "2026-09", slug: "september", month: "September", year: 2026, editionNumber: 1,
     kind: "orientation",
 
     // Every issue owns an accent from the team palette (see ISSUE_ACCENTS).
