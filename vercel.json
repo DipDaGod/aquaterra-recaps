@@ -4,6 +4,16 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "comment": "SPA fallback for real routes only. The previous catch-all rewrote EVERY miss to index.html, so a font or photo that wasn't there came back as 200 text/html instead of 404 — the browser downloaded HTML, failed to parse it as a font, and only then fell back to the next family. Paths carrying a file extension are excluded so they 404 cleanly; edition routes like /2026/october have no dot and still resolve.",
+      "source": "/((?!.*\\.[a-zA-Z0-9]+$).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/fonts/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
   ]
 }

@@ -1,37 +1,97 @@
 /* ===========================================================================
-   FONTS — the single file to change when the real faces arrive.
+   FONTS — the only file in this codebase that names a typeface.
    ===========================================================================
 
-   The parent site's CSS names its type roles --eina, --display and --mono.
-   That names the body face outright: Eina (Textaxis). Eina is a commercial
-   licence and is not on Google Fonts or Fontsource, so it cannot be installed
-   here — it has to come from whoever holds AquaTerra's licence, as .woff2.
+   The parent site's CSS names its three type roles --eina, --display and
+   --mono. This file recreates them.
 
-   The families below are therefore STAND-INS, not the brand. aq.md §4 is
-   explicit that guessing a font is the same sin as guessing a number, so they
-   are labelled rather than passed off:
+   REAL FACES: drop the licensed .woff2 files into /public/fonts/ and they are
+   picked up automatically — see that folder's README for filenames. Each
+   @font-face lists several spellings; the browser takes the first that loads
+   and skips the rest, so common naming styles work without editing anything.
 
-     --font-eina     Plus Jakarta Sans  standing in for  Eina
-     --font-display  Archivo            standing in for  [unknown — the site's
-                                        --display family was not in the CSS
-                                        that was shared]
-     --font-mono     JetBrains Mono     standing in for  [unknown — likewise]
+   UNTIL THEN each role falls back to a STAND-IN, named in its stack below.
+   These are not the brand and are not presented as such (aq.md §4: guessing a
+   font is the same sin as guessing a number):
 
-   TO INSTALL THE REAL FACES
-   1. Drop the .woff2 files into /public/fonts/.
-   2. Replace the @import lines below with @font-face blocks pointing at them.
-   3. Change the three font-family values in the @theme block.
-   Nothing else in the codebase names a font family, so that is the whole job.
+     Eina      -> Plus Jakarta Sans
+     Display   -> Archivo          (the site's --display family is unknown)
+     Mono      -> JetBrains Mono   (the site's --mono family is unknown)
 
-   The metrics ARE confirmed, from the site's own CSS, and are applied in
-   index.css regardless of which family is loaded:
-     body   400 15px/1.6
-     mono   700 10.5px, uppercase, letter-spacing .06em
-     display 800, letter-spacing -.04em, line-height ~.96
+   The METRICS are confirmed from the site's CSS and are applied in index.css
+   whichever family ends up loading:
+     body     400 15px/1.6
+     mono     700 10.5px, uppercase, letter-spacing .06em
+     display  800, letter-spacing -.04em
    =========================================================================== */
 
+/* --- stand-ins, loaded first so they sit at the back of each stack --------- */
 @import "@fontsource-variable/plus-jakarta-sans";
 @import "@fontsource-variable/archivo";
 @import "@fontsource-variable/jetbrains-mono";
 @import "@fontsource/instrument-serif/400-italic.css";
 @import "@fontsource/caveat/600.css";
+
+/* --- Eina: body copy, 400 / 600 / 700 / 800 ------------------------------- */
+@font-face {
+  font-family: "Eina";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/eina-400.woff2") format("woff2"),
+       url("/fonts/Eina01-Regular.woff2") format("woff2"),
+       url("/fonts/eina-regular.woff2") format("woff2"),
+       url("/fonts/eina-400.woff") format("woff");
+}
+@font-face {
+  font-family: "Eina";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/eina-600.woff2") format("woff2"),
+       url("/fonts/Eina01-SemiBold.woff2") format("woff2"),
+       url("/fonts/eina-semibold.woff2") format("woff2"),
+       url("/fonts/eina-600.woff") format("woff");
+}
+@font-face {
+  font-family: "Eina";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/eina-700.woff2") format("woff2"),
+       url("/fonts/Eina01-Bold.woff2") format("woff2"),
+       url("/fonts/eina-bold.woff2") format("woff2"),
+       url("/fonts/eina-700.woff") format("woff");
+}
+@font-face {
+  font-family: "Eina";
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/eina-800.woff2") format("woff2"),
+       url("/fonts/Eina01-Black.woff2") format("woff2"),
+       url("/fonts/eina-black.woff2") format("woff2"),
+       url("/fonts/eina-800.woff") format("woff");
+}
+
+/* --- Display: section openers and the issue title, 800 -------------------- */
+@font-face {
+  font-family: "AQ Display";
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/display-800.woff2") format("woff2"),
+       url("/fonts/display-bold.woff2") format("woff2"),
+       url("/fonts/display-800.woff") format("woff");
+}
+
+/* --- Mono: eyebrows, stat labels, meta strings, 700 ----------------------- */
+@font-face {
+  font-family: "AQ Mono";
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/mono-700.woff2") format("woff2"),
+       url("/fonts/mono-bold.woff2") format("woff2"),
+       url("/fonts/mono-700.woff") format("woff");
+}
