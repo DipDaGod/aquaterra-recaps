@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, X, RotateCcw, ArrowRight } from "lucide-react";
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { Meta } from "./Lockup";
 import { cx } from "../lib/utils";
 
@@ -8,7 +8,7 @@ import { cx } from "../lib/utils";
 // nothing is stored, nothing is sent. Every answer is a verified AquaTerra
 // figure (aq.md §2) — a quiz whose answers are invented would be the rule-0
 // violation with a scoreboard attached.
-export default function MiniGames({ edition }) {
+export default function MiniGames({ edition, index, label }) {
   const games = edition.games;
   const quiz = games?.quiz || [];
 
@@ -41,14 +41,15 @@ export default function MiniGames({ edition }) {
   }
 
   return (
-    <Section id="games">
-      <SectionHeading
-        eyebrow="Mini games"
-        caps={games.lockup?.caps}
-        accent={games.lockup?.accent}
-        lead={games.lead}
-        aside={`${quiz.length} questions`}
-      />
+    <Section
+      id="games"
+      index={index}
+      label={label}
+      caps={games.lockup?.caps}
+      accent={games.lockup?.accent}
+      lead={games.lead}
+      aside={`${quiz.length} questions`}
+    >
 
       <div className="overflow-hidden rounded-[2rem] bg-ink text-cream-soft">
         {done ? (

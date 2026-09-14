@@ -39,10 +39,9 @@ const LATEST_KEY = "2026-10";
 // `href` points at each team's real page on ngoaquaterra.com. `openRoles` is
 // the site's own count; 0 renders as "nothing open".
 //
-// NOTE for the desk: the Human Resources bio below says "1,100+ members" while
-// the site's headline figure is 1,300+. Both are the site's own copy, so both
-// are reproduced verbatim rather than reconciled by guesswork — please confirm
-// which is current.
+// The HR bio on the live site reads "1,100+ members" against a headline figure
+// of 1,300+; the desk confirmed 1,300+ is the current number, so it is used
+// here. Worth correcting on the parent site too.
 const TEAM_URL = "https://www.ngoaquaterra.com/teams";
 
 export const TEAM_ROSTER = [
@@ -69,7 +68,7 @@ export const TEAM_ROSTER = [
   {
     key: "hr", members: 6, openRoles: 0,
     href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000008`,
-    blurb: "Recruitment, onboarding, certificates, Letters of Recommendation. HR runs the intake pipeline for 1,100+ members.",
+    blurb: "Recruitment, onboarding, certificates, Letters of Recommendation. HR runs the intake pipeline for 1,300+ members.",
   },
   {
     key: "events", members: 3, openRoles: 2,
@@ -96,6 +95,11 @@ export const editions = {
   "2026-10": {
     key: "2026-10", slug: "october", month: "October", year: 2026, editionNumber: 1,
     kind: "orientation",
+
+    // Every issue owns an accent from the team palette (see ISSUE_ACCENTS).
+    // It drives the section numbers, the rules and every italic accent word,
+    // so each edition reads as its own object rather than a reskin.
+    accent: "green",
 
     // Headline lockup: caps + one italic accent word + a period (aq.md §4).
     lockup: { caps: "WHAT IS", accent: "aquaterra" },

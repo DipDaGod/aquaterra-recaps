@@ -1,19 +1,20 @@
 import Photo from "./Photo";
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { Meta } from "./Lockup";
 
-export default function InsideAquaterra({ edition }) {
+export default function InsideAquaterra({ edition, index, label }) {
   const items = edition.inside || [];
   if (items.length === 0) return null;
 
   return (
-    <Section>
-      <SectionHeading
-        eyebrow="Inside"
-        caps="GROUNDWORK"
-        accent="diaries"
-        lead="written by the members who were actually there."
-      />
+    <Section
+      id="diaries"
+      index={index}
+      label={label}
+      caps="GROUNDWORK"
+      accent="diaries"
+      lead="written by the members who were actually there."
+    >
 
       <ul className="flex flex-col gap-4">
         {items.map((item, i) => (

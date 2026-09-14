@@ -53,7 +53,7 @@ export default function EditionHero({ edition }) {
       </Link>
 
       <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span className="rounded-full bg-green px-3 py-1.5 text-cream-soft">
+        <span className="rounded-full bg-(--issue-accent) px-3 py-1.5 text-cream-soft">
           <Meta>Edition {String(edition.editionNumber).padStart(2, "0")}</Meta>
         </span>
         <MetaRow
@@ -69,7 +69,7 @@ export default function EditionHero({ edition }) {
         as="h1"
         caps={lockup.caps}
         accent={lockup.accent}
-        className="mt-5 text-[clamp(2.5rem,10vw,6rem)]"
+        className="mt-5 text-(length:--text-display-xl)"
       />
 
       {edition.tagline && (

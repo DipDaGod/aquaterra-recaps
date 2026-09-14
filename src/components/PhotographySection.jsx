@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Expand, Camera } from "lucide-react";
 import Photo from "./Photo";
 import Lightbox from "./Lightbox";
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { Meta } from "./Lockup";
 import { cx } from "../lib/utils";
 
@@ -20,7 +20,7 @@ function columnsFor(count) {
 
 const ratio = { lg: "aspect-[4/5]", md: "aspect-square", sm: "aspect-[4/3]" };
 
-export default function PhotographySection({ edition }) {
+export default function PhotographySection({ edition, index, label }) {
   const [openIndex, setOpenIndex] = useState(null);
   const p = edition.photography;
   const gallery = p?.gallery || [];
@@ -28,14 +28,17 @@ export default function PhotographySection({ edition }) {
   if (!p?.featured && gallery.length === 0) return null;
 
   return (
-    <Section id="photography">
-      <SectionHeading
-        eyebrow="Photography"
-        caps={p.lockup?.caps}
-        accent={p.lockup?.accent}
-        lead={p.lead}
-        aside={gallery.length ? `${gallery.length} frames` : undefined}
-      />
+    <Section
+      id="photography"
+      index={index}
+      label={label}
+      size="lead"
+      ground="major"
+      caps={p.lockup?.caps}
+      accent={p.lockup?.accent}
+      lead={p.lead}
+      aside={gallery.length ? `${gallery.length} frames` : undefined}
+    >
 
       {p.featured && (
         <figure className="mb-6 overflow-hidden rounded-[2rem] bg-ink">

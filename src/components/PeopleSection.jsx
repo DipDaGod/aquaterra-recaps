@@ -1,6 +1,6 @@
 import { Quote, Star } from "lucide-react";
 import Photo from "./Photo";
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { cx } from "../lib/utils";
 
 function PersonCard({ person, featured = false }) {
@@ -50,7 +50,7 @@ function PersonCard({ person, featured = false }) {
   );
 }
 
-export default function PeopleSection({ edition }) {
+export default function PeopleSection({ edition, index, label }) {
   const people = edition.people || [];
   if (people.length === 0) return null;
 
@@ -65,13 +65,14 @@ export default function PeopleSection({ edition }) {
   }[people.length] || "sm:grid-cols-2 lg:grid-cols-4";
 
   return (
-    <Section>
-      <SectionHeading
-        eyebrow="The people"
-        caps="THE ONES WHO"
-        accent="turned up"
-        lead="not the org account, not the desk — the members who showed up."
-      />
+    <Section
+      id="people"
+      index={index}
+      label={label}
+      caps="THE ONES WHO"
+      accent="turned up"
+      lead="not the org account, not the desk — the members who showed up."
+    >
 
       <ul className={cx("grid gap-4", columns)}>
         <li className={people.length === 1 ? "sm:col-span-1" : ""}>

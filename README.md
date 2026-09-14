@@ -3,6 +3,10 @@
 A standalone monthly recap / digital-magazine site for AquaTerra, built with
 React, Vite, Tailwind CSS v4 and React Router.
 
+**Fonts:** the real families are not in this repo. `src/styles/fonts.css` is
+the single file to change — it names what each stand-in is standing in for and
+what to do when the licensed files arrive.
+
 **Read `aq.md` before changing anything.** It carries the non-negotiable rules
 for this repo — chiefly: never invent an AquaTerra fact. `CLAUDE.md` imports it
 so it loads automatically in Claude Code sessions.

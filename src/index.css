@@ -1,23 +1,23 @@
 @import "tailwindcss";
-@import "@fontsource/space-grotesk/400.css";
-@import "@fontsource/space-grotesk/500.css";
-@import "@fontsource/space-grotesk/600.css";
-@import "@fontsource/space-grotesk/700.css";
-@import "@fontsource/caveat/500.css";
-@import "@fontsource/caveat/600.css";
-@import "@fontsource/instrument-serif/400.css";
-@import "@fontsource/instrument-serif/400-italic.css";
+@import "./styles/fonts.css";
 
 @theme {
-  /* Type. Families are NOT confirmed against the parent site's CSS — aq.md §4
-     flags them as needing verification. Roles are correct; families are the
-     repo's existing choices carried forward, except --font-mono which is a
-     neutral system stack rather than a guessed brand face. */
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  /* Type roles, named as the parent site names them (--eina / --display /
+     --mono). Families are STAND-INS — see src/styles/fonts.css, which is the
+     only place to change them. */
+  --font-eina: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Archivo Variable", "Plus Jakarta Sans Variable", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-accent: "Instrument Serif", serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   --font-hand: "Caveat", cursive;
+
+  /* Type scale. Four steps of display plus the body and mono specs taken
+     verbatim from the parent site's CSS. */
+  --text-display-xl: clamp(2.5rem, 9vw, 5.5rem);
+  --text-display-l: clamp(2rem, 5vw, 3.25rem);
+  --text-display-m: clamp(1.6rem, 3.2vw, 2.125rem);
+  --text-display-s: 1.1875rem;
 
   /* Paper + ink. --color-cream is the one hex aq.md marks confirmed exactly
      (the parent site's theme-color meta). The rest of this palette is
@@ -25,9 +25,9 @@
   --color-cream: #f4efe0;
   --color-cream-soft: #fbf8ef;
   --color-paper: #ebe4d2;
-  --color-ink: #0b0b0b;
+  --color-ink: #0a0a0a;   /* confirmed — the site sets rgb(10,10,10) inline */
   --color-ink-soft: #4a4a46;
-  --color-near-black: #0b0b0b;
+  --color-near-black: #0a0a0a;
   --color-line: #ded2b4;
 
   /* Team identity colours. Each of the 8 teams owns exactly one — these are
@@ -75,8 +75,19 @@
   --color-tint-lavender: #e9e2f8;
   --color-tint-pink: #fbe0ec;
 
-  --shadow-card: 0 1px 2px rgb(11 11 11 / 0.04), 0 8px 24px -12px rgb(11 11 11 / 0.14);
-  --shadow-card-hover: 0 2px 4px rgb(11 11 11 / 0.05), 0 18px 40px -16px rgb(11 11 11 / 0.22);
+  /* The site's --ink-2 / --ink-3 text ramp. */
+  --color-ink-2: #3d3d39;
+  --color-ink-3: #6f6f68;
+
+  /* Radii, mirroring the site's --r-tight / --r-inner / --r-outer / --r-pill.
+     Values are approximate: the scale is visible in its CSS, the numbers are
+     not. */
+  --radius-tight: 10px;
+  --radius-inner: 14px;
+  --radius-outer: 20px;
+
+  --shadow-card: 0 1px 2px rgb(10 10 10 / 0.04), 0 8px 24px -12px rgb(10 10 10 / 0.14);
+  --shadow-card-hover: 0 2px 4px rgb(10 10 10 / 0.05), 0 18px 40px -16px rgb(10 10 10 / 0.22);
 }
 
 html {
@@ -89,8 +100,37 @@ html {
 body {
   background-color: var(--color-cream);
   color: var(--color-ink);
-  font-family: var(--font-sans);
+  /* 400 15px/1.6 — the parent site's own body spec. */
+  font: 400 15px/1.6 var(--font-eina);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Display role: heavy, tight, per the site's `font-weight:800; letter-spacing:-.04em`. */
+.u-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+
+/* Mono role: 700 10.5px, uppercase, .06em — verbatim from the site's CSS. */
+.u-mono {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Per-issue accent. An edition sets these on its own root (see
+   issueAccentVars) so section numbers, rules and every italic accent word
+   shift together and no two issues look alike.
+   The default lives on :root, not on [data-issue] — pages outside an edition,
+   the archive above all, still need the accent to resolve or their accent
+   words fall back to plain ink. */
+:root {
+  --issue-accent: var(--color-green);
+  --issue-accent-ink: var(--color-green-deep);
 }
 
 /* Locked while the lightbox is open, so the page behind doesn't scroll. */

@@ -5,31 +5,23 @@ import { cx } from "../lib/utils";
 //
 //   THE drives.      PICK A LANE, THEN turn up.      PARADOX 2026.
 //
-// `caps` is set in display caps; `accent` is the single italic word that
-// carries the meaning of the heading — a noun, not a random emphasis. The
-// terminal period is rendered here so it can never be forgotten, and it sits
-// outside the italic so it stays upright.
+// The terminal period renders here so it can never be forgotten, and sits
+// outside the italic so it stays upright. Size comes from the caller's
+// `className` using the display scale (text-display-xl / -l / -m).
 export default function Lockup({
   caps,
   accent,
   as: Tag = "h2",
   className = "",
-  accentClassName = "text-green",
+  accentClassName = "text-(--issue-accent)",
 }) {
   return (
-    <Tag
-      className={cx(
-        "font-display font-bold uppercase leading-[0.92] tracking-[-0.02em] text-balance",
-        className
-      )}
-    >
+    <Tag className={cx("u-display text-balance uppercase", className)}>
       {caps}
       {accent && (
         <>
           {" "}
-          <em className={cx("font-accent lowercase italic", accentClassName)}>
-            {accent}
-          </em>
+          <em className={cx("font-accent lowercase italic", accentClassName)}>{accent}</em>
         </>
       )}
       <span aria-hidden="true">.</span>
@@ -37,19 +29,15 @@ export default function Lockup({
   );
 }
 
-// Small uppercase letterspaced mono string — eyebrows, stat labels, meta.
-// aq.md §4 lists mono as one of the four type roles; it was missing entirely.
+// The mono role: 700 / 10.5px / uppercase / .06em tracking, taken from the
+// parent site's CSS. Eyebrows, stat labels, meta strings, the copyright line.
 //
-// CAUTION: this applies CSS `text-transform: uppercase`, so never route a team
-// name or other proper noun through it. "ShikshAQ" would render "SHIKSHAQ" and
-// "Crftd" would render "CRFTD" mid-nav, both banned by aq.md §2. Render those
-// from TEAMS[...].name (canonical) or TEAMS[...].caps (display form) instead.
+// CAUTION: this applies `text-transform: uppercase`, so never route a team
+// name or other proper noun through it. "ShikshAQ" would render "SHIKSHAQ"
+// and "Crftd" would render "CRFTD" mid-nav, both banned by aq.md §2. Render
+// those from TEAMS[...].name instead.
 export function Meta({ children, className = "" }) {
-  return (
-    <span className={cx("font-mono text-xs uppercase tracking-[0.14em]", className)}>
-      {children}
-    </span>
-  );
+  return <span className={cx("u-mono", className)}>{children}</span>;
 }
 
 // Meta strings joined with middle dots: `8 DEPARTMENTS · 570+ DRIVES`.
@@ -59,10 +47,32 @@ export function MetaRow({ items, className = "" }) {
     <Meta className={className}>
       {parts.map((part, i) => (
         <span key={i}>
-          {i > 0 && <span className="mx-1.5 opacity-50">·</span>}
+          {i > 0 && <span className="mx-1.5 opacity-40">·</span>}
           {part}
         </span>
       ))}
     </Meta>
+  );
+}
+
+// A section's running number — "01" through "09" — set in the issue accent
+// beside a hairline rule. This is the main thing giving the page a spine: it
+// tells you where you are in the issue and ranks the openers above the card
+// headings beneath them.
+export function SectionNumber({ index, label, onDark = false }) {
+  if (!index) return null;
+  return (
+    <div className="mb-4 flex items-center gap-3">
+      <Meta className={onDark ? "text-cream-soft" : "text-(--issue-accent-ink)"}>
+        {String(index).padStart(2, "0")}
+      </Meta>
+      <span
+        aria-hidden="true"
+        className={cx("h-px w-8 shrink-0", onDark ? "bg-cream-soft/30" : "bg-ink/15")}
+      />
+      {label && (
+        <Meta className={onDark ? "text-cream-soft/60" : "text-ink-3"}>{label}</Meta>
+      )}
+    </div>
   );
 }

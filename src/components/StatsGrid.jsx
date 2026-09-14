@@ -1,5 +1,5 @@
 import AnimatedNumber from "./AnimatedNumber";
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { Meta } from "./Lockup";
 
 const tones = [
@@ -9,14 +9,16 @@ const tones = [
   "bg-tint-lavender border-ink/10",
 ];
 
-export default function StatsGrid({ edition }) {
+export default function StatsGrid({ edition, index, label }) {
   return (
-    <Section tight>
-      <SectionHeading
-        caps="THE"
-        accent="numbers"
-        aside={`${edition.month} ${edition.year}`}
-      />
+    <Section
+      id="numbers"
+      index={index}
+      label={label}
+      caps="THE"
+      accent="numbers"
+      aside={`${edition.month} ${edition.year}`}
+    >
       <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {edition.glance.map((stat, i) => (
           <div

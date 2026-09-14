@@ -43,3 +43,22 @@ export const TEAMS = {
   ventures: { name: "AQ.Ventures", kind: "student business", emoji: "⚙️", bg: "bg-team-ventures", on: "text-cream-soft", ink: "text-team-ventures-ink" },
   crftd: { name: "Crftd", kind: "student business", emoji: "✍️", bg: "bg-team-crftd", on: "text-cream-soft", ink: "text-team-crftd-ink" },
 };
+
+// Per-issue accent colours. Each edition picks one and every accent word,
+// section number and rule on that issue shifts to it, so two issues never look
+// like the same page with different words. Drawn from the team palette rather
+// than a new set — aq.md §4 forbids adding a ninth colour.
+export const ISSUE_ACCENTS = {
+  green: { accent: "var(--color-green)", ink: "var(--color-green-deep)" },
+  sky: { accent: "var(--color-team-events)", ink: "var(--color-team-events-ink)" },
+  lemon: { accent: "var(--color-team-shikshaq)", ink: "var(--color-team-shikshaq-ink)" },
+  pink: { accent: "var(--color-team-hr)", ink: "var(--color-team-hr-ink)" },
+  grape: { accent: "var(--color-team-social)", ink: "var(--color-team-social-ink)" },
+  teal: { accent: "var(--color-team-collabs)", ink: "var(--color-team-collabs-ink)" },
+  tomato: { accent: "var(--color-team-ventures)", ink: "var(--color-team-ventures-ink)" },
+};
+
+export function issueAccentVars(key) {
+  const a = ISSUE_ACCENTS[key] || ISSUE_ACCENTS.green;
+  return { "--issue-accent": a.accent, "--issue-accent-ink": a.ink };
+}

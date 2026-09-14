@@ -1,6 +1,6 @@
 import AnimatedNumber from "./AnimatedNumber";
 import Section from "./Section";
-import { Meta } from "./Lockup";
+import { Meta, SectionNumber } from "./Lockup";
 import { useReveal } from "../lib/useReveal";
 
 // Bars fill from zero once the panel scrolls into view, instead of being
@@ -37,14 +37,14 @@ function ProgressBar({ label, percent }) {
   );
 }
 
-export default function ImpactSection({ edition }) {
+export default function ImpactSection({ edition, index, label }) {
   const { impact } = edition;
   if (!impact) return null;
 
   return (
-    <Section>
+    <Section id="impact">
       <div className="rounded-[2rem] bg-ink px-6 py-10 text-cream-soft sm:px-10 sm:py-14 lg:px-14">
-        <Meta className="text-green-bright">The impact</Meta>
+        <SectionNumber index={index} label={label} onDark />
         <h2 className="mt-4 max-w-2xl text-balance text-3xl font-semibold leading-snug tracking-tight sm:text-4xl">
           {impact.headline}
         </h2>

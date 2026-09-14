@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import ProjectCard from "./ProjectCard";
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { cx } from "../lib/utils";
 
-export default function FeaturedProjects({ edition }) {
+export default function FeaturedProjects({ edition, index, label }) {
 
   // Each filter carries its own count, so it's clear what a tab will show
   // before it's tapped.
@@ -24,14 +24,16 @@ export default function FeaturedProjects({ edition }) {
   if (projects.length === 0) return null;
 
   return (
-    <Section>
-      <SectionHeading
-        eyebrow="Featured"
-        caps="THE"
-        accent="drives"
-        lead="welfare, events, the student businesses, media — everything the month actually held, not just the drives."
-        aside={`${projects.length} ${projects.length === 1 ? "story" : "stories"}`}
-      />
+    <Section
+      id="featured"
+      index={index}
+      label={label}
+      size="lead"
+      caps="THE"
+      accent="drives"
+      lead="welfare, events, the student businesses, media — everything the month actually held, not just the drives."
+      aside={`${projects.length} ${projects.length === 1 ? "story" : "stories"}`}
+    >
 
       {categories.length > 2 && (
         <div

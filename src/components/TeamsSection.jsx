@@ -1,4 +1,4 @@
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { Meta } from "./Lockup";
 import { TEAMS, cx } from "../lib/utils";
 
@@ -103,7 +103,7 @@ function TeamCard({ entry, tilt }) {
 // Subtle alternating rotation, as on the parent site's grid.
 const TILTS = [-0.6, 0.8, -0.4];
 
-export default function TeamsSection({ edition }) {
+export default function TeamsSection({ edition, index, label }) {
   const teams = edition.teams;
   const roster = teams?.roster || [];
   if (roster.length === 0) return null;
@@ -112,14 +112,17 @@ export default function TeamsSection({ edition }) {
   const openRoles = roster.reduce((sum, t) => sum + (t.openRoles || 0), 0);
 
   return (
-    <Section id="teams">
-      <SectionHeading
-        eyebrow="The teams"
-        caps={teams.lockup?.caps}
-        accent={teams.lockup?.accent}
-        lead={teams.lead}
-        aside={`${volunteer} volunteer teams · ${roster.length - volunteer} student businesses · ${openRoles} roles open`}
-      />
+    <Section
+      id="teams"
+      index={index}
+      label={label}
+      size="lead"
+      ground="major"
+      caps={teams.lockup?.caps}
+      accent={teams.lockup?.accent}
+      lead={teams.lead}
+      aside={`${volunteer} volunteer teams · ${roster.length - volunteer} student businesses · ${openRoles} roles open`}
+    >
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {roster.map((entry, i) => (

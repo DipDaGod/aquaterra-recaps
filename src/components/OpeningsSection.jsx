@@ -1,22 +1,23 @@
 import { ArrowUpRight } from "lucide-react";
-import Section, { SectionHeading } from "./Section";
+import Section from "./Section";
 import { TEAMS, cx } from "../lib/utils";
 
 // How a student actually joins. The parent site's own line — "Pick a team,
 // show up, and get to work" — is the whole pitch, so the section stays short.
-export default function OpeningsSection({ edition }) {
+export default function OpeningsSection({ edition, index, label }) {
   const openings = edition.openings;
   const roles = openings?.roles || [];
   if (roles.length === 0) return null;
 
   return (
-    <Section id="openings">
-      <SectionHeading
-        eyebrow="Openings"
-        caps={openings.lockup?.caps}
-        accent={openings.lockup?.accent}
-        lead={openings.lead}
-      />
+    <Section
+      id="openings"
+      index={index}
+      label={label}
+      caps={openings.lockup?.caps}
+      accent={openings.lockup?.accent}
+      lead={openings.lead}
+    >
 
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {roles.map((role, i) => {
