@@ -3,9 +3,17 @@
 A standalone monthly recap / digital-magazine site for AquaTerra, built with
 React, Vite, Tailwind CSS v4 and React Router.
 
-**Fonts:** the real families are not in this repo. `src/styles/fonts.css` is
-the single file to change — it names what each stand-in is standing in for and
-what to do when the licensed files arrive.
+**Fonts:** AquaTerra's own faces are served from `/public/fonts/` and wired in
+`src/styles/fonts.css` — the only file in the codebase that names a typeface.
+Eina 01 for body, Neutral Face for display, JetBrains Mono for meta labels,
+Instrument Serif for the italic accent word, Caveat for the single sign-off.
+
+Three weights the parent site uses were not supplied, and are covered by
+declaring a weight *range* on the nearest face so the browser picks the real
+file rather than synthesising a fake bold: Eina 800 falls to Bold, Neutral Face
+800 falls to Bold, and the mono labels render at 400 where the site sets 700.
+Adding `Eina01-Black.woff2` and `JetBrainsMono-Bold.woff2` would close that gap
+with no code change.
 
 **Read `aq.md` before changing anything.** It carries the non-negotiable rules
 for this repo — chiefly: never invent an AquaTerra fact. `CLAUDE.md` imports it

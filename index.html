@@ -8,8 +8,14 @@
     <link rel="icon" href="/assets/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="/assets/logo.png" />
 
+    <!-- Above-the-fold faces: the body text and the display title. Preloaded
+         so the first paint isn't a fallback flash. crossorigin is required
+         even same-origin, or the preload is fetched twice. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Eina01-Regular.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/NeutralFace-Bold.woff2" />
+
     <!-- Theme color — matches the cream background -->
-    <meta name="theme-color" content="#f6f1e3" />
+    <meta name="theme-color" content="#f4efe0" />
 
     <title>AquaTerra Recaps | Monthly Recaps Archive</title>
     <meta name="description" content="A month at a time. Projects, people, progress — AquaTerra's monthly recap archive, from AquaTerra, a student-led community and NGO in Kolkata." />

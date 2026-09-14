@@ -2,15 +2,13 @@
 @import "./styles/fonts.css";
 
 @theme {
-  /* Type roles, named as the parent site names them (--eina / --display /
-     --mono). Families are STAND-INS — see src/styles/fonts.css, which is the
-     only place to change them. */
-  /* Real face first, stand-in behind it: the moment a file lands in
-     /public/fonts/ the stack shifts to it with no code change. */
-  --font-eina: "Eina", "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Eina", "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "AQ Display", "Archivo Variable", "Eina", ui-sans-serif, sans-serif;
-  --font-mono: "AQ Mono", "JetBrains Mono Variable", ui-monospace, SFMono-Regular, monospace;
+
+  /* AquaTerra's own faces, served from /public/fonts/ — see styles/fonts.css.
+     The role names mirror the parent site's --eina / --display / --mono. */
+  --font-eina: "Eina", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Eina", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Neutral Face", "Eina", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-accent: "Instrument Serif", serif;
   --font-hand: "Caveat", cursive;
 

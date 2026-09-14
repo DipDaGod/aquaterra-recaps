@@ -2,96 +2,95 @@
    FONTS — the only file in this codebase that names a typeface.
    ===========================================================================
 
-   The parent site's CSS names its three type roles --eina, --display and
-   --mono. This file recreates them.
+   All faces are AquaTerra's own, served from /public/fonts/. The stand-ins
+   this file used to carry are gone, along with their npm packages.
 
-   REAL FACES: drop the licensed .woff2 files into /public/fonts/ and they are
-   picked up automatically — see that folder's README for filenames. Each
-   @font-face lists several spellings; the browser takes the first that loads
-   and skips the rest, so common naming styles work without editing anything.
+   The files resolved the two roles the shared CSS only named:
+     --eina     -> Eina 01        (Textaxis)
+     --display  -> Neutral Face   (the heavy grotesque aq.md §4 describes)
+     --mono     -> JetBrains Mono
+   plus Instrument Serif for the italic accent word and Caveat for the
+   single sign-off.
 
-   UNTIL THEN each role falls back to a STAND-IN, named in its stack below.
-   These are not the brand and are not presented as such (aq.md §4: guessing a
-   font is the same sin as guessing a number):
+   WEIGHTS SUPPLIED vs WEIGHTS THE SITE USES
+     Eina          400, 600, 700 supplied     site also uses 800
+     Neutral Face  400, 700 supplied          site uses 800
+     JetBrains Mono 400 supplied              site uses 700
 
-     Eina      -> Plus Jakarta Sans
-     Display   -> Archivo          (the site's --display family is unknown)
-     Mono      -> JetBrains Mono   (the site's --mono family is unknown)
-
-   The METRICS are confirmed from the site's CSS and are applied in index.css
-   whichever family ends up loading:
-     body     400 15px/1.6
-     mono     700 10.5px, uppercase, letter-spacing .06em
-     display  800, letter-spacing -.04em
+   Where a weight is missing, the @font-face below declares a RANGE covering
+   it, so the browser picks the real file rather than synthesising a fake bold
+   — synthetic bolding on a 10.5px uppercase mono label smears badly. The
+   labels therefore render a little lighter than the parent site's. Dropping
+   JetBrainsMono-Bold.woff2 and Eina01-Black.woff2 in here would close that
+   gap with no code change.
    =========================================================================== */
 
-/* --- stand-ins, loaded first so they sit at the back of each stack --------- */
-@import "@fontsource-variable/plus-jakarta-sans";
-@import "@fontsource-variable/archivo";
-@import "@fontsource-variable/jetbrains-mono";
-@import "@fontsource/instrument-serif/400-italic.css";
-@import "@fontsource/caveat/600.css";
-
-/* --- Eina: body copy, 400 / 600 / 700 / 800 ------------------------------- */
+/* --- Eina 01: body copy ---------------------------------------------------- */
 @font-face {
   font-family: "Eina";
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  src: url("/fonts/eina-400.woff2") format("woff2"),
-       url("/fonts/Eina01-Regular.woff2") format("woff2"),
-       url("/fonts/eina-regular.woff2") format("woff2"),
-       url("/fonts/eina-400.woff") format("woff");
+  src: url("/fonts/Eina01-Regular.woff2") format("woff2");
 }
 @font-face {
   font-family: "Eina";
   font-weight: 600;
   font-style: normal;
   font-display: swap;
-  src: url("/fonts/eina-600.woff2") format("woff2"),
-       url("/fonts/Eina01-SemiBold.woff2") format("woff2"),
-       url("/fonts/eina-semibold.woff2") format("woff2"),
-       url("/fonts/eina-600.woff") format("woff");
+  src: url("/fonts/Eina01-SemiBold.woff2") format("woff2");
 }
 @font-face {
+  /* 700-800: no Black was supplied, so Bold covers the site's 800 too. */
   font-family: "Eina";
-  font-weight: 700;
+  font-weight: 700 800;
   font-style: normal;
   font-display: swap;
-  src: url("/fonts/eina-700.woff2") format("woff2"),
-       url("/fonts/Eina01-Bold.woff2") format("woff2"),
-       url("/fonts/eina-bold.woff2") format("woff2"),
-       url("/fonts/eina-700.woff") format("woff");
-}
-@font-face {
-  font-family: "Eina";
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/eina-800.woff2") format("woff2"),
-       url("/fonts/Eina01-Black.woff2") format("woff2"),
-       url("/fonts/eina-black.woff2") format("woff2"),
-       url("/fonts/eina-800.woff") format("woff");
+  src: url("/fonts/Eina01-Bold.woff2") format("woff2");
 }
 
-/* --- Display: section openers and the issue title, 800 -------------------- */
+/* --- Neutral Face: the display role, section openers and issue titles ------ */
 @font-face {
-  font-family: "AQ Display";
+  font-family: "Neutral Face";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/NeutralFace-Regular.woff2") format("woff2");
+}
+@font-face {
+  /* 700-900 so the display role's 800 resolves here without synthesis. */
+  font-family: "Neutral Face";
   font-weight: 700 900;
   font-style: normal;
   font-display: swap;
-  src: url("/fonts/display-800.woff2") format("woff2"),
-       url("/fonts/display-bold.woff2") format("woff2"),
-       url("/fonts/display-800.woff") format("woff");
+  src: url("/fonts/NeutralFace-Bold.woff2") format("woff2");
 }
 
-/* --- Mono: eyebrows, stat labels, meta strings, 700 ----------------------- */
+/* --- JetBrains Mono: eyebrows, stat labels, meta strings ------------------- */
 @font-face {
-  font-family: "AQ Mono";
+  /* 400-700: only Regular was supplied; the range keeps the mono labels on
+     the real face instead of a synthesised bold. */
+  font-family: "JetBrains Mono";
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
-  src: url("/fonts/mono-700.woff2") format("woff2"),
-       url("/fonts/mono-bold.woff2") format("woff2"),
-       url("/fonts/mono-700.woff") format("woff");
+  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+}
+
+/* --- Instrument Serif: the one italic accent word per headline ------------- */
+@font-face {
+  font-family: "Instrument Serif";
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  src: url("/fonts/InstrumentSerif-Italic.woff2") format("woff2");
+}
+
+/* --- Caveat: the sign-off, once (aq.md §4) -------------------------------- */
+@font-face {
+  font-family: "Caveat";
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Caveat-Medium.woff2") format("woff2");
 }
