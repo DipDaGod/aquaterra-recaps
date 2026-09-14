@@ -74,3 +74,29 @@ button in that month's hero; leave them off and no button appears.
 Everything in brackets (`[Project name]`, `[Number]`, etc.) is placeholder
 copy — none of it is real AquaTerra data. Search `src/data/editions.js` for
 `[` to find every field that still needs real content or photography.
+
+## Deployment (`vercel.json`)
+
+`vercel.json` is strict JSON validated against Vercel's schema, so it cannot
+carry comments and rewrite objects reject unknown keys. The reasoning behind
+the current config lives here instead.
+
+**The SPA rewrite excludes paths with a file extension:**
+
+```
+"source": "/((?!.*\\.[a-zA-Z0-9]+$).*)"
+```
+
+A plain catch-all (`/(.*)`) rewrites *every* miss to `index.html`, so a file
+that isn't there comes back as `200 text/html` rather than `404`. The browser
+then downloads an HTML page, tries to parse it as a font or an image, fails,
+and only then falls back — console noise and a delayed font swap on every
+missing asset, in production as much as in dev. Edition routes (`/2026/october`)
+contain no dot, so they still resolve to the app.
+
+If you add a route that legitimately contains a dot, this pattern will stop
+matching it and the route will 404.
+
+**`/fonts/` gets a year-long immutable cache header.** Font files are content-
+addressed by name here, so if you replace a face, change its filename (or the
+header will keep serving the old one to returning visitors).
