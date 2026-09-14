@@ -2,37 +2,6 @@ import Section from "./Section";
 import { Meta } from "./Lockup";
 import { TEAMS, cx } from "../lib/utils";
 
-const FACES_SHOWN = 4;
-
-// The avatar stack from the parent site's team cards. The real one shows
-// member photos and initials; those are real people, so nothing here is
-// invented or hotlinked — the tiles are neutral until the desk supplies
-// avatars. The "+N" overflow IS real, derived from the verified member count.
-function Roster({ members, team }) {
-  const shown = Math.min(FACES_SHOWN, members);
-  const rest = members - shown;
-
-  return (
-    <div className="mt-4 flex items-center" aria-hidden="true">
-      {Array.from({ length: shown }, (_, i) => (
-        <span
-          key={i}
-          className={cx(
-            "-ml-2 grid h-8 w-8 place-items-center rounded-full border-2 border-cream-soft first:ml-0",
-            team.bg
-          )}
-          style={{ opacity: 0.25 + i * 0.08 }}
-        />
-      ))}
-      {rest > 0 && (
-        <span className="-ml-2 grid h-8 min-w-8 place-items-center rounded-full border-2 border-cream-soft bg-paper px-1.5 font-mono text-[0.6rem] tabular-nums text-ink-soft">
-          +{rest}
-        </span>
-      )}
-    </div>
-  );
-}
-
 function TeamCard({ entry, tilt }) {
   const team = TEAMS[entry.key];
   if (!team) return null;
@@ -78,9 +47,7 @@ function TeamCard({ entry, tilt }) {
           {entry.members}&nbsp;{entry.members === 1 ? "member" : "members"}
         </Meta>
 
-        <Roster members={entry.members} team={team} />
-
-        <p className="mt-4 line-clamp-4 text-pretty text-sm leading-relaxed text-ink-soft">
+        <p className="mt-4 line-clamp-4 text-pretty text-sm leading-relaxed text-ink-2">
           {entry.blurb}
         </p>
 
@@ -103,7 +70,7 @@ function TeamCard({ entry, tilt }) {
 // Subtle alternating rotation, as on the parent site's grid.
 const TILTS = [-0.6, 0.8, -0.4];
 
-export default function TeamsSection({ edition, index, label, accentKey, variant, ground }) {
+export default function TeamsSection({ edition, index, label, accentKey, variant, ground, size }) {
   const teams = edition.teams;
   const roster = teams?.roster || [];
   if (roster.length === 0) return null;
@@ -119,6 +86,7 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
       accentKey={accentKey}
       variant={variant}
       ground={ground}
+      size={size}
       caps={teams.lockup?.caps}
       accent={teams.lockup?.accent}
       lead={teams.lead}

@@ -18,7 +18,14 @@ const GROUNDS = {
   ink: "bg-ink text-cream-soft",
 };
 
-function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, onDark }) {
+function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, size, onDark }) {
+  const isLead = size !== "sub";
+  const headClass = isLead ? "text-(length:--text-display-l)" : "text-(length:--text-display-m)";
+  // The numeral tracks the heading, so a supporting section never leads with a
+  // 104px number above a 34px title.
+  const numClass = isLead
+    ? "text-[clamp(3.5rem,9vw,6.5rem)]"
+    : "text-[clamp(2.25rem,5vw,3.5rem)]";
   const a = sectionAccent(accentKey, onDark);
   const num = index ? String(index).padStart(2, "0") : null;
   const leadClass = cx("mt-4 max-w-xl text-pretty", onDark ? "text-cream-soft/70" : "text-ink-2");
@@ -36,7 +43,8 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, o
           <span
             aria-hidden="true"
             className={cx(
-              "font-display text-[clamp(3.5rem,9vw,6.5rem)] font-normal leading-[0.8] tracking-[-0.03em]",
+              "font-display font-normal leading-[0.8] tracking-[-0.03em]",
+              numClass,
               a.text
             )}
           >
@@ -47,7 +55,7 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, o
           {label && <Meta className={cx("block", a.text)}>{label}</Meta>}
           {caps && (
             <Lockup caps={caps} accent={accent} accentClassName={a.text}
-              className={cx("mt-2 text-(length:--text-display-l)", onDark && "text-cream-soft")} />
+              className={cx("mt-2", headClass, onDark && "text-cream-soft")} />
           )}
           {lead && <p className={leadClass}>{lead}</p>}
         </div>
@@ -66,7 +74,7 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, o
         </div>
         {caps && (
           <Lockup caps={caps} accent={accent} accentClassName={a.text}
-            className={cx("mt-4 text-(length:--text-display-l)", onDark && "text-cream-soft")} />
+            className={cx("mt-4", headClass, onDark && "text-cream-soft")} />
         )}
         {lead && <p className={cx(leadClass, "mx-auto text-center")}>{lead}</p>}
         {asideEl && <div className="mt-4">{asideEl}</div>}
@@ -85,7 +93,7 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, o
         </div>
         {caps && (
           <Lockup caps={caps} accent={accent} accentClassName={a.text}
-            className={cx("text-(length:--text-display-m)", onDark && "text-cream-soft")} />
+            className={cx(headClass, onDark && "text-cream-soft")} />
         )}
         {lead && <p className={leadClass}>{lead}</p>}
       </div>
@@ -96,7 +104,7 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, o
 
 export default function Section({
   id, index, label, caps, accent, lead, aside,
-  accentKey = "green", variant = "rule", ground = "plain",
+  accentKey = "green", variant = "rule", ground = "plain", size = "lead",
   children, className = "", reveal = true,
 }) {
   const [ref, revealClass] = useReveal();
@@ -117,7 +125,7 @@ export default function Section({
         {hasOpener && (
           <Opener
             index={index} label={label} caps={caps} accent={accent} lead={lead}
-            aside={aside} variant={variant} accentKey={accentKey} onDark={onDark}
+            aside={aside} variant={variant} accentKey={accentKey} size={size} onDark={onDark}
           />
         )}
         {children}

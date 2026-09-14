@@ -246,19 +246,6 @@ export const editions = {
       ],
     },
 
-    // Openings — the HR team's recruitment, which is how a student actually
-    // joins. Roles must come from HR, not from a guess.
-    openings: {
-      lockup: { caps: "COME AND DO SOMETHING", accent: "real" },
-      lead: "pick a team, show up, and get to work. no fees, no application essay.",
-      roles: [
-        { team: "welfare", role: "[Role title]", blurb: "[What you'd actually do.]" },
-        { team: "social", role: "[Role title]", blurb: "[What you'd actually do.]" },
-        { team: "events", role: "[Role title]", blurb: "[What you'd actually do.]" },
-      ],
-      href: "https://www.ngoaquaterra.com/teams", // verified — live route
-    },
-
     inside: [
       {
         type: "Diary", meta: "Groundwork Diaries", title: "[Diary entry title]",

@@ -9,7 +9,7 @@ const tones = [
   "bg-tint-lavender border-ink/10",
 ];
 
-export default function StatsGrid({ edition, index, label, accentKey, variant, ground }) {
+export default function StatsGrid({ edition, index, label, accentKey, variant, ground, size }) {
   return (
     <Section
       id="numbers"
@@ -18,6 +18,7 @@ export default function StatsGrid({ edition, index, label, accentKey, variant, g
       accentKey={accentKey}
       variant={variant}
       ground={ground}
+      size={size}
       caps="THE"
       accent="numbers"
       aside={`${edition.month} ${edition.year}`}
