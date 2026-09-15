@@ -33,8 +33,6 @@ Anything else redirects to `/`.
   drives section numbering, the nav menu, each section's colour and opener, and
   the "what's in an issue" block on the archive.
 - `src/lib/utils.js` — the 8 teams, the accent palettes, `isPlaceholder()`.
-- `src/lib/useCollection.js` — the localStorage-backed set behind the team-card
-  collection. Every access is wrapped; the page works if storage is unavailable.
 - `src/lib/buildStories.js` — derives the Instagram-style stories player from
   the edition object. Nothing is authored for it separately.
 - `src/lib/photoIcons.js` — the icons a placeholder tile may name. Imported

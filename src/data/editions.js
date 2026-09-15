@@ -117,7 +117,7 @@ const AQ_GAMES = {
     {
       prompt: "how many members does AQ have?",
       value: 1300, display: "1,300+", max: 3000, step: 50,
-      note: "1,300+, every one of them aged 14 to 19.",
+      note: "1,300+. it started with 16.",
     },
     {
       prompt: "how many kids has the Welfare Team reached in teaching workshops?",
@@ -169,7 +169,7 @@ export const editions = {
       body: [
         "AquaTerra is a student-led NGO and community in Kolkata, West Bengal. it started in June 2021, when 16 students decided a Saturday afternoon could go to a feeding drive instead of nothing in particular — and then showed up again the next one.",
         "it is DARPAN-registered and entirely self-funded. no corporate money, no outside funding. what gets done gets done because somebody turned up.",
-        "there are 1,300+ members now, every one of them aged 14 to 19, across eight teams — five that run on volunteers and three that are student businesses run by members. 540+ drives have been written up. 4,000+ saplings are in the ground. 15,000+ bananas have been handed out, which nobody planned.",
+        "there are 1,300+ members now, across eight teams — five that run on volunteers, three that are student businesses. 540+ drives have been written up. 4,000+ saplings are in the ground. 15,000+ bananas have been handed out, which nobody planned.",
         "it is free forever. no donations, no fees. pick a team, show up, and get to work.",
       ],
       pull: "started in Kolkata. got out of hand.",
@@ -197,7 +197,7 @@ export const editions = {
 
     teams: {
       lockup: { caps: "PICK A LANE, THEN", accent: "turn up" },
-      lead: "eight teams. five run on volunteers, three are student businesses. every one of them is run by members aged 14–19.",
+      lead: "eight teams. five run on volunteers, three are student businesses. every one of them is run by the members themselves.",
       roster: TEAM_ROSTER,
     },
 

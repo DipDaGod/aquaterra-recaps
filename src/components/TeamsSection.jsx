@@ -4,7 +4,6 @@ import ShowMore from "./ShowMore";
 import TeamCardViewer from "./TeamCardViewer";
 import Mascot from "./Mascot";
 import { Meta } from "./Lockup";
-import { useCollection } from "../lib/useCollection";
 import { TEAMS, cx } from "../lib/utils";
 
 // Built against a screenshot of the live site on a phone: two-up from the
@@ -83,18 +82,27 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
   const teams = edition.teams;
   const roster = teams?.roster || [];
   const [open, setOpen] = useState(null);
-  // Kept across visits and across issues — it is the same eight teams every
-  // month, so progress through the set shouldn't reset with the edition.
-  const { collected, collect } = useCollection("aq:teams-read");
+  // Deliberately not persisted. It lives for this visit and resets on reload,
+  // so the set is something you do rather than a checklist the site remembers
+  // having made you do.
+  const [read, setRead] = useState(() => new Set());
+  const [celebrating, setCelebrating] = useState(false);
 
   if (roster.length === 0) return null;
 
   const volunteer = roster.filter((t) => TEAMS[t.key]?.kind === "volunteer team").length;
-  const done = collected.size >= roster.length;
+  const done = read.size >= roster.length;
 
   function openAt(i) {
     setOpen(i);
-    collect(roster[i].key);
+    setRead((prev) => {
+      if (prev.has(roster[i].key)) return prev;
+      const next = new Set(prev).add(roster[i].key);
+      // Fires on the card that completes the set, once — not every time the
+      // set happens to already be complete.
+      if (next.size === roster.length) setCelebrating(true);
+      return next;
+    });
   }
 
   return (
@@ -113,16 +121,14 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
     >
       <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
         <Meta className={done ? "text-green" : "text-ink-3"}>
-          {done ? "set complete" : `cards read · ${collected.size} of ${roster.length}`}
+          {done ? "set complete" : `cards read · ${read.size} of ${roster.length}`}
         </Meta>
         <span aria-hidden="true" className="flex gap-1">
           {roster.map((t) => (
             <span
               key={t.key}
               className="h-1.5 w-5 rounded-full transition-colors"
-              style={{
-                background: collected.has(t.key) ? TEAMS[t.key].raw : "var(--color-line)",
-              }}
+              style={{ background: read.has(t.key) ? TEAMS[t.key].raw : "var(--color-line)" }}
             />
           ))}
         </span>
@@ -142,7 +148,7 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
             key={entry.key}
             entry={entry}
             tilt={TILTS[i % TILTS.length]}
-            read={collected.has(entry.key)}
+            read={read.has(entry.key)}
             onOpen={() => openAt(i)}
           />
         ))}
@@ -167,8 +173,10 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
         <TeamCardViewer
           roster={roster}
           index={open}
-          collected={collected}
+          collected={read}
+          celebrating={celebrating}
           onNavigate={openAt}
+          onCelebrated={() => setCelebrating(false)}
           onClose={() => setOpen(null)}
         />
       )}

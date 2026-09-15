@@ -198,6 +198,11 @@ AquaTerra writes in a specific register. Match it; don't write NGO copy.
 2. **Concrete numbers instead of adjectives.** Not "significant impact" —
    "15,000+ bananas distributed". The bananas line is the house style in
    miniature: specific, faintly absurd, unarguably true.
+   - But **say a fact once.** "ages 14–19" is the site's own label on the 1,300+
+     figure and belongs wherever that figure is labelled. Worked into prose four
+     times over it stopped being a fact and started reading like a compliance
+     disclaimer, so it came out of every sentence that isn't labelling the
+     number. The same goes for any figure: repetition cheapens it.
 3. **Short declaratives.** Periods where a lesser writer uses commas.
 4. **Parentheses carry the warmth.** *student stories from the ground
    (Sundarbans trips, plantation drives, the late-night event builds) written by
@@ -550,15 +555,22 @@ before reversing one.
   link to that team's story in the issue; the desk asked for the arrow and the
   jump to go.
 - **The eight teams are a collectible set.** Tapping a card opens it as a
-  trading-card-style pop-out, and reading all eight completes the set — progress
-  is kept in `localStorage` under `aq:teams-read`, so it persists across reloads
-  and across issues (it is the same eight teams every month).
+  trading-card-style pop-out, and reading all eight fires a full-screen
+  celebration.
+  - **Progress is deliberately not persisted.** It lives in React state for the
+    visit and resets on reload. The desk asked for this: the set is something
+    you do, not a checklist the site remembers having made you do. Don't put it
+    back in `localStorage`.
+  - The celebration fires **once, on the card that completes the set** — not
+    every time the set happens to already be complete. It is a takeover, not a
+    panel: it used to be a block appended under the card, which meant the payoff
+    for collecting all eight was some text you had to scroll to.
   - The card shows only that team's own published data. There is **no per-team
     trivia to reveal** that isn't already on the page, and inventing some would
     be rule 0. The fun is the collecting, not new facts.
-  - The reward for finishing is the full palette in one place plus the site's own
-    "pick a team, show up, and get to work." **Do not invent a prize** — there
-    isn't one to offer, and a fake one is worse than none.
+  - The reward is the full palette in one place plus the site's own "pick a team,
+    show up, and get to work." **Do not invent a prize** — there isn't one to
+    offer, and a fake one is worse than none.
   - Navigation inside the pop-out is the row of eight dots, which doubles as the
     progress meter. No arrows there either.
   - Crftd's identity colour is `#000`, so the card and its chips carry a faint
@@ -607,9 +619,11 @@ before reversing one.
   the viewport: the overflow goes above the scroll origin and cannot be reached.
   Scroll on the outer box and centre on an inner one that is free to grow past
   it (`min-h-full` + `justify-center`).
-- **`localStorage` throws** in a private window and returns nothing when site
-  data is blocked. Every access is wrapped, and the page has to work with the
-  set simply starting empty.
+- **Every animation's END state must be its resting state.** Reduced motion
+  clamps animations to 0.001ms with the fill mode still applied, so a keyframe
+  that ends mid-flight freezes there. The confetti ends at opacity 0, which is
+  why it simply never appears under reduced motion instead of hanging in the
+  air.
 - **A non-breaking space on both sides of a middle dot** welds the whole string
   into one unbreakable run. Bind the side that must travel with the word, not
   both.

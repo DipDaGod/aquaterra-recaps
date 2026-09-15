@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { X, Check } from "lucide-react";
 import Mascot from "./Mascot";
 import { Meta } from "./Lockup";
+import Celebration from "./Celebration";
 import { useOverlay } from "../lib/useOverlay";
 import { TEAMS, cx } from "../lib/utils";
 
@@ -14,6 +15,10 @@ import { TEAMS, cx } from "../lib/utils";
 // Everything on it is that team's own verified data (CLAUDE.md §2). The fun is
 // the collecting, not new facts: there is no per-team trivia to reveal that
 // isn't already published, and inventing some would be rule 0.
+//
+// Finishing the set fires <Celebration> over the top of this. That is a moment,
+// not a panel — it used to be a block appended below the card, which meant the
+// payoff for collecting all eight was some text you had to scroll to.
 function Card({ entry, number, total }) {
   const team = TEAMS[entry.key];
 
@@ -59,41 +64,7 @@ function Card({ entry, number, total }) {
   );
 }
 
-// The reward for reading all eight: the full palette in one place, and the
-// site's own line about what to do next. No invented prize — there isn't one to
-// offer, and a fake one would be worse than none.
-function Complete({ roster }) {
-  return (
-    <div className="story-enter-next w-full max-w-[21rem] rounded-[1.75rem] border border-cream-soft/15 bg-ink p-6 text-center text-cream-soft sm:p-7">
-      <ul className="flex flex-wrap justify-center gap-1.5">
-        {roster.map((entry, i) => (
-          <li
-            key={entry.key}
-            className="story-pop h-6 w-6 rounded-full ring-1 ring-cream-soft/25"
-            style={{ background: TEAMS[entry.key].raw, "--i": i }}
-            title={TEAMS[entry.key].name}
-          />
-        ))}
-      </ul>
-
-      <h3 className="u-display mt-6 text-[clamp(1.75rem,8vw,2.5rem)] leading-[0.95]">
-        EIGHT FOR <em className="font-accent lowercase italic text-green-bright">eight</em>
-        <span aria-hidden="true">.</span>
-      </h3>
-
-      <p className="mt-4 text-pretty text-cream-soft/70">
-        that&apos;s every team AquaTerra has. five run on volunteers, three are
-        student businesses, and all of them are run by people aged 14 to 19.
-      </p>
-
-      <p className="mt-5 text-pretty font-semibold text-cream-soft">
-        pick a team, show up, and get to work.
-      </p>
-    </div>
-  );
-}
-
-export default function TeamCardViewer({ roster, index, collected, onNavigate, onClose }) {
+export default function TeamCardViewer({ roster, index, collected, celebrating, onNavigate, onCelebrated, onClose }) {
   const closeRef = useRef(null);
   useOverlay(closeRef);
 
@@ -107,13 +78,16 @@ export default function TeamCardViewer({ roster, index, collected, onNavigate, o
 
   useEffect(() => {
     function onKey(e) {
-      if (e.key === "Escape") onClose();
+      // While the celebration is up it owns the keyboard — Escape dismisses it
+      // rather than closing the whole viewer behind it.
+      if (e.key === "Escape") (celebrating ? onCelebrated : onClose)();
+      else if (celebrating) return;
       else if (e.key === "ArrowRight") go(index + 1);
       else if (e.key === "ArrowLeft") go(index - 1);
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [index, go, onClose]);
+  }, [index, go, onClose, celebrating, onCelebrated]);
 
   const entry = roster[index];
   if (!entry) return null;
@@ -174,8 +148,9 @@ export default function TeamCardViewer({ roster, index, collected, onNavigate, o
         </Meta>
       </div>
 
-      {done && <Complete roster={roster} />}
       </div>
+
+      {celebrating && <Celebration roster={roster} onDone={onCelebrated} />}
     </div>,
     document.body
   );

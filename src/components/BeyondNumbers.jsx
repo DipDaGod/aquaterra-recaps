@@ -27,8 +27,8 @@ export default function BeyondNumbers() {
             Free forever. No donations, no fees. Pick a team, show up, and get to work.
           </p>
           <p className="mt-4 max-w-md text-pretty text-ink-soft">
-            AquaTerra is student-led and self-funded — 1,300+ members, ages 14–19,
-            across eight teams. this magazine is where the month gets written down
+            AquaTerra is student-led and self-funded — 1,300+ members across eight
+            teams. this magazine is where the month gets written down
             (the drives, the events, the student businesses, the frames somebody
             actually shot) by the members who were there.
           </p>
