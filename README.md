@@ -6,7 +6,7 @@ React, Vite, Tailwind CSS v4 and React Router.
 **Fonts:** AquaTerra's own faces are served from `/public/fonts/` and wired in
 `src/styles/fonts.css` — the only file in the codebase that names a typeface.
 Eina 01 for body, Neutral Face for display, JetBrains Mono for meta labels,
-Instrument Serif for the italic accent word, Caveat for the single sign-off.
+Instrument Serif for the italic accent word, Caveat for the single sign-off in it.
 
 Three weights the parent site uses were not supplied, and are covered by
 declaring a weight *range* on the nearest face so the browser picks the real
