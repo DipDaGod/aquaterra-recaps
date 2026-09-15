@@ -465,15 +465,19 @@ used repeatedly rather than eight bespoke sections.
   - A slide carries the `section` it came from, which is what lets the player
     offer a way into that part of the page. The run is a trailer for the issue;
     it should not be a dead end.
-  - The player groups its progress bar **by chapter** and puts a row of chapter
-    rings under it. Twenty-one equal segments in a 26rem card were 12px each and
-    told you nothing, and the run is over a minute long — without the rings
-    there is no way to skip a part you don't want.
-  - Those rings are **the same object as the highlight row under the hero**, and
-    deliberately so: it is the thing that opened the chapter in the first place.
-    A row of text pills in a scroller was tried first and rendered `.scroll-quiet`'s
-    cream scrollbar straight across the dark card. There are only ever five
-    chapters — it never needed to scroll.
+  - The player is a **carousel of topics**, the shape every stories player uses:
+    the live chapter centred, the ones either side peeking back at reduced
+    scale, chevrons in the gaps between them. The card header names the current
+    chapter and its position inside it, where Instagram names the account.
+  - **Tap moves a card, swipe moves a topic**, swipe down closes. Keep that
+    split — it is what the gestures mean everywhere else, and what the desk
+    asked for.
+  - The progress bar is grouped **by chapter**. Twenty-one equal segments in a
+    26rem card were 12px each and told you nothing.
+  - Two earlier attempts at chapter navigation are worth not repeating: a row of
+    text pills in a horizontal scroller (which painted `.scroll-quiet`'s cream
+    scrollbar across the dark card), and a row of five rings inside the card
+    (redundant once forward and back move a topic at a time).
 - **`isPlaceholder()`** lets the placeholder state be *designed* rather than just
   look broken: bracketed copy renders dimmed, short fields get a dashed rule. It
   disappears on its own as real copy lands.

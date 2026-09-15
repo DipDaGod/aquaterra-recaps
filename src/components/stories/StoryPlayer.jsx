@@ -12,6 +12,54 @@ import { SECTION_ACCENTS, cx } from "../../lib/utils";
 // Timing runs on requestAnimationFrame, not a CSS animation: the global
 // reduced-motion rule clamps every animation to 0.001ms, which would blast a
 // CSS-driven progress bar through every slide at once.
+// Forward and back between topics. Sits in the gap between the peek and the
+// active card, as it does on a stories player, rather than as the invisible
+// edge targets that used to be inside the card.
+function Chevron({ dir, chapter, onClick }) {
+  const Icon = dir === "prev" ? ChevronLeft : ChevronRight;
+  if (!chapter) return <span aria-hidden="true" className="hidden h-11 w-11 shrink-0 sm:block" />;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`${dir === "prev" ? "Previous" : "Next"} topic — ${chapter.label}`}
+      className="hidden h-11 w-11 shrink-0 place-items-center rounded-full bg-cream-soft/10 text-cream-soft transition-colors hover:bg-cream-soft/25 sm:grid"
+    >
+      <Icon className="h-5 w-5" strokeWidth={2} />
+    </button>
+  );
+}
+
+// The topic either side of the one you are on, scaled back and dimmed — the
+// carousel a stories player uses to say "there is more, in both directions".
+// Hidden below lg, where the active card takes the whole screen and swiping is
+// how you move between topics.
+function ChapterPeek({ chapter, onClick }) {
+  if (!chapter) return <span aria-hidden="true" className="hidden w-[13rem] shrink-0 lg:block" />;
+  const a = SECTION_ACCENTS[chapter.accent] || SECTION_ACCENTS.green;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`Go to ${chapter.label} — ${chapter.count} ${chapter.count === 1 ? "card" : "cards"}`}
+      className="hidden w-[13rem] shrink-0 flex-col items-center gap-3 opacity-55 transition-opacity duration-300 hover:opacity-100 lg:flex"
+    >
+      <span className="relative grid h-[min(52vh,26rem)] w-full place-items-center overflow-hidden rounded-[1.5rem] bg-ink">
+        <span aria-hidden="true" className="absolute inset-0 opacity-30" style={{ background: a.raw }} />
+        <span className={cx("relative grid h-16 w-16 place-items-center rounded-full p-[3px]", a.rule)}>
+          <span className="grid h-full w-full place-items-center rounded-full bg-ink">
+            <span className="u-display text-base text-cream-soft">
+              {String(chapter.count).padStart(2, "0")}
+            </span>
+          </span>
+        </span>
+      </span>
+      <Meta className="text-cream-soft/70">{chapter.label}</Meta>
+    </button>
+  );
+}
+
 export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSection }) {
   const [index, setIndex] = useState(startAt);
   const [paused, setPaused] = useState(false);
@@ -42,9 +90,10 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
     () => chaptersFor(slides).filter((c) => c.id !== "all"),
     [slides]
   );
-  const current = chapters.find(
-    (c) => index >= c.start && index < c.start + c.count
-  );
+  const at = chapters.findIndex((c) => index >= c.start && index < c.start + c.count);
+  const current = chapters[at];
+  const prevChapter = chapters[at - 1];
+  const nextChapter = chapters[at + 1];
 
   const go = useCallback((next) => {
     if (next < 0) { setIndex(0); elapsed.current = 0; setProgress(0); return; }
@@ -54,6 +103,16 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
     elapsed.current = 0;
     setProgress(0);
   }, [total, onClose, index]);
+
+  // Forward and back move a whole topic. Inside one, the cards advance on their
+  // own or on a tap.
+  const goChapter = useCallback(
+    (delta) => {
+      const to = chapters[at + delta];
+      if (to) go(to.start);
+    },
+    [chapters, at, go]
+  );
 
   // Fetch the next photograph while this slide is still up, so a real frame
   // doesn't pop in a beat late.
@@ -95,6 +154,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
   if (!slide) return null;
 
   const accentRaw = (SECTION_ACCENTS[slide.accent] || SECTION_ACCENTS.green).raw;
+  const accentRule = (SECTION_ACCENTS[current?.accent] || SECTION_ACCENTS.green).rule;
 
   // Press and hold pauses, as it does on Instagram; a quick press is a tap, and
   // which half it lands in decides direction.
@@ -113,8 +173,8 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
     const quick = performance.now() - held.current < 250;
     releaseHold();
 
-    // Swipe: sideways moves, downwards closes — the gesture people already
-    // expect from every other stories player.
+    // Tapping moves a card, swiping moves a topic, swiping down closes — the
+    // split every stories player uses, and the one the desk asked for.
     const from = swipe.current;
     swipe.current = null;
     if (from) {
@@ -124,7 +184,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
         if (dy > 0) onClose();
         return;
       }
-      if (Math.abs(dx) > 60) { go(index + (dx < 0 ? 1 : -1)); return; }
+      if (Math.abs(dx) > 60) { goChapter(dx < 0 ? 1 : -1); return; }
     }
 
     if (!quick) return;
@@ -140,6 +200,10 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
       aria-modal="true"
       aria-label={`${slide.chapter} story, ${index + 1} of ${total}`}
     >
+      <div className="flex h-full w-full items-center justify-center gap-3 sm:h-auto sm:gap-4">
+        <ChapterPeek chapter={prevChapter} onClick={() => goChapter(-1)} />
+        <Chevron dir="prev" chapter={prevChapter} onClick={() => goChapter(-1)} />
+
       <div
         className="relative flex h-full w-full max-w-[26rem] flex-col overflow-hidden bg-ink transition-shadow duration-700 sm:h-[min(90vh,46rem)] sm:rounded-[2rem]"
         style={{ boxShadow: `0 0 90px -20px ${accentRaw}` }}
@@ -171,42 +235,26 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           ))}
         </div>
 
-        {/* Skip a whole chapter. Built as highlight rings, the same object the
-            row under the hero uses to open these chapters in the first place —
-            a scrolling row of text pills read as a stray scrollbar on the dark
-            card, and there are only ever five of these, so it never needed to
-            scroll at all. */}
-        <div className="absolute inset-x-0 top-6 z-20 flex items-center gap-2 pl-3 pr-[5.5rem]">
-          {chapters.map((c) => {
-            const a = SECTION_ACCENTS[c.accent] || SECTION_ACCENTS.green;
-            const on = c.id === current?.id;
-            const seen = index >= c.start;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => go(c.start)}
-                aria-label={`${c.label} — ${c.count} ${c.count === 1 ? "card" : "cards"}`}
-                aria-current={on ? "true" : undefined}
-                className="shrink-0"
-              >
-                <span
-                  className={cx(
-                    "grid h-7 w-7 place-items-center rounded-full p-[2px] transition-[transform,opacity] duration-300",
-                    a.rule,
-                    on ? "scale-110" : seen ? "opacity-70 hover:opacity-100" : "opacity-40 hover:opacity-90"
-                  )}
-                >
-                  <span className="grid h-full w-full place-items-center rounded-full bg-ink">
-                    <span className="u-mono text-[0.5rem] text-cream-soft">
-                      {String(c.count).padStart(2, "0")}
-                    </span>
-                  </span>
-                </span>
-              </button>
-            );
-          })}
-          <Meta className="min-w-0 truncate text-cream-soft/55">{current?.label}</Meta>
+        {/* The chapter, where a stories player puts whose story it is. The
+            five-ring row that used to sit here is redundant now that forward
+            and back move a topic at a time. */}
+        <div className="absolute inset-x-0 top-5 z-20 flex items-center gap-2.5 pl-3 pr-[5.5rem]">
+          <span
+            aria-hidden="true"
+            className={cx("grid h-8 w-8 shrink-0 place-items-center rounded-full p-[2px]", accentRule)}
+          >
+            <span className="grid h-full w-full place-items-center rounded-full bg-ink">
+              <span className="u-mono text-[0.5rem] text-cream-soft">
+                {String(current?.count ?? 0).padStart(2, "0")}
+              </span>
+            </span>
+          </span>
+          <span className="min-w-0">
+            <Meta className="block truncate text-cream-soft">{current?.label}</Meta>
+            <Meta className="block text-cream-soft/45">
+              {index - (current?.start ?? 0) + 1} of {current?.count}
+            </Meta>
+          </span>
         </div>
 
         <div className="absolute right-2 top-5 z-30 flex items-center gap-1">
@@ -248,30 +296,15 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           </div>
         </div>
 
-        <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-10 flex items-center justify-between px-1">
-          <button
-            type="button"
-            onClick={() => go(index - 1)}
-            aria-label="Previous"
-            className="pointer-events-auto grid h-10 w-10 place-items-center rounded-full text-cream-soft/0 transition-colors hover:bg-cream-soft/10 hover:text-cream-soft/80 focus-visible:text-cream-soft"
-          >
-            <ChevronLeft className="h-5 w-5" strokeWidth={2} />
-          </button>
-          <button
-            type="button"
-            onClick={() => go(index + 1)}
-            aria-label="Next"
-            className="pointer-events-auto grid h-10 w-10 place-items-center rounded-full text-cream-soft/0 transition-colors hover:bg-cream-soft/10 hover:text-cream-soft/80 focus-visible:text-cream-soft"
-          >
-            <ChevronRight className="h-5 w-5" strokeWidth={2} />
-          </button>
-        </div>
-
         <p className="pointer-events-none absolute inset-x-0 bottom-2 z-20 text-center">
           <span className={cx("u-mono text-cream-soft/30", paused && "text-cream-soft/60")}>
             {paused ? "paused" : `${index + 1} / ${total}`}
           </span>
         </p>
+      </div>
+
+        <Chevron dir="next" chapter={nextChapter} onClick={() => goChapter(1)} />
+        <ChapterPeek chapter={nextChapter} onClick={() => goChapter(1)} />
       </div>
     </div>,
     document.body
