@@ -158,7 +158,8 @@ export default function OrbitBanner() {
         tabIndex={-1}
       />
 
-      <div className="aq-orbit-ring" role="img" aria-label={DESCRIPTION}>
+      <div className="aq-orbit-stage">
+        <div className="aq-orbit-ring" role="img" aria-label={DESCRIPTION}>
         {BUBBLES.map((bubble, i) => (
           <span
             key={i}
@@ -180,9 +181,10 @@ export default function OrbitBanner() {
             />
           </span>
         ))}
-      </div>
+        </div>
 
-      <p className="aq-orbit-word">AQUATERRA</p>
+        <p className="aq-orbit-word">AQUATERRA</p>
+      </div>
     </div>
   );
 }

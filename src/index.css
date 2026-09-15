@@ -309,8 +309,22 @@ button:focus-visible,
   background-color: var(--color-near-black);
   display: grid;
   place-items: center;
-  min-height: clamp(11.5rem, 20vw, 18rem);
-  padding: clamp(1.5rem, 4vw, 3rem) 1rem;
+  padding: clamp(1rem, 2.5vw, 2rem) 1rem;
+}
+
+/* The dark band runs to the edges so it joins the footer, but the composition
+   inside it does not: the word and the ring share one centred column, the same
+   width the rest of the site lays out to. */
+.aq-orbit-stage {
+  position: relative;
+  width: 100%;
+  max-width: 54rem;
+  display: grid;
+  place-items: center;
+  /* The stage needs a height of its own: the ring is inset:0 against it, and
+     without one the bubbles' top percentages collapse onto the single line of
+     the word and bunch around it. */
+  min-height: clamp(6.5rem, 19vw, 10.8rem);
 }
 
 /* On screen, but 1px of it: the element has to be laid out for the browser to
@@ -331,7 +345,10 @@ button:focus-visible,
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 0.9;
-  font-size: clamp(2.125rem, 10.5vw, 9.5rem);
+  /* The word takes about 60% of the stage. The bubbles at 7%, 10%, 89% and 92%
+     need the rest, or the composition has no air in it — that proportion is
+     the whole look. */
+  font-size: clamp(1.5rem, 9.7vw, 5.45rem);
   color: var(--color-cream);
   text-align: center;
 }
@@ -364,14 +381,16 @@ button:focus-visible,
   height: 100%;
 }
 
-.aq-bubble--lg { width: clamp(3.75rem, 10vw, 9.25rem); aspect-ratio: 1; }
-.aq-bubble--md { width: clamp(2.875rem, 7.5vw, 7rem); aspect-ratio: 1; }
-.aq-bubble--sm { width: clamp(2.25rem, 5.5vw, 5.25rem); aspect-ratio: 1; }
+/* Sized off the stage, not the viewport, so they keep their proportion to the
+   word once the column stops growing. */
+.aq-bubble--lg { width: 10.4%; aspect-ratio: 1; }
+.aq-bubble--md { width: 7.8%; aspect-ratio: 1; }
+.aq-bubble--sm { width: 5.8%; aspect-ratio: 1; }
 
 /* Small enough to read as a drift rather than a bounce. */
 @keyframes orbit-drift {
-  from { transform: translate(-50%, -50%) translate3d(-7px, -5px, 0); }
-  to   { transform: translate(-50%, -50%) translate3d(7px, 5px, 0); }
+  from { transform: translate(-50%, -50%) translate3d(-5px, -4px, 0); }
+  to   { transform: translate(-50%, -50%) translate3d(5px, 4px, 0); }
 }
 
 /* ===== The team-card set ========================================== */

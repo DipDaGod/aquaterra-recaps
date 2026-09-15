@@ -50,13 +50,6 @@ function table(rows) {
   else console.log(rows);
 }
 
-// A rule made of the eight identity colours. It is the most AquaTerra thing
-// that fits in a console.
-function paletteRule() {
-  const cells = TEAM_ROSTER.map(() => "%c ").join("");
-  console.log(cells, ...TEAM_ROSTER.map((t) => swatch(hex(TEAMS[t.key]))));
-}
-
 const totalFor = (needle) =>
   AQ_TOTALS.find((t) => t.label.includes(needle)) || AQ_TOTALS[0];
 
@@ -179,14 +172,11 @@ const aq = Object.freeze({
         line(PALETTE.quiet)
       );
     }
-    paletteRule();
   },
 });
 
 export function printConsoleBanner() {
   if (typeof console === "undefined" || typeof window === "undefined") return;
-
-  paletteRule();
 
   // The nav's own lockup, rebuilt out of two console pills.
   console.log(

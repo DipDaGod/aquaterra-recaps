@@ -369,6 +369,14 @@ tint — so the banner never looks broken, it just looks flatter. The banner and
 the footer are one continuous dark block; the footer has no top margin for that
 reason.
 
+**The dark band runs to the edges; the composition inside it does not.** The
+word and the ring share one centred stage capped at 54rem, and the word takes
+about 60% of it — the bubbles at 7%, 10%, 89% and 92% need the rest or there is
+no air in it, and that proportion is the whole look. The stage carries its own
+`min-height` because the ring is `inset: 0` against it: with no height the
+bubbles' top percentages collapse onto the single line of the word and bunch
+around it.
+
 ### Cursors and selection
 
 Both are set once, in `@layer base` in `index.css`. Don't set them per-component
