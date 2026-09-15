@@ -86,3 +86,10 @@ export function sectionAccent(key, onDark = false) {
   const a = SECTION_ACCENTS[key] || SECTION_ACCENTS.green;
   return { text: onDark ? a.bright : a.on, rule: a.rule };
 }
+
+// Content still awaiting the desk is written as "[bracketed]" (aq.md §0).
+// Knowing that at render time lets the placeholder state be designed rather
+// than just look broken — and it disappears on its own as real copy lands.
+export function isPlaceholder(value) {
+  return typeof value === "string" && /^\[.*\]$/.test(value.trim());
+}

@@ -85,7 +85,7 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
           const lead = active === "All" && i === 0 && filtered.length > 1;
           return (
             <div key={`${project.title}-${i}`} className={lead ? "lg:col-span-2" : ""}>
-              <ProjectCard project={project} wide={lead} />
+              <ProjectCard project={project} index={i} wide={lead} />
             </div>
           );
         })}
