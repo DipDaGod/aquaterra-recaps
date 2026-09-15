@@ -4,8 +4,7 @@ import StoryPlayer from "./StoryPlayer";
 import { buildStories, chaptersFor } from "../../lib/buildStories";
 import { SECTION_ACCENTS, cx } from "../../lib/utils";
 
-// Instagram's highlight rings, sitting where they sit on a profile: under the
-// name, above everything else. The first opens the whole run; the rest jump
+// Instagram's highlight rings. The first opens the whole run; the rest jump
 // straight to their chapter.
 export default function Highlights({ edition }) {
   const slides = useMemo(() => buildStories(edition), [edition]);
@@ -29,8 +28,8 @@ export default function Highlights({ edition }) {
                 onClick={() => setStartAt(c.start)}
                 className="group flex w-[4.5rem] flex-col items-center gap-2"
               >
-                {/* The ring. Two rounded boxes rather than a border, so the
-                    gap between ring and fill stays even at any size. */}
+                {/* Two rounded boxes rather than a border, so the gap between
+                    ring and fill stays even at any size. */}
                 <span
                   className={cx(
                     "grid h-[4.25rem] w-[4.25rem] place-items-center rounded-full p-[3px] transition-transform duration-300 group-hover:scale-105 group-active:scale-95",

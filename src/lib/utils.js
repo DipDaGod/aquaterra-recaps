@@ -15,8 +15,7 @@ export function cx(...parts) {
   return parts.filter(Boolean).join(" ");
 }
 
-// Tone -> tailwind classes for placeholder photo tiles, kept in one place
-// so swapping the palette later only means editing this map.
+// Tone -> classes for placeholder photo tiles.
 export const TONES = {
   green: { bg: "bg-tint-green", fg: "text-green-deep", line: "border-green/20" },
   yellow: { bg: "bg-tint-yellow", fg: "text-ink", line: "border-ink/10" },
@@ -26,18 +25,14 @@ export const TONES = {
   cream: { bg: "bg-paper", fg: "text-ink-soft", line: "border-ink/10" },
 };
 
-// The 8 teams, exactly as aq.md §2 casts them. Names and casing are verified
-// facts — do not normalise, title-case or expand them. Each owns one identity
-// colour; `accent` is the token name, `text`/`bg` the Tailwind utilities.
-// `name` is the canonical casing — the only form that may appear in prose,
-// nav or a sentence. `caps` is the display-caps form the parent site sets on
-// its team-card titles, confirmed from a screenshot of the live site on a
-// phone: it renders WELFARE TEAM, SOCIAL MEDIA, COLLABS TEAM and SHIKSHAQ.
+// The 8 teams. Names and casing are verified facts (CLAUDE.md §2) — never
+// normalise, title-case or expand them. `name` is the canonical form, the only
+// one allowed in prose; `caps` is the display form the parent site sets on its
+// team-card titles.
 //
-// `caps` is therefore NOT a blanket uppercase() — it exists precisely so the
-// caps form is a deliberate, per-team value used only on the card title, and
-// never leaks into prose where aq.md §2 bans it. Never run a CSS `uppercase`
-// over a team name; render `caps` when you want the display form.
+// `caps` exists so the display form is a deliberate per-team value. Never run a
+// CSS `uppercase` over a team name — it would also hit prose, where CLAUDE.md
+// §2 bans the caps forms.
 export const TEAMS = {
   welfare: { name: "Welfare Team", caps: "WELFARE TEAM", kind: "volunteer team", emoji: "🌱", bg: "bg-team-welfare", on: "text-cream-soft", ink: "text-team-welfare-ink" },
   social: { name: "Social Media", caps: "SOCIAL MEDIA", kind: "volunteer team", emoji: "✍️", bg: "bg-team-social", on: "text-cream-soft", ink: "text-team-social-ink" },
@@ -49,10 +44,9 @@ export const TEAMS = {
   crftd: { name: "Crftd", caps: "CRFTD", kind: "student business", emoji: "✍️", bg: "bg-team-crftd", on: "text-cream-soft", ink: "text-team-crftd-ink" },
 };
 
-// Per-issue accent colours. Each edition picks one and every accent word,
-// section number and rule on that issue shifts to it, so two issues never look
-// like the same page with different words. Drawn from the team palette rather
-// than a new set — aq.md §4 forbids adding a ninth colour.
+// Per-issue accents. An edition picks one and every accent word, section
+// number and rule shifts to it. Drawn from the team palette — CLAUDE.md §4
+// forbids a ninth colour.
 export const ISSUE_ACCENTS = {
   green: { accent: "var(--color-green)", ink: "var(--color-green-deep)" },
   sky: { accent: "var(--color-team-events)", ink: "var(--color-team-events-ink)" },
@@ -69,10 +63,8 @@ export function issueAccentVars(key) {
 }
 
 // Section accents. `on` is the text-safe variant for cream grounds, `bright`
-// the block colour for dark ones. See issueSections.js for why the team
-// palette is used editorially here.
-// `raw` is the colour as a CSS value, for gradients and shadows where a
-// Tailwind class cannot reach.
+// the block colour for dark ones, `raw` the CSS value for gradients and shadows
+// a Tailwind class cannot reach.
 export const SECTION_ACCENTS = {
   green: { on: "text-team-welfare-ink", bright: "text-green-bright", rule: "bg-team-welfare", raw: "var(--color-green-bright)" },
   tomato: { on: "text-team-ventures-ink", bright: "text-team-ventures", rule: "bg-team-ventures", raw: "var(--color-team-ventures)" },
@@ -89,9 +81,8 @@ export function sectionAccent(key, onDark = false) {
   return { text: onDark ? a.bright : a.on, rule: a.rule };
 }
 
-// Content still awaiting the desk is written as "[bracketed]" (aq.md §0).
-// Knowing that at render time lets the placeholder state be designed rather
-// than just look broken — and it disappears on its own as real copy lands.
+// Copy still awaiting the desk is written "[bracketed]" (CLAUDE.md §0).
+// Knowing that at render time lets the placeholder state be designed.
 export function isPlaceholder(value) {
   return typeof value === "string" && /^\[.*\]$/.test(value.trim());
 }

@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { TEAMS, cx } from "../../lib/utils";
 import { Meta } from "../Lockup";
 
 // MATCH — tap a team, then tap what it does. A correct pair locks in that
-// team's own colour, so finishing the game leaves the full palette on screen,
-// which is the orientation issue's whole point: learning the eight teams.
+// team's own colour, so finishing leaves the full palette on screen.
 //
 // Tap-to-pair rather than drag-and-drop: it works identically with a mouse, a
-// thumb and a keyboard, and drag would need a fallback for all three.
+// thumb and a keyboard.
 function shuffle(xs) {
   const a = [...xs];
   for (let i = a.length - 1; i > 0; i--) {
@@ -24,6 +23,9 @@ export default function MatchTeams({ pairs }) {
   const [matched, setMatched] = useState(() => new Set());
   const [wrong, setWrong] = useState(null);
   const [tries, setTries] = useState(0);
+  const wrongTimer = useRef(0);
+
+  useEffect(() => () => clearTimeout(wrongTimer.current), []);
 
   const complete = matched.size === pairs.length;
 
@@ -43,11 +45,13 @@ export default function MatchTeams({ pairs }) {
     } else {
       setWrong(key);
       setPickedTeam(null);
-      setTimeout(() => setWrong((w) => (w === key ? null : w)), 600);
+      clearTimeout(wrongTimer.current);
+      wrongTimer.current = setTimeout(() => setWrong((w) => (w === key ? null : w)), 600);
     }
   }
 
   function restart() {
+    clearTimeout(wrongTimer.current);
     setClues(shuffle(pairs)); setPickedTeam(null);
     setMatched(new Set()); setWrong(null); setTries(0);
   }
@@ -56,13 +60,13 @@ export default function MatchTeams({ pairs }) {
     const perfect = tries === pairs.length;
     return (
       <div className="py-10 text-center">
-        <Meta className="text-cream-soft/50">All eight matched</Meta>
+        <Meta className="text-cream-soft/50">All {pairs.length} matched</Meta>
         <p className="mt-4 font-display text-6xl font-bold tabular-nums text-cream-soft sm:text-7xl">
           {tries}<span className="text-cream-soft/40"> taps</span>
         </p>
         <p className="mx-auto mt-4 max-w-sm text-pretty text-cream-soft/70">
-          {perfect ? "eight for eight, no misses. show-off."
-            : `eight teams, ${tries} tries. the perfect run is ${pairs.length}.`}
+          {perfect ? "not one miss. show-off."
+            : `${pairs.length} teams, ${tries} tries. the perfect run is ${pairs.length}.`}
         </p>
         <div className="mx-auto mt-7 flex max-w-md flex-wrap justify-center gap-2">
           {pairs.map(({ team }) => {
@@ -100,7 +104,6 @@ export default function MatchTeams({ pairs }) {
       </p>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-5">
-        {/* Teams */}
         <ul className="flex flex-col gap-2">
           {pairs.map(({ team }) => {
             const t = TEAMS[team];
@@ -127,7 +130,6 @@ export default function MatchTeams({ pairs }) {
           })}
         </ul>
 
-        {/* What they do */}
         <ul className="flex flex-col gap-2">
           {clues.map(({ team, clue }) => {
             const t = TEAMS[team];

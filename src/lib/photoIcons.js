@@ -1,11 +1,9 @@
-// Explicit registry of the icons a photo tile can name via its `icon` field.
+// The icons a placeholder photo tile can name via its `icon` field. Listed
+// explicitly, never via `import * as Icons` — a namespace import defeats
+// tree-shaking and pulls the whole library (~1.07MB) into the bundle.
 //
-// Photo.jsx previously did `import * as Icons from "lucide-react"` and looked
-// icons up off the namespace. That defeats tree-shaking: every icon in the
-// library ended up in the bundle (~1.07 MB / 287 kB gzipped) to render the
-// eighteen placeholder tiles below.
-//
-// Adding a new placeholder icon means adding it here as well as in the data.
+// A new icon name in editions.js must be added here too, or the tile falls back
+// to the generic image icon.
 import {
   BookOpen,
   CalendarDays,

@@ -1,14 +1,22 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProjectCard from "./ProjectCard";
 import Section from "./Section";
 import ShowMore from "./ShowMore";
 import { cx } from "../lib/utils";
 
 export default function FeaturedProjects({ edition, index, label, accentKey, variant, ground, size }) {
-
-  // Each filter carries its own count, so it's clear what a tab will show
-  // before it's tapped.
   const projects = useMemo(() => edition.featured ?? [], [edition.featured]);
+
+  // Only the first story for a team carries that team's anchor, so two stories
+  // from one team can't produce a duplicate id.
+  const anchored = useMemo(() => {
+    const seen = new Set();
+    return projects.map((p) => {
+      if (!p.team || seen.has(p.team)) return null;
+      seen.add(p.team);
+      return `feature-${p.team}`;
+    });
+  }, [projects]);
 
   const categories = useMemo(() => {
     const counts = new Map();
@@ -20,6 +28,19 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
   }, [projects]);
 
   const [active, setActive] = useState("All");
+
+  // A team card links to #feature-<team>. Those anchors only exist on rendered
+  // cards, so a filter left on from earlier would swallow the jump — clear it
+  // when one is targeted.
+  useEffect(() => {
+    const clear = () => {
+      if (window.location.hash.startsWith("#feature-")) setActive("All");
+    };
+    clear();
+    window.addEventListener("hashchange", clear);
+    return () => window.removeEventListener("hashchange", clear);
+  }, []);
+
   const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
 
   if (projects.length === 0) return null;
@@ -74,7 +95,7 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
       )}
 
       {/* The first card of the unfiltered view runs full width as the lead
-          story; inside a filter every card is equal so the grid stays even. */}
+          story; inside a filter every card is equal. */}
       <ShowMore
         after={3}
         total={filtered.length}
@@ -86,7 +107,7 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
           return (
             <div
               key={`${project.title}-${i}`}
-              id={project.team ? `feature-${project.team}` : undefined}
+              id={anchored[projects.indexOf(project)] || undefined}
               className={cx("scroll-mt-24", lead && "lg:col-span-2")}
             >
               <ProjectCard project={project} index={i} wide={lead} />

@@ -2,9 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AVAILABLE_YEARS, editionsForYear } from "../data/editions";
 import { cx } from "../lib/utils";
 
-// A segmented control rather than loose text buttons: the selected year now
-// has a real container to sit in, and each year carries its edition count so
-// an empty year reads as "0 editions" instead of just being greyed out.
+// A segmented control. Each year carries its edition count.
 export default function YearSelector({ year, onChange }) {
   const selectable = AVAILABLE_YEARS.filter((y) => editionsForYear(y).length > 0);
   const idx = selectable.indexOf(year);

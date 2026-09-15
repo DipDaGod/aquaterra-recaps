@@ -2,13 +2,11 @@ import Photo from "./Photo";
 import { Meta, MetaRow } from "./Lockup";
 import { TEAMS, cx, isPlaceholder } from "../lib/utils";
 
-// Copy the desk hasn't written yet renders with a dashed rule under it rather
-// than as ordinary text, so an unfinished card reads as deliberately unfinished
-// instead of as a typo someone shipped. It resolves itself: the moment a real
-// string replaces the bracketed one, the treatment disappears.
-// `rule` marks short strings — a headline, a date — where a dashed underline
-// reads as a blank waiting to be filled. Body copy gets opacity only: a dashed
-// rule under four wrapped lines is just noise.
+// Copy the desk hasn't written yet reads as deliberately unfinished rather than
+// as a typo someone shipped, and the treatment disappears on its own when a real
+// string lands. `rule` is for short strings — a headline, a date — where a
+// dashed underline reads as a blank waiting to be filled; body copy gets opacity
+// only, since a dashed rule under four wrapped lines is just noise.
 function Draft({ children, rule = false, className = "" }) {
   const pending = isPlaceholder(children);
   return (
@@ -46,9 +44,8 @@ export default function ProjectCard({ project, index, wide = false }) {
           <Photo item={project.image} />
         </div>
 
-        {/* The story's number, set in the display face's regular weight and
-            half-off the image — the same device the section openers use, so a
-            card reads as part of the issue rather than a loose tile. */}
+        {/* Set in the display face's regular weight and half-off the image —
+            the same device the section openers use. */}
         {num && (
           <span
             aria-hidden="true"
@@ -78,8 +75,6 @@ export default function ProjectCard({ project, index, wide = false }) {
           )}
         </div>
 
-        {/* Display caps, so a story headline carries the same weight as a
-            section opener instead of reading as a card label. */}
         <h3 className={cx("u-display mt-3", wide ? "text-2xl sm:text-3xl" : "text-xl sm:text-[1.4rem]")}>
           <Draft rule>{project.title}</Draft>
         </h3>
@@ -88,7 +83,6 @@ export default function ProjectCard({ project, index, wide = false }) {
           <Draft>{project.description}</Draft>
         </p>
 
-        {/* Meta joined with middle dots, the parent site's own pattern. */}
         <div className="mt-auto border-t border-line pt-3.5">
           <MetaRow className="text-ink-3" items={[project.location, project.people]} />
         </div>

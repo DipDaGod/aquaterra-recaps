@@ -21,8 +21,6 @@ function Rise({ i = 0, className = "", children }) {
   );
 }
 
-// A full-bleed frame that drifts, with the drift direction varied per slide so
-// consecutive photos don't pan the same way.
 function Frame({ item, seed = 0 }) {
   return (
     <div className="absolute inset-0 overflow-hidden">

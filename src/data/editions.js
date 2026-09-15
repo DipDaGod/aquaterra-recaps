@@ -1,105 +1,85 @@
-// ---------------------------------------------------------------------------
-// AQUATERRA RECAPS — DATA MODEL
-// ---------------------------------------------------------------------------
-// This file is the ONLY place a new monthly edition needs to be added.
-// The archive grid and every /:year/:month page render from this object —
-// there is no per-month page component.
+// The ONLY place a monthly edition is added. The archive and every
+// /:year/:month page render from this object — there is no per-month component.
+// Step-by-step instructions are in CLAUDE.md §7.
 //
-// RULE 0 (aq.md §0): never invent an AquaTerra fact. Every unverified value
+// RULE 0 (CLAUDE.md §0): never invent an AquaTerra fact. Every unverified value
 // below is a [bracketed placeholder]. Figures that ARE verified against the
 // live site are marked `// verified` and may be used as-is.
-//
-// This file previously carried eight fabricated 2026-01..2026-08 recaps with
-// unbracketed figures ("14 Projects", "310+ People", progress bars at 91%).
-// None of those months existed and none of those numbers were real, so they
-// are gone. The magazine starts at Edition 1, September 2026.
-// ---------------------------------------------------------------------------
 
-// A photo entry. `src` is null everywhere — drop a real file into
-// /public/recaps/<year>/<month>/ and point `src` at it, and <Photo> uses it
-// instead of the placeholder tile. `credit` names the member who shot it and
-// must come from the desk, never from a guess.
+// A photo entry. `src` is null everywhere until real photography lands — see
+// public/recaps/README.md. `credit` names the member who shot it and must come
+// from the desk, never from a guess.
 function photo(tone, icon, label, { size = "md", credit = null } = {}) {
   return { src: null, tone, icon, label, size, credit };
 }
 
-// Categories span everything AquaTerra actually does, not just welfare —
-// student businesses, events, media and openings all carry equal weight.
-export const CATEGORIES = [
-  "Welfare", "Events", "Student business", "Workshop",
-  "Collabs", "Social", "Photography", "Openings",
-];
-
+// The newest published edition: drives the "Latest" badge, the archive's
+// featured card and the "now live" strip. Update it when you add a month.
 const LATEST_KEY = "2026-09";
 
-// The 8 teams, mirrored from the parent site's own teams grid — order, links,
-// member counts, bios and open-role counts all copied from its live markup.
-// aq.md §2: the live site wins, so this is the source for team data.
+// The 8 teams, copied from the parent site's own teams grid markup and trimmed
+// for length. CLAUDE.md §2: the live site wins, so this — not the summary in
+// that file — is the source for team blurbs. Don't "correct" one to match it.
 //
-// No `href`: nothing in the magazine links out to the parent site. A team card
-// points at that team's own story in this issue instead, and falls back to
-// being plain text when the issue has no story for it.
+// No `href`: the magazine links nowhere outside itself. A team card points at
+// that team's own story in this issue, or is plain text when there isn't one.
 //
-// The HR bio on the live site reads "1,100+ members" against a headline figure
-// of 1,300+; the desk confirmed 1,300+ is the current number, so it is used
-// here. Worth correcting on the parent site too.
+// The live site's HR bio says "1,100+ members" against a headline 1,300+; the
+// desk confirmed 1,300+. Worth correcting on the parent site too.
 export const TEAM_ROSTER = [
   {
-    key: "welfare", members: 62, openRoles: 2,
+    key: "welfare", members: 62,
     blurb: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips. Dog feeding drives.",
   },
   {
-    key: "social", members: 29, openRoles: 3,
+    key: "social", members: 29,
     blurb: "Instagram, LinkedIn, website. 3,200+ followers. Reels, carousels, copy, strategy.",
   },
   {
-    key: "collabs", members: 2, openRoles: 0,
+    key: "collabs", members: 2,
     blurb: "School collabs, college collabs, NGO partnerships, outreach.",
   },
   {
-    key: "shikshaq", members: 2, openRoles: 1,
+    key: "shikshaq", members: 2,
     blurb: "Tuition discovery platform built by AQ members for Kolkata students. Launched 2026.",
   },
   {
-    key: "hr", members: 6, openRoles: 0,
+    key: "hr", members: 6,
     blurb: "Recruitment, onboarding, certificates, Letters of Recommendation.",
   },
   {
-    key: "events", members: 3, openRoles: 2,
+    key: "events", members: 3,
     blurb: "Paradox. Disco Diwali. Starry Nights. Every fundraiser AQ has ever run.",
   },
   {
-    key: "ventures", members: 23, openRoles: 0,
+    key: "ventures", members: 23,
     blurb: "Free marketing for student founders — strategy, content, branding, promotion.",
   },
   {
-    key: "crftd", members: 1, openRoles: 0,
+    key: "crftd", members: 1,
     blurb: "Student-run streetwear brand. Profits fund AQ welfare projects and events.",
   },
 ];
 
 export const editions = {
-  // -------------------------------------------------------------------------
   // EDITION 01 — September 2026. The orientation issue, not a recap: what
-  // AquaTerra is, the 8 teams, how roles work. (aq.md §5 said October; the
-  // desk corrected it to September.)
-  // -------------------------------------------------------------------------
+  // AquaTerra is, the 8 teams, how roles work. September, not October — the
+  // desk corrected that.
   "2026-09": {
     key: "2026-09", slug: "september", month: "September", year: 2026, editionNumber: 1,
     kind: "orientation",
 
-    // Every issue owns an accent from the team palette (see ISSUE_ACCENTS).
-    // It drives the section numbers, the rules and every italic accent word,
-    // so each edition reads as its own object rather than a reskin.
+    // One accent per issue, from the team palette (see ISSUE_ACCENTS). Drives
+    // the section numbers, the rules and every italic accent word.
     accent: "green",
 
-    // Headline lockup: caps + one italic accent word + a period (aq.md §4).
+    // caps + one italic accent word + a period (CLAUDE.md §4).
     lockup: { caps: "WHAT IS", accent: "aquaterra" },
     tagline: "started in Kolkata. got out of hand.", // verified — site tagline
 
     cover: photo("green", "Sprout", "[Cover — orientation issue]"),
 
-    // verified (aq.md §2). Re-check against the live site before publishing.
+    // verified (CLAUDE.md §2). Re-check against the live site before publishing.
     cardStats: [
       { value: "8", label: "teams" },
       { value: "1,300+", label: "members" },
@@ -112,8 +92,6 @@ export const editions = {
       { value: "4,000+", label: "saplings planted" },
     ],
 
-    // The orientation issue leads on the teams, so the roster is the spine of
-    // the page rather than a footnote.
     teams: {
       lockup: { caps: "PICK A LANE, THEN", accent: "turn up" },
       lead: "eight teams. five run on volunteers, three are student businesses. every one of them is run by members aged 14–19.",
@@ -159,7 +137,6 @@ export const editions = {
       },
     ],
 
-    // Photography is its own section now, with a credited photo of the month.
     // Credits must come from the desk — never attribute a photo to a name you
     // have not been given.
     photography: {
@@ -177,16 +154,13 @@ export const editions = {
       ],
     },
 
-    // Mini games. Three ways to play, because eight multiple-choice questions
-    // in a row is a worksheet, not a game. Every figure below is verified
-    // (aq.md §2) — a game whose answers are invented is rule 0 with a
-    // scoreboard attached. Re-check them before publishing.
+    // Every figure below is verified (CLAUDE.md §2) — a game whose answers are
+    // invented is rule 0 with a scoreboard. Re-check before publishing.
     games: {
       lockup: { caps: "HOW WELL DO YOU KNOW", accent: "aq" },
       lead: "three games. no prizes, no leaderboard, no sign-up. just find out how much you actually picked up.",
 
-      // BIGGER? — two figures, tap the larger. `value` is what the game
-      // compares; `display` is how the site writes it.
+      // `value` is what the game compares, `display` how the site writes it.
       bigger: [
         { label: "drives written up", value: 540, display: "540+" },
         { label: "members, ages 14–19", value: 1300, display: "1,300+" },
@@ -201,7 +175,7 @@ export const editions = {
         { label: "teams", value: 8, display: "8" },
       ],
 
-      // HOW CLOSE? — drag a slider at the real figure. `max` sets the track.
+      // `max` and `step` set the slider track.
       guess: [
         {
           prompt: "how many bananas has AQ handed out?",
@@ -225,8 +199,8 @@ export const editions = {
         },
       ],
 
-      // MATCH — pair each team to what it actually does. Clues are trimmed
-      // from the teams' own bios on the live site, never rewritten.
+      // Clues are trimmed from the teams' own bios on the live site, never
+      // rewritten.
       match: [
         { team: "welfare", clue: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips." },
         { team: "social", clue: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra." },
@@ -251,7 +225,7 @@ export const editions = {
       ],
     },
 
-    // aq.md §2: no member names, photos or quotes unless the desk supplies
+    // CLAUDE.md §2: no member names, photos or quotes unless the desk supplies
     // them. Everything here stays bracketed until then.
     people: [
       { name: "[Member name]", role: "[Team · year]", quote: "[A short quote, in their own words.]", image: photo("green", "User", "[Portrait]") },
@@ -273,7 +247,8 @@ export function editionsForYear(year) {
   return editionList.filter((e) => String(e.year) === String(year));
 }
 
-export const AVAILABLE_YEARS = [2026, 2027];
+// Derived, so the year selector can never offer a year with nothing behind it.
+export const AVAILABLE_YEARS = [...new Set(editionList.map((e) => e.year))].sort((a, b) => a - b);
 
 export function neighbours(edition) {
   const idx = editionList.findIndex((e) => e.key === edition.key);

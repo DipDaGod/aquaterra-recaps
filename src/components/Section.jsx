@@ -2,15 +2,15 @@ import { useReveal } from "../lib/useReveal";
 import { cx, sectionAccent } from "../lib/utils";
 import Lockup, { Meta } from "./Lockup";
 
-// One rhythm, three grounds, three opener treatments — so nine sections in a
-// row stop reading as the same heading nine times.
+// One rhythm, three grounds, three opener treatments, so a run of sections
+// stops reading as the same heading over and over.
 //
 //   ground  "plain"  cream page
 //           "band"   inset tinted band
 //           "ink"    full-bleed dark, knockout type
 //
 //   variant "rule"    number + hairline + label, heading beneath  (workhorse)
-//           "numeral" oversized numeral set in Neutral Face Regular alongside
+//           "numeral" oversized numeral alongside
 //           "centre"  centred opener, for the set pieces
 const GROUNDS = {
   plain: "",
@@ -33,9 +33,8 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, s
     <Meta className={onDark ? "text-cream-soft/50" : "text-ink-3"}>{aside}</Meta>
   );
 
-  // Oversized numeral, set in the display face's REGULAR weight — the one
-  // weight nothing else on the page uses, which is what stops it competing
-  // with the heavy heading beside it.
+  // The numeral is set in the display face's REGULAR weight — the one weight
+  // nothing else uses, which stops it competing with the heading beside it.
   if (variant === "numeral") {
     return (
       <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
@@ -82,7 +81,6 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, s
     );
   }
 
-  // "rule" — the workhorse
   return (
     <div className="mb-9 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
       <div className="max-w-2xl">

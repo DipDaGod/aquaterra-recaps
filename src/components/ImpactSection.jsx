@@ -3,12 +3,11 @@ import Section from "./Section";
 import { Meta, SectionNumber } from "./Lockup";
 import { useReveal } from "../lib/useReveal";
 
-// Bars fill from zero once the panel scrolls into view, instead of being
-// painted at full width before anyone sees them move.
+// Fills from zero once the panel scrolls in. A goal with no confirmed figure
+// renders as an empty track rather than a made-up fill: an invented progress bar
+// is an invented statistic.
 function ProgressBar({ label, percent }) {
   const [ref, revealed] = useReveal({ threshold: 0.3 });
-  // A goal with no confirmed figure renders as an empty track rather than a
-  // made-up fill — an invented progress bar is an invented statistic.
   const known = typeof percent === "number" && Number.isFinite(percent);
   const pct = known ? Math.max(0, Math.min(100, percent)) : 0;
 
@@ -39,7 +38,8 @@ function ProgressBar({ label, percent }) {
 
 export default function ImpactSection({ edition, index, label, accentKey, variant, ground }) {
   const { impact } = edition;
-  if (!impact) return null;
+  const metrics = impact?.metrics || [];
+  if (metrics.length === 0) return null;
 
   return (
     <Section id="impact" accentKey={accentKey} variant={variant} ground={ground}>
@@ -50,10 +50,10 @@ export default function ImpactSection({ edition, index, label, accentKey, varian
         </h2>
         <p className="mt-4 max-w-xl text-pretty text-cream-soft/70">{impact.description}</p>
 
-        {/* auto-fit rather than a hard 3 columns: an edition with two metrics
-            used to leave a third of the row empty. */}
+        {/* auto-fit, not a hard 3 columns: two metrics used to leave a third
+            of the row empty. */}
         <dl className="mt-10 grid gap-8 [grid-template-columns:repeat(auto-fit,minmax(11rem,1fr))]">
-          {impact.metrics.map((m, i) => (
+          {metrics.map((m, i) => (
             <div key={`${m.label}-${i}`}>
               <dd className="font-display text-4xl font-bold tracking-[-0.02em] sm:text-5xl">
                 <AnimatedNumber value={m.value} />

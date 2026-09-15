@@ -1,5 +1,3 @@
-// A small console banner for anyone poking around dev tools — styled
-// after the "★ AquaTerra" badge used across the brand.
 export function printConsoleBanner() {
   if (typeof console === "undefined") return;
   console.log(

@@ -4,14 +4,12 @@ import Mascot from "./Mascot";
 import { Meta } from "./Lockup";
 import { latestEdition } from "../data/editions";
 
-// The "what's new" banner. Sits full-width under the hero so it reads as an
-// announcement strip rather than competing with the headline as a side card.
+// The "what's new" strip under the hero.
 export default function LatestNotice() {
   const { month, year, slug, tagline, editionNumber, cardStats, lockup } = latestEdition;
 
   return (
     <div className="relative overflow-hidden rounded-[2rem] bg-near-black text-cream-soft">
-      {/* Soft green wash behind the mascot, purely decorative. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-green-bright/15 blur-3xl"
@@ -40,8 +38,8 @@ export default function LatestNotice() {
           <p className="mt-3 max-w-lg text-pretty text-cream-soft/70">{tagline}</p>
 
           <dl className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-cream-soft/60">
-            {cardStats.map((s) => (
-              <div key={s.label} className="flex items-baseline gap-1.5">
+            {(cardStats || []).map((s, i) => (
+              <div key={`${s.label}-${i}`} className="flex items-baseline gap-1.5">
                 <dt className="sr-only">{s.label}</dt>
                 <dd className="font-display font-bold tabular-nums text-cream-soft">{s.value}</dd>
                 <Meta>{s.label}</Meta>

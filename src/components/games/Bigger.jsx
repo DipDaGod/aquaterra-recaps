@@ -3,10 +3,8 @@ import { Check, X, Flame, RotateCcw } from "lucide-react";
 import { cx } from "../../lib/utils";
 import { Meta } from "../Lockup";
 
-// BIGGER? — two figures, tap the larger one. Fast, and it gets its pull from
-// the streak rather than from a question count: there is no end, only the run
-// you're on. Pairs are drawn at random and never share a value, so there is
-// always a right answer.
+// BIGGER? — two figures, tap the larger one. No end, only the run you're on.
+// Pairs never share a value, so there is always a right answer.
 function drawPair(pool, exclude) {
   const options = pool.filter((s) => s.label !== exclude);
   for (let i = 0; i < 40; i++) {
@@ -27,15 +25,16 @@ export default function Bigger({ pool }) {
   const winner = useMemo(() => (pair[0].value > pair[1].value ? 0 : 1), [pair]);
   const right = answered && picked === winner;
 
+  // Both updates are computed here rather than one being scheduled from inside
+  // the other's updater — updaters must be pure, and StrictMode runs them twice.
   const choose = useCallback((i) => {
     if (answered) return;
     setPicked(i);
-    if (i === winner) {
-      setStreak((s) => { const n = s + 1; setBest((b) => Math.max(b, n)); return n; });
-    } else {
-      setStreak(0);
-    }
-  }, [answered, winner]);
+    if (i !== winner) { setStreak(0); return; }
+    const next = streak + 1;
+    setStreak(next);
+    setBest((b) => Math.max(b, next));
+  }, [answered, winner, streak]);
 
   function next() {
     setPair(drawPair(pool, pair[winner].label));

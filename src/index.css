@@ -19,9 +19,8 @@
   --text-display-m: clamp(1.6rem, 3.2vw, 2.125rem);
   --text-display-s: 1.1875rem;
 
-  /* Paper + ink. --color-cream is the one hex aq.md marks confirmed exactly
-     (the parent site's theme-color meta). The rest of this palette is
-     eyeballed from screenshots and still needs confirming. */
+  /* Paper + ink. Cream and ink are confirmed exactly (CLAUDE.md §4); the rest
+     of this palette is eyeballed from screenshots and still needs confirming. */
   --color-cream: #f4efe0;
   --color-cream-soft: #fbf8ef;
   --color-paper: #ebe4d2;
@@ -30,14 +29,10 @@
   --color-near-black: #0a0a0a;
   --color-line: #ded2b4;
 
-  /* Team identity colours. Each of the 8 teams owns exactly one — these are
-     identity, not decoration. Do not reassign, do not add a ninth, do not use
-     one for something that isn't that team. Welfare's green is inferred by
-     elimination (aq.md lists green as the primary accent and assigns the
-     other seven explicitly); confirm it. */
-  /* Block colours. The parent site names these --welfare, --sky, --lemon,
-     --pink, --grape, --teal, --tomato and --ink; the mapping is kept in the
-     comment beside each so the two stay legible against one another. */
+  /* Team identity colours. Each of the 8 teams owns exactly one — identity,
+     not decoration. Do not reassign, do not add a ninth, do not use one for
+     something that isn't that team. Welfare's green is inferred by elimination;
+     confirm it. The parent site's own token name is beside each. */
   --color-team-welfare: #1b7a4b;  /* --welfare */
   --color-team-events: #3aa0f0;   /* --sky     */
   --color-team-shikshaq: #f5c518; /* --lemon   */

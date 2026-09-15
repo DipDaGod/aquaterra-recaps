@@ -2,18 +2,14 @@ import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cx } from "../lib/utils";
 
-// Collapses a long list on phones only. The edition page runs to ~17 screens
-// on a 390px viewport, and the teams and featured grids are nearly half of
-// that — four and nearly four screens each, because an eight-up grid becomes
-// an eight-high stack.
+// Collapses a long list on phones only, where an eight-up grid becomes an
+// eight-high stack.
 //
-// The trimming is done in CSS, not by slicing the array, for two reasons: the
-// cut-off follows the viewport with no resize listener or media-query hook,
-// and every item stays in the DOM, so in-page search and the contents links
-// still reach what's hidden. Desktop is never collapsed — the grids are 3- and
-// 4-up there and already compact.
+// The trimming is CSS, not a sliced array: the cut-off follows the viewport
+// with no resize listener, and every item stays in the DOM so in-page search
+// and anchor links still reach what's hidden.
 //
-// `after` must be one of the values index.css writes a rule for (2, 3, 4, 6);
+// `after` must be one of the values index.css writes a rule for (2, 3, 4, 6) —
 // nth-child can't take a custom property.
 export default function ShowMore({
   children,
@@ -41,8 +37,8 @@ export default function ShowMore({
         aria-expanded={open}
         aria-controls={id}
         className={cx(
-          // Phones only: the rule that hides the overflow is itself phone-only,
-          // so on desktop this button would toggle nothing.
+          // Phones only — on desktop the rule that hides the overflow doesn't
+          // apply, so this button would toggle nothing.
           "mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold transition-colors sm:hidden",
           buttonClassName || "border-ink/15 text-ink hover:border-ink/40 hover:bg-cream-soft"
         )}

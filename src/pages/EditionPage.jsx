@@ -16,8 +16,8 @@ import { issueSections, sectionMeta } from "../lib/issueSections";
 import { issueAccentVars } from "../lib/utils";
 
 // Sections render only when the edition carries their data, and their numbers
-// come from one shared manifest. The nav menu reads that same manifest and
-// serves as the issue's index, so there is no separate contents block here.
+// come from one shared manifest (src/lib/issueSections.js). The nav menu reads
+// the same manifest and is the issue's index, so there is no contents block.
 export default function EditionPage() {
   const { year, month } = useParams();
   const edition = getEdition(year, month);

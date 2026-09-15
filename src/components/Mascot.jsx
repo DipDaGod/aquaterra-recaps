@@ -1,6 +1,4 @@
-// A small decorative "blob" mascot — echoes the little ghost-like
-// character used throughout the AquaTerra dashboard (notice board,
-// avatars, corners of cards). Purely decorative, aria-hidden.
+// The little ghost character AquaTerra uses across its own site. Decorative.
 export default function Mascot({ className = "", color = "var(--color-green-bright)" }) {
   return (
     <svg

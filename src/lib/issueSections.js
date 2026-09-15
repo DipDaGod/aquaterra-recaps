@@ -1,30 +1,11 @@
-// The running order of an issue. One manifest, used three ways: to number the
-// sections, to build the "in this issue" contents block, and to give each
-// section its own colour and opener treatment — so the page stops reading as
-// the same heading nine times.
+// The running order of an issue: section numbering, the nav menu's index, and
+// each section's colour and opener treatment. A section appears only if the
+// edition carries its data, and the numbering closes up around what's missing.
 //
-// A section only appears if the edition carries its data, and the numbering
-// closes up around whatever is missing.
-//
-// ON THE COLOURS: aq.md §4 reserves the bright palette as team identity
-// colours. It also says the one place to spend judgement is what the parent
-// site doesn't cover, and a nine-section long-form issue is exactly that — the
-// main site has no equivalent. These are editorial section accents, not a
-// claim that Photography belongs to Social Media. Two of them do line up with
-// the owning team anyway (openings/HR pink, impact/welfare green). If it reads
-// as a team claim to members, drop `accent` back to "green" throughout and the
-// issue goes monochrome again.
-//
-// `size` is the section's prominence — "lead" for the strands an issue is
-// built around, "sub" for the supporting ones. It is declared here rather than
-// falling out of `variant`, which is how a supporting section ended up shouting
-// at the same scale as a lead one.
-//
-// `variant` is the opener treatment and `ground` the section's background.
-// They are set per SECTION, not per position, so a section looks the same from
-// issue to issue — and they are chosen so that no two that commonly sit next
-// to each other share both. Openings sits between impact and people when an
-// issue carries it; the run still alternates without any one of them.
+// `has` must test the SECTION, not one field — gating games on a single game's
+// field once dropped the whole section out of the numbering. `size` is
+// prominence, declared here rather than derived from `variant`. Both traps are
+// written up in CLAUDE.md §5.
 export const SECTION_MANIFEST = [
   { id: "numbers", label: "The numbers", accent: "green", variant: "rule", ground: "plain", size: "sub",
     has: (e) => e.glance?.length > 0 },
@@ -35,15 +16,12 @@ export const SECTION_MANIFEST = [
   { id: "photography", label: "Photography", accent: "grape", variant: "numeral", ground: "band", size: "lead",
     has: (e) => Boolean(e.photography?.featured) || e.photography?.gallery?.length > 0 },
   { id: "games", label: "Mini games", accent: "sky", variant: "centre", ground: "ink", size: "lead",
-    // Any one playable game is enough to earn the section. Gating this on a
-    // single game's field is what silently dropped the whole section out of
-    // the numbering when the quiz was replaced.
     has: (e) => Boolean(e.games) && (
       e.games.bigger?.length >= 2 || e.games.guess?.length > 0 || e.games.match?.length > 0
     ) },
   { id: "impact", label: "The impact", accent: "teal", variant: "numeral", ground: "plain", size: "sub",
-    has: (e) => Boolean(e.impact) },
-  { id: "openings", label: "Openings", accent: "pink", variant: "numeral", ground: "band",
+    has: (e) => e.impact?.metrics?.length > 0 },
+  { id: "openings", label: "Openings", accent: "pink", variant: "numeral", ground: "band", size: "sub",
     has: (e) => e.openings?.roles?.length > 0 },
   { id: "people", label: "The people", accent: "lemon", variant: "centre", ground: "band", size: "sub",
     has: (e) => e.people?.length > 0 },

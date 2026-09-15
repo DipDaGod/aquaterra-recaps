@@ -3,10 +3,9 @@ import { ArrowRight, RotateCcw } from "lucide-react";
 import { cx } from "../../lib/utils";
 import { Meta } from "../Lockup";
 
-// HOW CLOSE? — drag the slider to where you think the real figure sits. The
-// reveal draws your guess and the truth on the same track, so being wrong is
-// legible rather than just marked wrong: you can see by how much, and which
-// side you were on.
+// HOW CLOSE? — drag the slider to where the real figure sits. The reveal draws
+// your guess and the truth on the same track, so you can see by how much you
+// were out and which side you were on.
 const pct = (v, max) => Math.max(0, Math.min(100, (v / max) * 100));
 
 export default function HowClose({ rounds }) {
@@ -18,13 +17,13 @@ export default function HowClose({ rounds }) {
 
   const round = rounds[step];
   const isLast = step === rounds.length - 1;
-  const offBy = locked ? Math.abs(value - round.value) : 0;
-  const accuracy = locked ? Math.max(0, 100 - (offBy / round.max) * 100) : 0;
+  const offBy = Math.abs(value - round.value);
+  const accuracy = Math.max(0, 100 - (offBy / round.max) * 100);
 
   function lock() {
     if (locked) return;
     setLocked(true);
-    setScores((s) => [...s, Math.max(0, 100 - (Math.abs(value - round.value) / round.max) * 100)]);
+    setScores((s) => [...s, accuracy]);
   }
 
   function next() {
@@ -93,7 +92,6 @@ export default function HowClose({ rounds }) {
           className="w-full accent-[var(--color-green-bright)] disabled:opacity-60"
         />
 
-        {/* Reveal: your guess and the real figure on the same track. */}
         {locked && (
           <div className="relative mt-5 h-2 w-full rounded-full bg-cream-soft/15">
             <span

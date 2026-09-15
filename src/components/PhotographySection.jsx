@@ -8,7 +8,7 @@ import { Meta } from "./Lockup";
 import { cx, isPlaceholder } from "../lib/utils";
 
 // Column balancing splits on total height, so asking for more columns than
-// there are photos leaves a visibly empty track. Cap the count by the data.
+// there are photos leaves a visibly empty track.
 function columnsFor(count) {
   if (count <= 2) return "columns-1 sm:columns-2";
   if (count <= 6) return "columns-2 sm:columns-3";
@@ -20,12 +20,11 @@ const ratio = { lg: "aspect-[4/5]", md: "aspect-square", sm: "aspect-[4/3]" };
 export default function PhotographySection({ edition, index, label, accentKey, variant, ground, size }) {
   const [openIndex, setOpenIndex] = useState(null);
   const p = edition.photography;
-  // Memoised: `p?.gallery || []` hands back a fresh array every render, which
-  // would re-derive `viewable` (and re-key the lightbox) on each one.
+  // Memoised: a fresh `[]` each render would re-derive `viewable` and re-key
+  // the lightbox every time.
   const gallery = useMemo(() => p?.gallery ?? [], [p]);
 
-  // The frame of the month leads the viewer rather than sitting outside it —
-  // previously it was the one photo on the page you could not open large.
+  // The frame of the month leads the viewer rather than sitting outside it.
   const viewable = useMemo(() => {
     const lead = p?.featured
       ? [{ ...p.featured, label: p.featuredCaption || p.featured.label, chapter: "Frame of the month" }]
@@ -63,7 +62,6 @@ export default function PhotographySection({ edition, index, label, accentKey, v
               <Photo item={p.featured} />
             </div>
 
-            {/* Scrim, so the badge and the expand cue hold on any exposure. */}
             <span
               aria-hidden="true"
               className="absolute inset-0"
@@ -113,7 +111,6 @@ export default function PhotographySection({ edition, index, label, accentKey, v
                 <Photo item={item} />
               </div>
 
-              {/* Hovering reveals what the frame is, not just who shot it. */}
               <span
                 className="absolute inset-0 flex flex-col justify-end p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
                 style={{ background: "linear-gradient(to top, rgb(10 10 10 / 0.88) 0%, rgb(10 10 10 / 0.15) 55%, rgb(10 10 10 / 0.3) 100%)" }}
@@ -131,7 +128,6 @@ export default function PhotographySection({ edition, index, label, accentKey, v
                 )}
               </span>
 
-              {/* The frame's number, always visible, so the wall reads as a set. */}
               <span
                 aria-hidden="true"
                 className="absolute left-2.5 top-2.5 font-mono text-[0.65rem] tabular-nums text-cream-soft/70 mix-blend-difference"

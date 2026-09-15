@@ -2,13 +2,10 @@ import { CalendarOff } from "lucide-react";
 import EditionCard from "./EditionCard";
 import { latestEdition } from "../data/editions";
 
-// Newest first. The newest edition takes a full-width featured card (cover
-// beside the text on large screens); the rest sit in an even three-up grid.
-//
-// The previous version spanned cards across a 6-column grid with
-// `auto-rows-fr`, which forced every row to the height of the tallest —
-// a full-width cover at 4:3 — giving every card the same ~1000px height and
-// several hundred pixels of dead space. Content-sized rows fix that.
+// Newest first: the newest edition takes a full-width featured card, the rest
+// sit in an even three-up grid. Rows are content-sized on purpose — `auto-rows-fr`
+// forced every card to the height of the tallest, which was a full-width 4:3
+// cover, and gave the whole grid ~1000px rows of mostly dead space.
 export default function EditionGrid({ editions, year }) {
   if (editions.length === 0) {
     return (

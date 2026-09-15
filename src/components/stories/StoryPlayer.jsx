@@ -2,15 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import StorySlide from "./StorySlide";
+import { useOverlay } from "../../lib/useOverlay";
 import { SECTION_ACCENTS, cx } from "../../lib/utils";
 
 // An Instagram-style stories player over the edition's own content.
 //
-// Timing runs on requestAnimationFrame rather than a CSS animation, because
-// the site's global prefers-reduced-motion rule clamps every animation to
-// 0.001ms — a CSS-driven progress bar would finish instantly there and blast
-// through all 21 slides. rAF also makes hold-to-pause exact: the elapsed time
-// is a number we own, not a state we have to read back out of the compositor.
+// Timing runs on requestAnimationFrame, not a CSS animation: the global
+// reduced-motion rule clamps every animation to 0.001ms, which would blast a
+// CSS-driven progress bar through every slide at once.
 export default function StoryPlayer({ slides, startAt = 0, onClose }) {
   const [index, setIndex] = useState(startAt);
   const [paused, setPaused] = useState(false);
@@ -19,11 +18,16 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
   const [dir, setDir] = useState(1);
 
   const closeRef = useRef(null);
-  const returnFocus = useRef(null);
   const elapsed = useRef(0);
   const last = useRef(0);
   const frame = useRef(0);
   const held = useRef(0);
+  // Whether the current pause came from a press-and-hold. Without this, moving
+  // the pointer off the slide cancelled a pause the viewer had set deliberately
+  // with the pause button.
+  const holding = useRef(false);
+
+  useOverlay(closeRef);
 
   const slide = slides[index];
   const total = slides.length;
@@ -56,17 +60,6 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
     return () => cancelAnimationFrame(frame.current);
   }, [index, paused, slide, go]);
 
-  // Lock the page, take focus, hand it back on close.
-  useEffect(() => {
-    returnFocus.current = document.activeElement;
-    document.body.setAttribute("data-scroll-locked", "");
-    closeRef.current?.focus();
-    return () => {
-      document.body.removeAttribute("data-scroll-locked");
-      returnFocus.current?.focus?.();
-    };
-  }, []);
-
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
@@ -84,19 +77,25 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
 
   // Press and hold pauses, as it does on Instagram; a quick press is a tap, and
   // which half it lands in decides direction.
-  function onPointerDown() { held.current = performance.now(); setPaused(true); }
+  function onPointerDown() {
+    held.current = performance.now();
+    holding.current = true;
+    setPaused(true);
+  }
+  function releaseHold() {
+    if (!holding.current) return;
+    holding.current = false;
+    setPaused(false);
+  }
   function onPointerUp(e) {
     const quick = performance.now() - held.current < 250;
-    setPaused(false);
+    releaseHold();
     if (!quick) return;
     const box = e.currentTarget.getBoundingClientRect();
     go(e.clientX - box.left < box.width * 0.33 ? index - 1 : index + 1);
   }
 
-  // Rendered into <body>: a finished reveal animation leaves an identity
-  // transform on its section, and any transform on an ancestor makes that
-  // ancestor the containing block for position:fixed — which pinned this
-  // overlay inside the section instead of over the viewport.
+  // Portalled into <body> — see useOverlay for why.
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-near-black/95 p-0 sm:p-6"
@@ -114,7 +113,6 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
           style={{ background: "linear-gradient(to bottom, rgb(10 10 10 / 0.75) 0%, transparent 100%)" }}
         />
 
-        {/* Segmented progress */}
         <div className="absolute inset-x-0 top-0 z-20 flex gap-1 p-3">
           {slides.map((s, i) => (
             <span key={s.id} className="h-0.5 flex-1 overflow-hidden rounded-full bg-cream-soft/25">
@@ -129,7 +127,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
         <div className="absolute right-2 top-6 z-20 flex items-center gap-1">
           <button
             type="button"
-            onClick={() => setPaused((p) => !p)}
+            onClick={() => { holding.current = false; setPaused((p) => !p); }}
             aria-label={paused ? "Resume" : "Pause"}
             className="grid h-9 w-9 place-items-center rounded-full text-cream-soft/80 transition-colors hover:bg-cream-soft/15 hover:text-cream-soft"
           >
@@ -146,12 +144,11 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
           </button>
         </div>
 
-        {/* The slide. Keyed so each one re-runs its entrance. */}
         <div
           className="relative min-h-0 flex-1 cursor-pointer select-none"
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
-          onPointerLeave={() => setPaused(false)}
+          onPointerLeave={releaseHold}
         >
           <div
             key={slide.id}
@@ -161,7 +158,6 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
           </div>
         </div>
 
-        {/* Keyboard/pointer controls that don't depend on knowing the tap zones */}
         <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-10 flex items-center justify-between px-1">
           <button
             type="button"

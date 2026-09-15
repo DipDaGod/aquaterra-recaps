@@ -56,8 +56,8 @@ export default function PeopleSection({ edition, index, label, accentKey, varian
 
   const [featured, ...rest] = people;
 
-  // A four-column grid left a single volunteer stranded beside three empty
-  // cells on the sparser editions. The track count now follows the data.
+  // The track count follows the data: a fixed four-column grid left a single
+  // volunteer stranded beside three empty cells.
   const columns = {
     1: "sm:grid-cols-2 lg:grid-cols-3",
     2: "sm:grid-cols-2",

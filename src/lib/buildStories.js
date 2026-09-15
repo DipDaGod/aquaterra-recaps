@@ -1,11 +1,9 @@
 import { TEAMS } from "./utils";
 
-// Turns an edition into a run of story slides. Everything here is read from
-// the edition object — nothing is written for the player — so a story can
-// never drift from the page it summarises, and a placeholder stays a
-// placeholder rather than becoming invented copy in a prettier wrapper.
-//
-// Slides are grouped into chapters, which is what the highlight rings open at.
+// Turns an edition into a run of story slides, grouped into the chapters the
+// highlight rings open at. Everything is read from the edition object — nothing
+// is authored for the player — so a story can never drift from the page it
+// summarises, and a placeholder stays a placeholder.
 export const CHAPTERS = [
   { id: "all", label: "Play all", accent: "green" },
   { id: "numbers", label: "Numbers", accent: "green" },
@@ -29,8 +27,7 @@ export function buildStories(edition) {
     ms: 3600,
   });
 
-  // Stats cycle the palette so four figures in a row aren't four identical
-  // cards with different digits.
+  // Cycled so four figures in a row aren't four identical cards.
   const statAccents = ["green", "sky", "lemon", "grape"];
   (edition.glance || []).forEach((stat, i) => {
     push("numbers", {
@@ -89,8 +86,7 @@ export function buildStories(edition) {
   return slides;
 }
 
-// Chapters that actually have slides, in running order, each with the index to
-// jump to. "Play all" always starts at zero.
+// Chapters that have slides, in running order, each with the index to jump to.
 export function chaptersFor(slides) {
   return CHAPTERS.filter((c) => c.id === "all" || slides.some((s) => s.chapter === c.id)).map((c) => ({
     ...c,

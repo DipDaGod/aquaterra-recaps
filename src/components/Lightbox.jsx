@@ -3,17 +3,16 @@ import { createPortal } from "react-dom";
 import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Camera } from "lucide-react";
 import Photo from "./Photo";
 import { Meta } from "./Lockup";
+import { useOverlay } from "../lib/useOverlay";
 import { cx, isPlaceholder } from "../lib/utils";
 
-// Placeholder tiles have no intrinsic size, so the viewer needs a shape to
-// give them. Real photographs size themselves and ignore this.
+// Placeholder tiles have no intrinsic size, so the viewer needs a shape to give
+// them. Real photographs size themselves and ignore this.
 const PLACEHOLDER_ASPECT = { lg: "4 / 5", md: "1 / 1", sm: "4 / 3" };
 
+// A real file sizes itself: object-contain inside the available box shows the
+// whole frame at the largest size that fits, whatever its shape.
 function Frame({ item, fill }) {
-  // A real file sizes itself: object-contain inside the available box shows the
-  // whole frame at the largest size that fits, whatever its shape. The previous
-  // viewer forced every photo into a 4:3 window capped at max-w-3xl, so
-  // portraits were letterboxed and nothing ever got properly big.
   if (item.src) {
     return (
       <img
@@ -35,24 +34,15 @@ function Frame({ item, fill }) {
 
 export default function Lightbox({ items, index, onClose, onNavigate }) {
   const closeRef = useRef(null);
-  const returnFocusRef = useRef(null);
   const swipe = useRef(null);
   const [fill, setFill] = useState(false);
+
+  useOverlay(closeRef);
 
   const go = useCallback(
     (next) => onNavigate((next + items.length) % items.length),
     [items.length, onNavigate]
   );
-
-  useEffect(() => {
-    returnFocusRef.current = document.activeElement;
-    document.body.setAttribute("data-scroll-locked", "");
-    closeRef.current?.focus();
-    return () => {
-      document.body.removeAttribute("data-scroll-locked");
-      returnFocusRef.current?.focus?.();
-    };
-  }, []);
 
   useEffect(() => {
     function onKey(e) {
@@ -66,7 +56,7 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [index, items.length, go, onClose]);
 
-  // Fetch the neighbours so stepping through real photography doesn't flash.
+  // Prefetch the neighbours so stepping through real photography doesn't flash.
   useEffect(() => {
     for (const n of [index + 1, index - 1]) {
       const src = items[(n + items.length) % items.length]?.src;
@@ -89,10 +79,7 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
     if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) go(index + (dx < 0 ? 1 : -1));
   }
 
-  // Rendered into <body>: a finished reveal animation leaves an identity
-  // transform on its section, and any transform on an ancestor makes that
-  // ancestor the containing block for position:fixed — which pinned this
-  // overlay inside the section instead of over the viewport.
+  // Portalled into <body> — see useOverlay for why.
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex flex-col backdrop-blur-sm"
@@ -101,7 +88,6 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
       aria-modal="true"
       aria-label={`Frame ${index + 1} of ${items.length}`}
     >
-      {/* Top bar */}
       <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <span className="rounded-full bg-cream-soft/10 px-3.5 py-1.5 font-mono text-xs tabular-nums text-cream-soft/80">
@@ -125,7 +111,6 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
         </div>
       </div>
 
-      {/* The frame, given everything that's left */}
       <div
         className="relative flex min-h-0 flex-1 items-center justify-center px-2 sm:px-16"
         onPointerDown={onPointerDown}
@@ -154,7 +139,6 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
         </button>
       </div>
 
-      {/* Caption + credit */}
       <div className="shrink-0 px-5 pb-2 pt-4 text-center sm:px-8">
         {item.label && (
           <p className={cx("mx-auto max-w-2xl text-pretty text-cream-soft", isPlaceholder(item.label) && "opacity-60")}>
@@ -167,7 +151,6 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
         </Meta>
       </div>
 
-      {/* Filmstrip — where you are in the set, and a way to jump */}
       {items.length > 1 && (
         <div className="scroll-quiet shrink-0 overflow-x-auto px-4 pb-4 pt-2 sm:px-6">
           <ul className="mx-auto flex w-max gap-2">

@@ -3,10 +3,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MONTH_ORDER, monthShort, monthLabel, cx } from "../lib/utils";
 import { getEdition, neighbours } from "../data/editions";
 
-// Two months either side of the current edition by calendar position (not by
-// what's published), so an unpublished month shows as "coming soon" instead of
-// vanishing from the strip. Flanked by real prev/next edition links, which the
-// strip alone couldn't offer when the neighbouring month wasn't published.
+// Two months either side by calendar position, not by what's published, so an
+// unpublished month shows as unpublished instead of vanishing from the strip.
+// The flanking links are the real prev/next editions, which the strip alone
+// can't offer when the neighbouring month isn't out.
 function stripFor(edition) {
   const monthIdx = MONTH_ORDER.indexOf(edition.slug);
   return [-2, -1, 0, 1, 2].map((offset) => {

@@ -7,26 +7,30 @@ const reduced = () =>
 
 // Type that climbs out of its own line, a word at a time. Each word sits in an
 // overflow-hidden box so it is masked by the line above rather than fading in
-// on the spot — the difference between text appearing and text arriving.
+// on the spot.
+//
+// The separator is an ordinary space, not a non-breaking one: each word is an
+// inline-block, so an nbsp between two of them removes the only break
+// opportunity in the line and a long lockup can never wrap.
 export function Words({ text, className = "", base = 0, from = 0 }) {
   if (!text) return null;
+  const words = String(text).split(" ");
   return (
     <span className={className}>
-      {String(text).split(" ").map((word, i) => (
+      {words.map((word, i) => (
         <span key={`${word}-${i}`} className="story-line">
           <span className="story-word" style={{ "--i": i + from, "--base": `${base}ms` }}>
             {word}
           </span>
-          {i < String(text).split(" ").length - 1 ? " " : ""}
+          {i < words.length - 1 ? " " : ""}
         </span>
       ))}
     </span>
   );
 }
 
-// Counts to the figure instead of printing it. Parses the site's own way of
-// writing numbers — "1,300+" is 1300 with a "+" that stays put — and hands the
-// exact string straight back under reduced motion.
+// Counts to the figure instead of printing it. "1,300+" is 1300 with a "+" that
+// stays put; under reduced motion the exact string is handed straight back.
 export function CountUp({ value, ms = 1100, className = "" }) {
   const text = String(value);
   const match = /^(\d[\d,]*)(.*)$/.exec(text);
@@ -56,11 +60,9 @@ export function CountUp({ value, ms = 1100, className = "" }) {
   );
 }
 
-// The colour behind a slide. It has to bloom from a corner and stop: at full
-// spread it floods the card, and then a purple slide swallows the purple team
-// tile sitting on it and the green accent word stops being legible. So: small
-// blobs hugging the corners, and a dark scrim over the top that keeps the
-// middle — where the type lives — close to the card's own near-black.
+// The colour behind a slide. Small blobs hugging the corners under a dark
+// scrim, not a full wash: at full spread it floods the card and a purple slide
+// swallows the purple team tile sitting on it.
 export function Wash({ accent = "green", intensity = 1 }) {
   const raw = (SECTION_ACCENTS[accent] || SECTION_ACCENTS.green).raw;
   return (
@@ -84,8 +86,7 @@ export function Wash({ accent = "green", intensity = 1 }) {
   );
 }
 
-// A ring behind a figure, rather than a ghost of the same digit sitting
-// directly behind it — which only made the number look doubled and muddy.
+// A ring behind a figure. Not a ghost of the same digit, which read as doubled.
 export function Ring({ accent = "green" }) {
   const raw = (SECTION_ACCENTS[accent] || SECTION_ACCENTS.green).raw;
   return (
@@ -97,8 +98,7 @@ export function Ring({ accent = "green" }) {
   );
 }
 
-// An outsized glyph behind a stat — the thing that stops a single number
-// floating in the middle of an empty card.
+// An outsized glyph behind a stat, so one number isn't floating in an empty card.
 export function Ghost({ children, className = "" }) {
   return (
     <span

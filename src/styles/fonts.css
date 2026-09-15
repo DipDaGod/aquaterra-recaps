@@ -7,7 +7,7 @@
 
    The files resolved the two roles the shared CSS only named:
      --eina     -> Eina 01        (Textaxis)
-     --display  -> Neutral Face   (the heavy grotesque aq.md §4 describes)
+     --display  -> Neutral Face   (the heavy grotesque CLAUDE.md §4 describes)
      --mono     -> JetBrains Mono
    plus Instrument Serif for the italic accent word and Caveat for the
    single sign-off.
@@ -86,7 +86,8 @@
   src: url("/fonts/InstrumentSerif-Italic.woff2") format("woff2");
 }
 
-/* --- Caveat: the sign-off, once (aq.md §4) -------------------------------- */
+/* --- Caveat: reserved for a single sign-off (CLAUDE.md §4). Currently unused;
+       @font-face is lazy, so declaring it costs nothing. ---------------------- */
 @font-face {
   font-family: "Caveat";
   font-weight: 400 600;

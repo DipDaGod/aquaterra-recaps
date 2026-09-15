@@ -5,9 +5,8 @@ import Lockup, { Meta } from "./Lockup";
 import { cx } from "../lib/utils";
 
 // Two layouts, one card. `featured` lays the cover beside the text on large
-// screens; everything else is a normal vertical card. Both size themselves
-// from their content — no fixed heights — and stretch to fill their grid
-// row, so a row of cards lines up without any one of them ballooning.
+// screens. Both size from their content — no fixed heights — so a row lines up
+// without any one card ballooning.
 export default function EditionCard({ edition, featured = false, id }) {
   const { year, slug, month, editionNumber, tagline, cover, cardStats, isLatest, lockup } = edition;
   const title = lockup || { caps: month?.toUpperCase(), accent: String(year) };
@@ -75,8 +74,8 @@ export default function EditionCard({ edition, featured = false, id }) {
         <div className="h-6" aria-hidden="true" />
 
         <dl className="mt-auto flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm">
-          {cardStats.map((s) => (
-            <div key={s.label} className="flex items-baseline gap-1.5">
+          {(cardStats || []).map((s, i) => (
+            <div key={`${s.label}-${i}`} className="flex items-baseline gap-1.5">
               <dt className="sr-only">{s.label}</dt>
               <dd className="font-display font-bold tabular-nums">{s.value}</dd>
               <Meta className="text-ink-soft">{s.label}</Meta>

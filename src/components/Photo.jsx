@@ -1,10 +1,8 @@
 import { PHOTO_ICONS, FALLBACK_ICON } from "../lib/photoIcons";
 import { TONES } from "../lib/utils";
 
-// Renders a real photo when `src` is present (drop files into
-// /public/recaps/<year>/<month>/ and set the data's `src` field).
-// Until then, shows a soft, on-brand placeholder tile instead of a
-// broken image or a stock photo, per the brief's placeholder-image rule.
+// A real photo when `src` is set, an on-brand placeholder tile until then —
+// never a broken image and never a stock photo. See public/recaps/README.md.
 export default function Photo({ item, className = "", imgClassName = "" }) {
   const { src, tone = "cream", icon = "Image", label, alt } = item || {};
   const tones = TONES[tone] || TONES.cream;

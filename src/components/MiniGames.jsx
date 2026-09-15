@@ -9,10 +9,8 @@ import { cx } from "../lib/utils";
 
 // Three games rather than one quiz, each with a different interaction: tap to
 // compare, drag to estimate, pair to learn. Every figure they use is verified
-// (aq.md §2) — a game whose answers are invented is rule 0 with a scoreboard.
-//
-// No backend and no sign-up: all state is local to the component and nothing
-// is stored or sent.
+// (CLAUDE.md §2) — a game whose answers are invented is rule 0 with a
+// scoreboard. No backend, no sign-up: state is local and nothing is sent.
 const GAMES = [
   { id: "bigger", name: "Bigger?", icon: Scale, blurb: "two figures. tap the larger one. keep the streak alive.",
     available: (g) => g.bigger?.length >= 2 },
@@ -45,7 +43,6 @@ export default function MiniGames({ edition, index, label, accentKey, variant, g
       lead={games.lead}
       aside={`${playable.length} games`}
     >
-      {/* Game picker */}
       <div
         role="tablist"
         aria-label="Choose a game"
@@ -79,8 +76,8 @@ export default function MiniGames({ edition, index, label, accentKey, variant, g
         <Meta className="text-cream-soft/45">{current.blurb}</Meta>
       </p>
 
-      {/* The board. Keyed on the game id so switching resets its state rather
-          than carrying a half-finished round across. */}
+      {/* Keyed on the game id, so switching resets rather than carrying a
+          half-finished round across. */}
       <div className="mx-auto mt-7 max-w-3xl rounded-[2rem] border border-cream-soft/15 bg-cream-soft/[0.04] px-5 py-7 sm:px-8 sm:py-9">
         {current.id === "bigger" && <Bigger key="bigger" pool={games.bigger} />}
         {current.id === "close" && <HowClose key="close" rounds={games.guess} />}

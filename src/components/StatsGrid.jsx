@@ -10,6 +10,9 @@ const tones = [
 ];
 
 export default function StatsGrid({ edition, index, label, accentKey, variant, ground, size }) {
+  const stats = edition.glance || [];
+  if (stats.length === 0) return null;
+
   return (
     <Section
       id="numbers"
@@ -24,9 +27,9 @@ export default function StatsGrid({ edition, index, label, accentKey, variant, g
       aside={`${edition.month} ${edition.year}`}
     >
       <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        {edition.glance.map((stat, i) => (
+        {stats.map((stat, i) => (
           <div
-            key={stat.label}
+            key={`${stat.label}-${i}`}
             className={`flex min-h-36 flex-col justify-between rounded-3xl border p-5 sm:min-h-40 sm:p-6 ${tones[i % tones.length]}`}
           >
             <dd className="font-display text-4xl font-bold tracking-[-0.02em] sm:text-5xl">

@@ -128,10 +128,8 @@ export function TopBar() {
 
 // The parent site's footer bar, and only the bar. Its cream letter panel and
 // its two social pills were both built here and then taken back out at the
-// desk's request — the magazine ends on the wordmark and the legal lines.
-//
-// So: no letter, no Caveat sign-off, and nothing here links anywhere. Both
-// strings are AquaTerra's own copy (aq.md §2).
+// desk's request, so: no letter, no sign-off, and nothing here links anywhere.
+// Both strings are AquaTerra's own copy (CLAUDE.md §2).
 export function Footer() {
   return (
     <footer className="mt-12 bg-near-black">

@@ -1,13 +1,12 @@
 import { cx } from "../lib/utils";
 
-// The house headline lockup, per aq.md §4:
-//   heavy caps  +  ONE italic serif word in an accent colour  +  a period
+// The house headline lockup (CLAUDE.md §4): heavy caps + ONE italic serif word
+// in an accent colour + a period.
 //
 //   THE drives.      PICK A LANE, THEN turn up.      PARADOX 2026.
 //
-// The terminal period renders here so it can never be forgotten, and sits
-// outside the italic so it stays upright. Size comes from the caller's
-// `className` using the display scale (text-display-xl / -l / -m).
+// The period renders here so it can never be forgotten, and sits outside the
+// italic so it stays upright. Size comes from the caller's `className`.
 export default function Lockup({
   caps,
   accent,
@@ -29,13 +28,11 @@ export default function Lockup({
   );
 }
 
-// The mono role: 700 / 10.5px / uppercase / .06em tracking, taken from the
-// parent site's CSS. Eyebrows, stat labels, meta strings, the copyright line.
+// The mono role: eyebrows, stat labels, meta strings, the copyright line.
 //
-// CAUTION: this applies `text-transform: uppercase`, so never route a team
-// name or other proper noun through it. "ShikshAQ" would render "SHIKSHAQ"
-// and "Crftd" would render "CRFTD" mid-nav, both banned by aq.md §2. Render
-// those from TEAMS[...].name instead.
+// CAUTION: this applies `text-transform: uppercase`, so never route a team name
+// or other proper noun through it — "ShikshAQ" would render "SHIKSHAQ" and
+// "Crftd" "CRFTD", both banned by CLAUDE.md §2. Use TEAMS[...].caps instead.
 export function Meta({ children, className = "" }) {
   return <span className={cx("u-mono", className)}>{children}</span>;
 }
@@ -55,10 +52,8 @@ export function MetaRow({ items, className = "" }) {
   );
 }
 
-// A section's running number — "01" through "09" — set in the issue accent
-// beside a hairline rule. This is the main thing giving the page a spine: it
-// tells you where you are in the issue and ranks the openers above the card
-// headings beneath them.
+// A section's running number beside a hairline rule, for the sections that
+// render their own opener rather than going through <Section>.
 export function SectionNumber({ index, label, onDark = false, accentClassName }) {
   if (!index) return null;
   return (
