@@ -186,63 +186,65 @@ export const editions = {
       ],
     },
 
-    // Mini games. Every answer below is a verified figure from aq.md §2 — a
-    // quiz is only fun if the answers are true. Re-check before publishing.
+    // Mini games. Three ways to play, because eight multiple-choice questions
+    // in a row is a worksheet, not a game. Every figure below is verified
+    // (aq.md §2) — a game whose answers are invented is rule 0 with a
+    // scoreboard attached. Re-check them before publishing.
     games: {
       lockup: { caps: "HOW WELL DO YOU KNOW", accent: "aq" },
-      lead: "eight questions. no prizes, no leaderboard, no sign-up. just find out how much you actually picked up.",
-      quiz: [
+      lead: "three games. no prizes, no leaderboard, no sign-up. just find out how much you actually picked up.",
+
+      // BIGGER? — two figures, tap the larger. `value` is what the game
+      // compares; `display` is how the site writes it.
+      bigger: [
+        { label: "drives written up", value: 540, display: "540+" },
+        { label: "members, ages 14–19", value: 1300, display: "1,300+" },
+        { label: "saplings planted", value: 4000, display: "4,000+" },
+        { label: "kids reached in teaching workshops", value: 3500, display: "3,500+" },
+        { label: "bananas distributed", value: 15000, display: "15,000+" },
+        { label: "followers on @ngo.aquaterra", value: 3200, display: "3,200+" },
+        { label: "drives, blogs & openings", value: 570, display: "570+" },
+        { label: "members in the Welfare Team", value: 62, display: "62" },
+        { label: "members in Social Media", value: 29, display: "29" },
+        { label: "members in AQ.Ventures", value: 23, display: "23" },
+        { label: "teams", value: 8, display: "8" },
+      ],
+
+      // HOW CLOSE? — drag a slider at the real figure. `max` sets the track.
+      guess: [
         {
-          question: "how many teams does AquaTerra run?",
-          options: ["4", "6", "8", "12"],
-          answer: 2,
-          note: "five volunteer teams and three student businesses.",
-        },
-        {
-          question: "how many members, and how old are they?",
-          options: ["300+, ages 18–25", "1,300+, ages 14–19", "1,300+, ages 18–25", "800+, ages 16–21"],
-          answer: 1,
-          note: "every one of them is still at school or just out of it.",
-        },
-        {
-          question: "what year did AquaTerra start?",
-          options: ["2019", "2020", "2021", "2023"],
-          answer: 2,
-          note: "June 2021. sixteen students.",
-        },
-        {
-          question: "how many students founded it?",
-          options: ["3", "8", "16", "40"],
-          answer: 2,
-          note: "sixteen.",
-        },
-        {
-          question: "what is the student-run streetwear brand called?",
-          // Distractors are the other real AQ ventures, never the org's old
-          // clothing-label name — aq.md §2 bans that string outright, and a
-          // wrong answer still puts it on the page.
-          options: ["ShikshAQ", "AQ.Ventures", "Crftd", "Groundwork Diaries"],
-          answer: 2,
-          note: "Crftd. profits fund AQ welfare.",
-        },
-        {
-          question: "how many bananas has AQ handed out?",
-          options: ["500+", "3,000+", "15,000+", "60,000+"],
-          answer: 2,
+          prompt: "how many bananas has AQ handed out?",
+          value: 15000, display: "15,000+", max: 30000, step: 250,
           note: "fifteen thousand. nobody planned it that way.",
         },
         {
-          question: "how many saplings planted?",
-          options: ["400+", "1,000+", "4,000+", "9,000+"],
-          answer: 2,
+          prompt: "how many saplings has AQ planted?",
+          value: 4000, display: "4,000+", max: 10000, step: 100,
           note: "4,000+ and counting.",
         },
         {
-          question: "how many Sundarbans relief trips?",
-          options: ["2", "5", "8", "14"],
-          answer: 2,
-          note: "eight, all run by the Welfare Team.",
+          prompt: "how many members does AQ have?",
+          value: 1300, display: "1,300+", max: 3000, step: 50,
+          note: "1,300+, every one of them aged 14 to 19.",
         },
+        {
+          prompt: "how many kids has the Welfare Team reached in teaching workshops?",
+          value: 3500, display: "3,500+", max: 8000, step: 100,
+          note: "3,500+, across teaching workshops.",
+        },
+      ],
+
+      // MATCH — pair each team to what it actually does. Clues are trimmed
+      // from the teams' own bios on the live site, never rewritten.
+      match: [
+        { team: "welfare", clue: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips." },
+        { team: "social", clue: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra." },
+        { team: "events", clue: "Paradox. Disco Diwali. Starry Nights." },
+        { team: "collabs", clue: "School collabs, college collabs, NGO partnerships, outreach." },
+        { team: "hr", clue: "Recruitment, onboarding, certificates, Letters of Recommendation." },
+        { team: "shikshaq", clue: "Tuition discovery platform built by AQ members for Kolkata students." },
+        { team: "ventures", clue: "Helps student entrepreneurs turn ideas into visible brands." },
+        { team: "crftd", clue: "Student-run streetwear brand. Profits fund AQ welfare." },
       ],
     },
 

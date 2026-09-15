@@ -1,44 +1,35 @@
 import { useState } from "react";
-import { Check, X, RotateCcw, ArrowRight } from "lucide-react";
+import { Scale, Gauge, Shapes } from "lucide-react";
 import Section from "./Section";
 import { Meta } from "./Lockup";
+import Bigger from "./games/Bigger";
+import HowClose from "./games/HowClose";
+import MatchTeams from "./games/MatchTeams";
 import { cx } from "../lib/utils";
 
-// A playable quiz, no backend and no sign-up: state lives in the component,
-// nothing is stored, nothing is sent. Every answer is a verified AquaTerra
-// figure (aq.md §2) — a quiz whose answers are invented would be the rule-0
-// violation with a scoreboard attached.
+// Three games rather than one quiz, each with a different interaction: tap to
+// compare, drag to estimate, pair to learn. Every figure they use is verified
+// (aq.md §2) — a game whose answers are invented is rule 0 with a scoreboard.
+//
+// No backend and no sign-up: all state is local to the component and nothing
+// is stored or sent.
+const GAMES = [
+  { id: "bigger", name: "Bigger?", icon: Scale, blurb: "two figures. tap the larger one. keep the streak alive.",
+    available: (g) => g.bigger?.length >= 2 },
+  { id: "close", name: "How close?", icon: Gauge, blurb: "drag the slider to where you think the real number sits.",
+    available: (g) => g.guess?.length > 0 },
+  { id: "match", name: "Match the teams", icon: Shapes, blurb: "pair all eight teams to what they actually do.",
+    available: (g) => g.match?.length > 0 },
+];
+
 export default function MiniGames({ edition, index, label, accentKey, variant, ground, size }) {
   const games = edition.games;
-  const quiz = games?.quiz || [];
+  const playable = GAMES.filter((g) => games && g.available(games));
+  const [active, setActive] = useState(playable[0]?.id);
 
-  const [step, setStep] = useState(0);
-  const [picked, setPicked] = useState(null);
-  const [score, setScore] = useState(0);
-  const [done, setDone] = useState(false);
+  if (playable.length === 0) return null;
 
-  if (quiz.length === 0) return null;
-
-  const q = quiz[step];
-  const isLast = step === quiz.length - 1;
-  const answered = picked !== null;
-  const correct = answered && picked === q.answer;
-
-  function choose(i) {
-    if (answered) return;
-    setPicked(i);
-    if (i === q.answer) setScore((s) => s + 1);
-  }
-
-  function next() {
-    if (isLast) { setDone(true); return; }
-    setStep((s) => s + 1);
-    setPicked(null);
-  }
-
-  function restart() {
-    setStep(0); setPicked(null); setScore(0); setDone(false);
-  }
+  const current = playable.find((g) => g.id === active) || playable[0];
 
   return (
     <Section
@@ -52,114 +43,48 @@ export default function MiniGames({ edition, index, label, accentKey, variant, g
       caps={games.lockup?.caps}
       accent={games.lockup?.accent}
       lead={games.lead}
-      aside={`${quiz.length} questions`}
+      aside={`${playable.length} games`}
     >
-
-      <div className="overflow-hidden rounded-[2rem] border border-cream-soft/15 bg-cream-soft/[0.04]">
-        {done ? (
-          <div className="px-6 py-14 text-center sm:px-10">
-            <Meta className="text-cream-soft/50">Your score</Meta>
-            <p className="mt-4 font-display text-6xl font-bold tabular-nums sm:text-7xl">
-              {score}
-              <span className="text-cream-soft/40">/{quiz.length}</span>
-            </p>
-            <p className="mx-auto mt-4 max-w-sm text-pretty text-cream-soft/70">
-              {score === quiz.length
-                ? "every one. you have been paying attention."
-                : score >= quiz.length / 2
-                ? "solid. the rest is in the archive."
-                : "worth a second run. none of this is a test."}
-            </p>
+      {/* Game picker */}
+      <div
+        role="tablist"
+        aria-label="Choose a game"
+        className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2"
+      >
+        {playable.map((g) => {
+          const Icon = g.icon;
+          const on = g.id === current.id;
+          return (
             <button
+              key={g.id}
               type="button"
-              onClick={restart}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-cream-soft px-6 py-3 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <RotateCcw className="h-4 w-4" strokeWidth={2} />
-              Play again
-            </button>
-          </div>
-        ) : (
-          <div className="px-6 py-8 sm:px-10 sm:py-10">
-            <div className="flex items-center justify-between gap-4">
-              <Meta className="text-cream-soft/50">
-                Question {step + 1} of {quiz.length}
-              </Meta>
-              <Meta className="tabular-nums text-cream-soft/50">Score {score}</Meta>
-            </div>
-
-            {/* Progress through the quiz */}
-            <div className="mt-3 flex gap-1.5" aria-hidden="true">
-              {quiz.map((_, i) => (
-                <span
-                  key={i}
-                  className={cx(
-                    "h-1 flex-1 rounded-full transition-colors duration-300",
-                    i < step ? "bg-green-bright" : i === step ? "bg-cream-soft/60" : "bg-cream-soft/15"
-                  )}
-                />
-              ))}
-            </div>
-
-            <p className="mt-7 max-w-2xl text-balance text-2xl font-semibold leading-snug sm:text-3xl">
-              {q.question}
-            </p>
-
-            <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-              {q.options.map((opt, i) => {
-                const isAnswer = i === q.answer;
-                const isPicked = i === picked;
-                return (
-                  <li key={i}>
-                    <button
-                      type="button"
-                      onClick={() => choose(i)}
-                      disabled={answered}
-                      aria-pressed={isPicked}
-                      className={cx(
-                        "flex w-full items-center justify-between gap-3 rounded-2xl border px-5 py-4 text-left text-sm font-medium transition-colors",
-                        !answered && "border-cream-soft/20 hover:border-cream-soft/50 hover:bg-cream-soft/10",
-                        answered && isAnswer && "border-green-bright bg-green-bright/15 text-cream-soft",
-                        answered && isPicked && !isAnswer && "border-coral bg-coral/15 text-cream-soft",
-                        answered && !isAnswer && !isPicked && "border-cream-soft/10 text-cream-soft/40"
-                      )}
-                    >
-                      {opt}
-                      {answered && isAnswer && <Check className="h-4 w-4 shrink-0 text-green-bright" strokeWidth={2.5} />}
-                      {answered && isPicked && !isAnswer && <X className="h-4 w-4 shrink-0 text-coral" strokeWidth={2.5} />}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div
-              className="mt-6 flex flex-wrap items-center justify-between gap-4"
-              aria-live="polite"
-            >
-              <p className="max-w-lg text-pretty text-sm text-cream-soft/70">
-                {answered && (
-                  <>
-                    <span className={cx("font-semibold", correct ? "text-green-bright" : "text-coral")}>
-                      {correct ? "correct. " : "not quite. "}
-                    </span>
-                    {q.note}
-                  </>
-                )}
-              </p>
-              {answered && (
-                <button
-                  type="button"
-                  onClick={next}
-                  className="inline-flex shrink-0 items-center gap-2 rounded-full bg-cream-soft px-5 py-2.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  {isLast ? "See score" : "Next"}
-                  <ArrowRight className="h-4 w-4" strokeWidth={2} />
-                </button>
+              role="tab"
+              aria-selected={on}
+              onClick={() => setActive(g.id)}
+              className={cx(
+                "inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors",
+                on
+                  ? "bg-cream-soft text-ink"
+                  : "border border-cream-soft/20 text-cream-soft/70 hover:border-cream-soft/50 hover:text-cream-soft"
               )}
-            </div>
-          </div>
-        )}
+            >
+              <Icon className="h-4 w-4" strokeWidth={2} />
+              {g.name}
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mt-4 text-center">
+        <Meta className="text-cream-soft/45">{current.blurb}</Meta>
+      </p>
+
+      {/* The board. Keyed on the game id so switching resets its state rather
+          than carrying a half-finished round across. */}
+      <div className="mx-auto mt-7 max-w-3xl rounded-[2rem] border border-cream-soft/15 bg-cream-soft/[0.04] px-5 py-7 sm:px-8 sm:py-9">
+        {current.id === "bigger" && <Bigger key="bigger" pool={games.bigger} />}
+        {current.id === "close" && <HowClose key="close" rounds={games.guess} />}
+        {current.id === "match" && <MatchTeams key="match" pairs={games.match} />}
       </div>
     </Section>
   );

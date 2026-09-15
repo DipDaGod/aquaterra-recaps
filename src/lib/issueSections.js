@@ -35,7 +35,12 @@ export const SECTION_MANIFEST = [
   { id: "photography", label: "Photography", accent: "grape", variant: "numeral", ground: "band", size: "lead",
     has: (e) => Boolean(e.photography?.featured) || e.photography?.gallery?.length > 0 },
   { id: "games", label: "Mini games", accent: "sky", variant: "centre", ground: "ink", size: "lead",
-    has: (e) => e.games?.quiz?.length > 0 },
+    // Any one playable game is enough to earn the section. Gating this on a
+    // single game's field is what silently dropped the whole section out of
+    // the numbering when the quiz was replaced.
+    has: (e) => Boolean(e.games) && (
+      e.games.bigger?.length >= 2 || e.games.guess?.length > 0 || e.games.match?.length > 0
+    ) },
   { id: "diaries", label: "Groundwork Diaries", accent: "teal", variant: "numeral", ground: "plain", size: "sub",
     has: (e) => e.inside?.length > 0 },
   { id: "impact", label: "The impact", accent: "green", variant: "rule", ground: "plain", size: "sub",

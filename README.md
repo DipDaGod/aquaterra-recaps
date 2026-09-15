@@ -66,7 +66,7 @@ per-edition components — add a field, not a file.
 | `teams` | the 8 teams, each in its identity colour |
 | `featured` | the month's stories, mixed across teams |
 | `photography` | credited photo of the month + frame wall |
-| `games` | playable quiz (answers must be verified facts) |
+| `games` | three playable games — `bigger`, `guess`, `match` (every figure must be a verified fact) |
 | `inside` | Groundwork Diaries, workshops |
 | `impact` | metrics + goal progress |
 | `openings` | roles to join, from HR |
