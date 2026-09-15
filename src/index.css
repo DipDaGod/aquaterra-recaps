@@ -173,6 +173,38 @@ button:focus-visible,
   }
 }
 
+/* Stories. Each slide's parts rise in sequence off --i, and photo slides drift
+   a little so a still frame doesn't sit dead on screen.
+   The global reduced-motion rule below clamps all of these to nothing, which is
+   the right outcome: the player's own timing runs on requestAnimationFrame, so
+   the run still advances without any of the movement. */
+@keyframes storyRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes storyPop {
+  from { opacity: 0; transform: scale(0.82); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes storyZoom {
+  from { transform: scale(1.06); }
+  to { transform: scale(1); }
+}
+
+.story-rise {
+  animation: storyRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+.story-pop {
+  display: inline-block;
+  animation: storyPop 0.55s cubic-bezier(0.22, 1.4, 0.36, 1) both;
+}
+
+.story-zoom {
+  animation: storyZoom 6s ease-out both;
+}
+
 /* ShowMore: trim a long list on phones. Desktop grids are 3- and 4-up and
    already compact, so the rule is phone-only — which also means the toggle
    button (sm:hidden) and the trimming can never disagree.

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Play, Download } from "lucide-react";
 import Photo from "./Photo";
 import Lockup, { Meta, MetaRow } from "./Lockup";
+import Highlights from "./stories/Highlights";
 
 // "Watch recap" and "Download PDF" are driven by optional `video` / `pdf`
 // fields — a button only appears when there's something behind it.
@@ -77,6 +78,8 @@ export default function EditionHero({ edition }) {
           {edition.tagline}
         </p>
       )}
+
+      <Highlights edition={edition} />
 
       <div className="mt-9 grid aspect-[4/3] grid-cols-6 grid-rows-6 gap-2.5 sm:aspect-[16/9] sm:gap-3">
         <div className="col-span-6 row-span-4 overflow-hidden rounded-3xl sm:col-span-4 sm:row-span-6">
