@@ -465,10 +465,15 @@ used repeatedly rather than eight bespoke sections.
   - A slide carries the `section` it came from, which is what lets the player
     offer a way into that part of the page. The run is a trailer for the issue;
     it should not be a dead end.
-  - The player groups its progress bar **by chapter** and puts a tappable
-    chapter rail under it. Twenty-one equal segments in a 26rem card were 12px
-    each and told you nothing, and the run is over a minute long — without the
-    rail there is no way to skip a part you don't want.
+  - The player groups its progress bar **by chapter** and puts a row of chapter
+    rings under it. Twenty-one equal segments in a 26rem card were 12px each and
+    told you nothing, and the run is over a minute long — without the rings
+    there is no way to skip a part you don't want.
+  - Those rings are **the same object as the highlight row under the hero**, and
+    deliberately so: it is the thing that opened the chapter in the first place.
+    A row of text pills in a scroller was tried first and rendered `.scroll-quiet`'s
+    cream scrollbar straight across the dark card. There are only ever five
+    chapters — it never needed to scroll.
 - **`isPlaceholder()`** lets the placeholder state be *designed* rather than just
   look broken: bracketed copy renders dimmed, short fields get a dashed rule. It
   disappears on its own as real copy lands.

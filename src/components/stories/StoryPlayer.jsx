@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import StorySlide from "./StorySlide";
+import { Meta } from "../Lockup";
 import { chaptersFor } from "../../lib/buildStories";
 import { useOverlay } from "../../lib/useOverlay";
 import { SECTION_ACCENTS, cx } from "../../lib/utils";
@@ -170,25 +171,42 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           ))}
         </div>
 
-        {/* Skip a whole chapter. */}
-        <div className="scroll-quiet absolute inset-x-0 top-6 z-20 flex gap-1.5 overflow-x-auto px-3 pb-1 pr-24">
+        {/* Skip a whole chapter. Built as highlight rings, the same object the
+            row under the hero uses to open these chapters in the first place —
+            a scrolling row of text pills read as a stray scrollbar on the dark
+            card, and there are only ever five of these, so it never needed to
+            scroll at all. */}
+        <div className="absolute inset-x-0 top-6 z-20 flex items-center gap-2 pl-3 pr-[5.5rem]">
           {chapters.map((c) => {
+            const a = SECTION_ACCENTS[c.accent] || SECTION_ACCENTS.green;
             const on = c.id === current?.id;
+            const seen = index >= c.start;
             return (
               <button
                 key={c.id}
                 type="button"
                 onClick={() => go(c.start)}
+                aria-label={`${c.label} — ${c.count} ${c.count === 1 ? "card" : "cards"}`}
                 aria-current={on ? "true" : undefined}
-                className={cx(
-                  "shrink-0 rounded-full px-2.5 py-1 transition-colors",
-                  on ? "bg-cream-soft text-ink" : "text-cream-soft/45 hover:bg-cream-soft/15 hover:text-cream-soft/80"
-                )}
+                className="shrink-0"
               >
-                <span className="u-mono text-[0.55rem]">{c.label}</span>
+                <span
+                  className={cx(
+                    "grid h-7 w-7 place-items-center rounded-full p-[2px] transition-[transform,opacity] duration-300",
+                    a.rule,
+                    on ? "scale-110" : seen ? "opacity-70 hover:opacity-100" : "opacity-40 hover:opacity-90"
+                  )}
+                >
+                  <span className="grid h-full w-full place-items-center rounded-full bg-ink">
+                    <span className="u-mono text-[0.5rem] text-cream-soft">
+                      {String(c.count).padStart(2, "0")}
+                    </span>
+                  </span>
+                </span>
               </button>
             );
           })}
+          <Meta className="min-w-0 truncate text-cream-soft/55">{current?.label}</Meta>
         </div>
 
         <div className="absolute right-2 top-5 z-30 flex items-center gap-1">
