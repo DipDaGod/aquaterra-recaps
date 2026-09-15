@@ -481,6 +481,20 @@ used repeatedly rather than eight bespoke sections.
   - The non-live faces must stay rendered on a phone. Hiding them (they are
     `hidden lg:block` on wide screens) makes the outgoing face vanish the
     instant a move starts, and only the incoming one turns.
+  - **The faces are scenery. Every tap belongs to one stationary surface**
+    (`[data-surface]`), sized to the live card, sitting outside the stage. Both
+    faces are in flight during a move, so the live card is not yet under the
+    pointer while the outgoing one still is — while faces took clicks, a tap in
+    that window landed on the *departing* topic and jumped back to it, and
+    tapping fast enough the run looped between two topics and never ended.
+    z-index cannot fix that; the two are in different places, not stacked.
+    - The surface has to sit **outside** the stage: inside it, the cube's
+      rotation turns the surface away along with everything else and taps stop
+      landing at all.
+    - The stage itself is `pointer-events: none` too, or it catches the taps
+      before they reach the surface. The live card's own controls — pause,
+      close, the chip, the end-card buttons — opt back in with
+      `pointer-events-auto`.
   - **Tap moves a card, swipe moves a topic**, swipe down closes. Keep that
     split — it is what the gestures mean everywhere else, and what the desk
     asked for.

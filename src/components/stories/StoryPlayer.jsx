@@ -33,14 +33,12 @@ function Chevron({ dir, chapter, onClick }) {
 // A topic that is not the live one: its accent, its card count, its name. It
 // fills the same box as the live card and is scaled down by the stage, so the
 // two can transition into one another.
-function ChapterFace({ chapter, onClick }) {
+function ChapterFace({ chapter }) {
   const a = SECTION_ACCENTS[chapter.accent] || SECTION_ACCENTS.green;
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      tabIndex={-1}
-      aria-label={`Go to ${chapter.label} — ${chapter.count} ${chapter.count === 1 ? "card" : "cards"}`}
+    <div
+      aria-hidden="true"
+      data-peek={chapter.label}
       className="relative grid h-full w-full place-items-center overflow-hidden bg-ink sm:rounded-[2rem]"
     >
       <span aria-hidden="true" className="absolute inset-0 opacity-30" style={{ background: a.raw }} />
@@ -54,7 +52,7 @@ function ChapterFace({ chapter, onClick }) {
       <Meta className="absolute inset-x-0 bottom-8 text-center text-cream-soft/75">
         {chapter.label}
       </Meta>
-    </button>
+    </div>
   );
 }
 
@@ -232,8 +230,23 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
         className="relative flex h-full w-full items-center justify-center"
         style={cube ? { perspective: "1400px" } : undefined}
       >
+        {/* The interaction surface: stationary, exactly the size of the live
+            card, and OUTSIDE the stage — inside it the cube's rotation turned
+            it away along with everything else. Every face above it is
+            pointer-events:none, so a tap in the middle always reaches this and
+            always means the same thing, whatever is mid-flight. The live card's
+            own controls opt back in on top of it. */}
         <div
-          className="relative h-full w-full max-w-[26rem] sm:h-[min(90vh,46rem)]"
+          data-surface=""
+          className="absolute h-full w-full max-w-[26rem] cursor-pointer select-none sm:h-[min(90vh,46rem)]"
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerLeave={releaseHold}
+        />
+
+        <div
+          data-stage=""
+          className="pointer-events-none relative h-full w-full max-w-[26rem] sm:h-[min(90vh,46rem)]"
           style={{
             transformStyle: cube ? "preserve-3d" : undefined,
             // translateZ pulls the cube back by its own radius, so the face
@@ -273,9 +286,15 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
                 )}
                 style={{
                   ...face,
-                  // On the cube you move by swiping, and an edge-on face should
-                  // not be able to swallow a tap meant for the live one.
-                  pointerEvents: live ? "auto" : cube || Math.abs(d) > 1 ? "none" : "auto",
+                  // Faces are visual only; taps belong to the stationary
+                  // surface beneath them. During a move BOTH faces are in
+                  // flight, so the live card is not yet under the pointer while
+                  // the outgoing one still is — a tap then landed on the
+                  // departing topic and jumped back to it, and tapping fast
+                  // enough the run looped between two topics and never ended.
+                  // Moving between topics is the chevrons, a swipe, or the
+                  // rings under the hero.
+                  pointerEvents: "none",
                 }}
               >
                 {live ? (
@@ -332,7 +351,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           </span>
         </div>
 
-        <div className="absolute right-2 top-5 z-30 flex items-center gap-1">
+        <div className="pointer-events-auto absolute right-2 top-5 z-30 flex items-center gap-1">
           <button
             type="button"
             onClick={() => { holding.current = false; setPaused((p) => !p); }}
@@ -352,12 +371,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           </button>
         </div>
 
-        <div
-          className="relative min-h-0 flex-1 cursor-pointer select-none"
-          onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
-          onPointerLeave={releaseHold}
-        >
+        <div className="pointer-events-none relative min-h-0 flex-1 select-none">
           <div
             key={slide.id}
             className={cx("h-full", dir >= 0 ? "story-enter-next" : "story-enter-prev")}
@@ -378,11 +392,12 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
         </p>
       </div>
                 ) : (
-                  <ChapterFace chapter={c} onClick={() => go(c.start)} />
+                  <ChapterFace chapter={c} />
                 )}
               </div>
             );
           })}
+
         </div>
 
         {/* In the gap between the live card (half-width 13rem) and a peek

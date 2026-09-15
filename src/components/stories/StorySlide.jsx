@@ -27,7 +27,7 @@ function IntoTheIssue({ slide, onOpenSection }) {
       onPointerDown={swallow}
       onPointerUp={swallow}
       onClick={() => onOpenSection(slide.section)}
-      className="story-rise absolute inset-x-0 bottom-9 z-10 mx-auto flex w-fit items-center gap-1.5 rounded-full bg-cream-soft/10 px-3.5 py-1.5 text-cream-soft/70 backdrop-blur-sm transition-colors hover:bg-cream-soft/25 hover:text-cream-soft"
+      className="pointer-events-auto story-rise absolute inset-x-0 bottom-9 z-10 mx-auto flex w-fit items-center gap-1.5 rounded-full bg-cream-soft/10 px-3.5 py-1.5 text-cream-soft/70 backdrop-blur-sm transition-colors hover:bg-cream-soft/25 hover:text-cream-soft"
       style={{ "--i": 3 }}
     >
       <Meta className="text-[0.55rem]">See it in the issue</Meta>
@@ -245,7 +245,7 @@ function body(slide, seed, accent, onOpenSection, onReplay) {
             </Rise>
             {/* It used to say "the whole issue is below" and then just stop.
                 Now it takes you there. */}
-            <Rise i={6} className="mt-1 flex flex-wrap items-center justify-center gap-2.5">
+            <Rise i={6} className="pointer-events-auto mt-1 flex flex-wrap items-center justify-center gap-2.5">
               <button
                 type="button"
                 onPointerDown={swallow}
