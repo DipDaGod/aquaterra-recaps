@@ -6,9 +6,25 @@ import { Meta } from "../Lockup";
 // HOW CLOSE? — drag the slider to where the real figure sits. The reveal draws
 // your guess and the truth on the same track, so you can see by how much you
 // were out and which side you were on.
+//
+// A run is four rounds drawn from the pool rather than the whole pool in
+// order: the second go is a different set of questions, which is the only
+// reason to have a second go.
+const PER_RUN = 4;
+
+function pickRounds(pool) {
+  const a = [...pool];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a.slice(0, Math.min(PER_RUN, a.length));
+}
+
 const pct = (v, max) => Math.max(0, Math.min(100, (v / max) * 100));
 
-export default function HowClose({ rounds }) {
+export default function HowClose({ rounds: pool }) {
+  const [rounds, setRounds] = useState(() => pickRounds(pool));
   const [step, setStep] = useState(0);
   const [value, setValue] = useState(() => Math.round(rounds[0].max / 2));
   const [locked, setLocked] = useState(false);
@@ -34,13 +50,16 @@ export default function HowClose({ rounds }) {
     setLocked(false);
   }
 
+  // A fresh draw, so playing again asks different questions.
   function restart() {
-    setStep(0); setValue(Math.round(rounds[0].max / 2));
+    const fresh = pickRounds(pool);
+    setRounds(fresh); setStep(0); setValue(Math.round(fresh[0].max / 2));
     setLocked(false); setScores([]); setDone(false);
   }
 
   if (done) {
     const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+    const best = Math.round(Math.max(...scores));
     return (
       <div className="py-10 text-center">
         <Meta className="text-cream-soft/50">Average accuracy</Meta>
@@ -48,17 +67,19 @@ export default function HowClose({ rounds }) {
           {avg}<span className="text-cream-soft/40">%</span>
         </p>
         <p className="mx-auto mt-4 max-w-sm text-pretty text-cream-soft/70">
-          {avg >= 90 ? "you have been reading the footnotes."
+          {avg >= 95 ? "that is either close reading or a very good day."
+            : avg >= 85 ? "you have been reading the footnotes."
             : avg >= 65 ? "close enough to be suspicious."
             : "the bananas get everyone."}
         </p>
+        <Meta className="mt-3 block text-cream-soft/40">Best round {best}%</Meta>
         <button
           type="button"
           onClick={restart}
           className="mt-8 inline-flex items-center gap-2 rounded-full bg-cream-soft px-6 py-3 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
         >
           <RotateCcw className="h-4 w-4" strokeWidth={2} />
-          Play again
+          Play again, new questions
         </button>
       </div>
     );
@@ -117,7 +138,9 @@ export default function HowClose({ rounds }) {
           {locked && (
             <>
               <span className="font-semibold text-cream-soft">
-                off by {offBy.toLocaleString()}.{" "}
+                {offBy === 0
+                  ? "exactly right. "
+                  : `off by ${offBy.toLocaleString()}, ${value > round.value ? "over" : "under"}. `}
               </span>
               {round.note}
             </>

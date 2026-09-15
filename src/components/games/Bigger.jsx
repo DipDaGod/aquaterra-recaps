@@ -4,16 +4,37 @@ import { cx } from "../../lib/utils";
 import { Meta } from "../Lockup";
 
 // BIGGER? — two figures, tap the larger one. No end, only the run you're on.
-// Pairs never share a value, so there is always a right answer.
+//
+// The pool spans 1 to 15,000, so an unbiased draw mostly asks "is 15,000 more
+// than 1", which is not a question. A pair is drawn from the closest band it
+// can find instead: near-misses like 540+ against 570+, or the Collabs Team
+// against ShikshAQ, are the ones worth getting right. Pairs never share a
+// value, so there is always a right answer.
+const NEAR = 6;
+
 function drawPair(pool, exclude) {
   const options = pool.filter((s) => s.label !== exclude);
-  for (let i = 0; i < 40; i++) {
+  let fallback = null;
+  for (let i = 0; i < 60; i++) {
     const a = options[Math.floor(Math.random() * options.length)];
     const b = options[Math.floor(Math.random() * options.length)];
-    if (a.label !== b.label && a.value !== b.value) return [a, b];
+    if (a.label === b.label || a.value === b.value) continue;
+    fallback ||= [a, b];
+    if (Math.max(a.value, b.value) / Math.min(a.value, b.value) <= NEAR) return [a, b];
   }
-  return [pool[0], pool[1]];
+  return fallback || [pool[0], pool[1]];
 }
+
+// How much bigger, in words. Derived from the two figures — never a claim the
+// data doesn't already make. The two are often different kinds of thing, so
+// it is "the other", never "as many".
+function margin(hi, lo) {
+  const ratio = hi.value / lo.value;
+  if (ratio >= 1.8) return `about ${Math.round(ratio * 10) / 10}× the other.`;
+  return `only ${(hi.value - lo.value).toLocaleString()} between them.`;
+}
+
+const MILESTONES = { 3: "three in a row.", 5: "five straight. you've been reading.", 10: "ten. the desk would like a word." };
 
 export default function Bigger({ pool }) {
   const [pair, setPair] = useState(() => drawPair(pool));
@@ -24,6 +45,8 @@ export default function Bigger({ pool }) {
   const answered = picked !== null;
   const winner = useMemo(() => (pair[0].value > pair[1].value ? 0 : 1), [pair]);
   const right = answered && picked === winner;
+  const top = pair[winner];
+  const other = pair[1 - winner];
 
   // Both updates are computed here rather than one being scheduled from inside
   // the other's updater — updaters must be pure, and StrictMode runs them twice.
@@ -37,7 +60,7 @@ export default function Bigger({ pool }) {
   }, [answered, winner, streak]);
 
   function next() {
-    setPair(drawPair(pool, pair[winner].label));
+    setPair(drawPair(pool, top.label));
     setPicked(null);
   }
 
@@ -95,14 +118,26 @@ export default function Bigger({ pool }) {
         })}
       </div>
 
-      <div className="mt-6 flex min-h-12 flex-wrap items-center justify-between gap-4" aria-live="polite">
-        <p className="text-sm text-cream-soft/70">
+      {/* The reveal is the point of playing: the verdict, the margin between
+          the two figures, and one verified line about the winner. */}
+      <div className="mt-6 flex min-h-20 flex-wrap items-start justify-between gap-4" aria-live="polite">
+        <div className="max-w-lg text-sm">
           {answered && (
-            <span className={cx("font-semibold", right ? "text-green-bright" : "text-coral")}>
-              {right ? `right — that's ${streak} in a row.` : "nope. streak back to zero."}
-            </span>
+            <>
+              <p className={cx("font-semibold", right ? "text-green-bright" : "text-coral")}>
+                {right ? (MILESTONES[streak] || `right. ${streak} in a row.`) : "not that one."}
+              </p>
+              <p className="mt-1.5 text-pretty text-cream-soft/70">
+                <span className="text-cream-soft">{top.display}</span> {top.label}, against{" "}
+                <span className="text-cream-soft">{other.display}</span> {other.label} —{" "}
+                {margin(top, other)}
+              </p>
+              {top.note && (
+                <p className="mt-1.5 text-pretty text-cream-soft/55">{top.note}</p>
+              )}
+            </>
           )}
-        </p>
+        </div>
         {answered && (
           <button
             type="button"

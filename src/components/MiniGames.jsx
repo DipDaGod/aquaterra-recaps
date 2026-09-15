@@ -12,11 +12,11 @@ import { cx } from "../lib/utils";
 // (CLAUDE.md §2) — a game whose answers are invented is rule 0 with a
 // scoreboard. No backend, no sign-up: state is local and nothing is sent.
 const GAMES = [
-  { id: "bigger", name: "Bigger?", icon: Scale, blurb: "two figures. tap the larger one. keep the streak alive.",
+  { id: "bigger", name: "Bigger?", icon: Scale, blurb: "two figures, drawn close together. tap the larger one.",
     available: (g) => g.bigger?.length >= 2 },
-  { id: "close", name: "How close?", icon: Gauge, blurb: "drag the slider to where you think the real number sits.",
+  { id: "close", name: "How close?", icon: Gauge, blurb: "four rounds, drawn at random. drag to where the real number sits.",
     available: (g) => g.guess?.length > 0 },
-  { id: "match", name: "Match the teams", icon: Shapes, blurb: "match all eight teams to what they actually do.",
+  { id: "match", name: "Match the teams", icon: Shapes, blurb: "eight teams, eight jobs, both columns shuffled. pair them up.",
     available: (g) => g.match?.length > 0 },
 ];
 

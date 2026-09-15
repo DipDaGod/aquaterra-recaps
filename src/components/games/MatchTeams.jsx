@@ -4,7 +4,12 @@ import { TEAMS, cx } from "../../lib/utils";
 import { Meta } from "../Lockup";
 
 // MATCH — tap a team, then tap what it does. A correct pair locks in that
-// team's own colour, so finishing leaves the full palette on screen.
+// team's own colour, so finishing leaves the full palette on screen, and
+// leaves behind one more line of that team's own published detail — the
+// clue says what the team does, the reveal says how many people do it.
+//
+// Both columns are shuffled. With the teams in a fixed order the board could
+// be solved top-down off the teams section further up the page.
 //
 // Tap-to-pair rather than drag-and-drop: it works identically with a mouse, a
 // thumb and a keyboard.
@@ -19,9 +24,11 @@ function shuffle(xs) {
 
 export default function MatchTeams({ pairs }) {
   const [clues, setClues] = useState(() => shuffle(pairs));
+  const [order, setOrder] = useState(() => shuffle(pairs));
   const [pickedTeam, setPickedTeam] = useState(null);
   const [matched, setMatched] = useState(() => new Set());
   const [wrong, setWrong] = useState(null);
+  const [last, setLast] = useState(null);
   const [tries, setTries] = useState(0);
   const wrongTimer = useRef(0);
 
@@ -42,6 +49,7 @@ export default function MatchTeams({ pairs }) {
       setMatched((m) => new Set(m).add(key));
       setPickedTeam(null);
       setWrong(null);
+      setLast(key);
     } else {
       setWrong(key);
       setPickedTeam(null);
@@ -52,8 +60,8 @@ export default function MatchTeams({ pairs }) {
 
   function restart() {
     clearTimeout(wrongTimer.current);
-    setClues(shuffle(pairs)); setPickedTeam(null);
-    setMatched(new Set()); setWrong(null); setTries(0);
+    setClues(shuffle(pairs)); setOrder(shuffle(pairs)); setPickedTeam(null);
+    setMatched(new Set()); setWrong(null); setLast(null); setTries(0);
   }
 
   if (complete) {
@@ -67,6 +75,9 @@ export default function MatchTeams({ pairs }) {
         <p className="mx-auto mt-4 max-w-sm text-pretty text-cream-soft/70">
           {perfect ? "not one miss. show-off."
             : `${pairs.length} teams, ${tries} tries. the perfect run is ${pairs.length}.`}
+        </p>
+        <p className="mx-auto mt-5 max-w-md text-pretty text-sm text-cream-soft/55">
+          five volunteer teams, three student businesses. that is the whole org.
         </p>
         <div className="mx-auto mt-7 flex max-w-md flex-wrap justify-center gap-2">
           {pairs.map(({ team }) => {
@@ -97,15 +108,22 @@ export default function MatchTeams({ pairs }) {
         <Meta className="tabular-nums text-cream-soft/40">{tries} taps</Meta>
       </div>
 
-      <p className="mt-6 text-sm text-cream-soft/70">
-        {pickedTeam
-          ? `now tap what ${TEAMS[pickedTeam].name} actually does.`
-          : "tap a team, then tap what it does."}
+      <p className="mt-6 min-h-10 text-pretty text-sm text-cream-soft/70">
+        {pickedTeam ? (
+          `now tap what ${TEAMS[pickedTeam].name} actually does.`
+        ) : last ? (
+          <>
+            <span className="font-semibold text-cream-soft">{TEAMS[last].name} — </span>
+            {pairs.find((x) => x.team === last)?.then}
+          </>
+        ) : (
+          "tap a team, then tap what it does."
+        )}
       </p>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-5">
         <ul className="flex flex-col gap-2">
-          {pairs.map(({ team }) => {
+          {order.map(({ team }) => {
             const t = TEAMS[team];
             const isMatched = matched.has(team);
             const isPicked = pickedTeam === team;

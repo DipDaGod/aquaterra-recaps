@@ -4,6 +4,7 @@ import { X, Check } from "lucide-react";
 import Mascot from "./Mascot";
 import { Meta } from "./Lockup";
 import Celebration from "./Celebration";
+import HoloCard from "./HoloCard";
 import { useOverlay } from "../lib/useOverlay";
 import { TEAMS, cx } from "../lib/utils";
 
@@ -19,6 +20,11 @@ import { TEAMS, cx } from "../lib/utils";
 // Finishing the set fires <Celebration> over the top of this. That is a moment,
 // not a panel — it used to be a block appended below the card, which meant the
 // payoff for collecting all eight was some text you had to scroll to.
+//
+// <HoloCard> makes it behave like the foil card it is drawn as: it tilts to the
+// pointer, its foil moves, and a sideways drag throws it to the next one. That
+// is the swipe the set was missing — the dots are still there, and there are
+// still no arrows.
 function Card({ entry, number, total }) {
   const team = TEAMS[entry.key];
 
@@ -113,7 +119,15 @@ export default function TeamCardViewer({ roster, index, collected, celebrating, 
 
       <div className="flex min-h-full flex-col items-center justify-center gap-5 px-5 pb-8 pt-2">
       <div key={entry.key} className="flex w-full justify-center">
-        <Card entry={entry} number={index + 1} total={total} />
+        {/* `seed` is the card's place in the set, which is what gives each one
+            its own angle into the foil. */}
+        <HoloCard
+          seed={index}
+          onSwipe={(delta) => go(index + delta)}
+          className="w-full max-w-[21rem]"
+        >
+          <Card entry={entry} number={index + 1} total={total} />
+        </HoloCard>
       </div>
 
       {/* The dots are the progress meter and the way round the set — which is
@@ -145,6 +159,12 @@ export default function TeamCardViewer({ roster, index, collected, celebrating, 
 
         <Meta className={done ? "text-green-bright" : "text-cream-soft/45"}>
           {done ? "set complete" : `${collected.size} of ${total} read`}
+        </Meta>
+
+        {/* Explanatory, not decorative (CLAUDE.md §3.7) — the gesture is not
+            discoverable on its own. */}
+        <Meta className="text-center text-cream-soft/35">
+          drag a card sideways for the next one
         </Meta>
       </div>
 
