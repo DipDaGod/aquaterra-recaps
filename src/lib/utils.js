@@ -71,15 +71,17 @@ export function issueAccentVars(key) {
 // Section accents. `on` is the text-safe variant for cream grounds, `bright`
 // the block colour for dark ones. See issueSections.js for why the team
 // palette is used editorially here.
+// `raw` is the colour as a CSS value, for gradients and shadows where a
+// Tailwind class cannot reach.
 export const SECTION_ACCENTS = {
-  green: { on: "text-team-welfare-ink", bright: "text-green-bright", rule: "bg-team-welfare" },
-  tomato: { on: "text-team-ventures-ink", bright: "text-team-ventures", rule: "bg-team-ventures" },
-  grape: { on: "text-team-social-ink", bright: "text-team-social", rule: "bg-team-social" },
-  sky: { on: "text-team-events-ink", bright: "text-team-events", rule: "bg-team-events" },
-  teal: { on: "text-team-collabs-ink", bright: "text-team-collabs", rule: "bg-team-collabs" },
-  pink: { on: "text-team-hr-ink", bright: "text-team-hr", rule: "bg-team-hr" },
-  lemon: { on: "text-team-shikshaq-ink", bright: "text-team-shikshaq", rule: "bg-team-shikshaq" },
-  ink: { on: "text-ink", bright: "text-cream-soft", rule: "bg-ink" },
+  green: { on: "text-team-welfare-ink", bright: "text-green-bright", rule: "bg-team-welfare", raw: "var(--color-green-bright)" },
+  tomato: { on: "text-team-ventures-ink", bright: "text-team-ventures", rule: "bg-team-ventures", raw: "var(--color-team-ventures)" },
+  grape: { on: "text-team-social-ink", bright: "text-team-social", rule: "bg-team-social", raw: "var(--color-team-social)" },
+  sky: { on: "text-team-events-ink", bright: "text-team-events", rule: "bg-team-events", raw: "var(--color-team-events)" },
+  teal: { on: "text-team-collabs-ink", bright: "text-team-collabs", rule: "bg-team-collabs", raw: "var(--color-team-collabs)" },
+  pink: { on: "text-team-hr-ink", bright: "text-team-hr", rule: "bg-team-hr", raw: "var(--color-team-hr)" },
+  lemon: { on: "text-team-shikshaq-ink", bright: "text-team-shikshaq", rule: "bg-team-shikshaq", raw: "var(--color-team-shikshaq)" },
+  ink: { on: "text-ink", bright: "text-cream-soft", rule: "bg-ink", raw: "var(--color-ink)" },
 };
 
 export function sectionAccent(key, onDark = false) {

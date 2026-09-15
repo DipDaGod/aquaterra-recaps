@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { X, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import StorySlide from "./StorySlide";
-import { cx } from "../../lib/utils";
+import { SECTION_ACCENTS, cx } from "../../lib/utils";
 
 // An Instagram-style stories player over the edition's own content.
 //
@@ -14,6 +14,8 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
   const [index, setIndex] = useState(startAt);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
+  // Which way the last move went, so a slide enters from the side it came from.
+  const [dir, setDir] = useState(1);
 
   const closeRef = useRef(null);
   const returnFocus = useRef(null);
@@ -28,10 +30,11 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
   const go = useCallback((next) => {
     if (next < 0) { setIndex(0); elapsed.current = 0; setProgress(0); return; }
     if (next >= total) { onClose(); return; }
+    setDir((d) => (next > index ? 1 : next < index ? -1 : d));
     setIndex(next);
     elapsed.current = 0;
     setProgress(0);
-  }, [total, onClose]);
+  }, [total, onClose, index]);
 
   // Advance on its own clock.
   useEffect(() => {
@@ -76,6 +79,8 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
 
   if (!slide) return null;
 
+  const accentRaw = (SECTION_ACCENTS[slide.accent] || SECTION_ACCENTS.green).raw;
+
   // Press and hold pauses, as it does on Instagram; a quick press is a tap, and
   // which half it lands in decides direction.
   function onPointerDown() { held.current = performance.now(); setPaused(true); }
@@ -94,13 +99,22 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
       aria-modal="true"
       aria-label={`${slide.chapter} story, ${index + 1} of ${total}`}
     >
-      <div className="relative flex h-full w-full max-w-[26rem] flex-col overflow-hidden bg-ink sm:h-[min(90vh,46rem)] sm:rounded-[2rem]">
+      <div
+        className="relative flex h-full w-full max-w-[26rem] flex-col overflow-hidden bg-ink transition-shadow duration-700 sm:h-[min(90vh,46rem)] sm:rounded-[2rem]"
+        style={{ boxShadow: `0 0 90px -20px ${accentRaw}` }}
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28"
+          style={{ background: "linear-gradient(to bottom, rgb(10 10 10 / 0.75) 0%, transparent 100%)" }}
+        />
+
         {/* Segmented progress */}
         <div className="absolute inset-x-0 top-0 z-20 flex gap-1 p-3">
           {slides.map((s, i) => (
             <span key={s.id} className="h-0.5 flex-1 overflow-hidden rounded-full bg-cream-soft/25">
               <span
-                className="block h-full rounded-full bg-cream-soft"
+                className={cx("block h-full rounded-full bg-cream-soft", i === index && "story-active-bar")}
                 style={{ width: i < index ? "100%" : i === index ? `${progress * 100}%` : "0%" }}
               />
             </span>
@@ -134,8 +148,11 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
           onPointerUp={onPointerUp}
           onPointerLeave={() => setPaused(false)}
         >
-          <div key={slide.id} className="h-full">
-            <StorySlide slide={slide} />
+          <div
+            key={slide.id}
+            className={cx("h-full", dir >= 0 ? "story-enter-next" : "story-enter-prev")}
+          >
+            <StorySlide slide={slide} seed={index} />
           </div>
         </div>
 

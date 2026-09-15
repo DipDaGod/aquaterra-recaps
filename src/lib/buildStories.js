@@ -21,6 +21,7 @@ export function buildStories(edition) {
 
   push("numbers", {
     kind: "cover",
+    accent: "green",
     lockup: edition.lockup,
     eyebrow: `Edition ${String(edition.editionNumber).padStart(2, "0")}`,
     meta: `${edition.month} ${edition.year}`,
@@ -28,9 +29,15 @@ export function buildStories(edition) {
     ms: 3600,
   });
 
-  for (const stat of edition.glance || []) {
-    push("numbers", { kind: "stat", value: stat.value, label: stat.label, ms: 2600 });
-  }
+  // Stats cycle the palette so four figures in a row aren't four identical
+  // cards with different digits.
+  const statAccents = ["green", "sky", "lemon", "grape"];
+  (edition.glance || []).forEach((stat, i) => {
+    push("numbers", {
+      kind: "stat", value: stat.value, label: stat.label,
+      accent: statAccents[i % statAccents.length], ms: 2900,
+    });
+  });
 
   const roster = edition.teams?.roster || [];
   if (roster.length) {
@@ -38,7 +45,7 @@ export function buildStories(edition) {
       kind: "teams",
       lockup: edition.teams.lockup,
       teams: roster.map((t) => ({ key: t.key, name: TEAMS[t.key]?.name, members: t.members })),
-      ms: 4200,
+      accent: "grape", ms: 4600,
     });
   }
 
@@ -51,16 +58,16 @@ export function buildStories(edition) {
       date: f.date,
       meta: [f.location, f.people],
       image: f.image,
-      ms: 3400,
+      accent: "tomato", ms: 3600,
     });
   }
 
   const p = edition.photography;
   if (p?.featured) {
-    push("frames", { kind: "photo", image: p.featured, caption: p.featuredCaption, credit: p.featured.credit, ms: 3400 });
+    push("frames", { kind: "photo", image: p.featured, caption: p.featuredCaption, credit: p.featured.credit, accent: "sky", ms: 3600, hero: true });
   }
   for (const frame of p?.gallery || []) {
-    push("frames", { kind: "photo", image: frame, caption: frame.label, credit: frame.credit, ms: 2400 });
+    push("frames", { kind: "photo", image: frame, caption: frame.label, credit: frame.credit, accent: "sky", ms: 2600 });
   }
 
   if (edition.impact) {
@@ -68,7 +75,7 @@ export function buildStories(edition) {
       kind: "impact",
       headline: edition.impact.headline,
       metrics: edition.impact.metrics || [],
-      ms: 4200,
+      accent: "lemon", ms: 4400,
     });
   }
 
@@ -76,7 +83,7 @@ export function buildStories(edition) {
     kind: "end",
     month: edition.month,
     year: edition.year,
-    ms: 4000,
+    accent: "green", ms: 4200,
   });
 
   return slides;
