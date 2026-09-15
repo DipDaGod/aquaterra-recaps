@@ -344,6 +344,31 @@ a random emphasis.
 - Meta strings joined with middle dots: `8 DEPARTMENTS · 570+ DRIVES, BLOGS & OPENINGS`.
 - Links and CTAs carry a trailing `→`.
 
+### The orbit banner
+
+`AQUATERRA` set enormous above the footer, with eight circular windows drifting
+around it. Every window is a different horizontal slice of the **same** video
+frame — one decoder, eight views — drawn to canvases rather than eight `<video>`
+elements.
+
+It is deliberately cheap, and the constraints are load-bearing:
+
+- one `<video>`, `preload="none"`, not fetched until the banner is near the
+  viewport; **`muted` is required** or autoplay is refused outright
+- one rAF loop for all eight canvases, capped at 15fps. It is decoration; 60fps
+  costs four times the CPU for nothing anyone can see
+- the loop and the video both stop when the banner scrolls out of view or the
+  tab is hidden, which lets the decoder release its buffers
+- 160×160 backing stores — 0.8MB for all eight — and no pixel readbacks
+- under reduced motion the video is never loaded: the poster is drawn once
+- the drift is a CSS animation, not a scroll or pointer handler, so it runs on
+  the compositor and reduced motion switches it off for free
+
+Before the video file exists, or if it fails, each bubble keeps a team-colour
+tint — so the banner never looks broken, it just looks flatter. The banner and
+the footer are one continuous dark block; the footer has no top margin for that
+reason.
+
 ### Cursors and selection
 
 Both are set once, in `@layer base` in `index.css`. Don't set them per-component

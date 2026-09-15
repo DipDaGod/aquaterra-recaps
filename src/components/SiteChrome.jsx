@@ -132,7 +132,7 @@ export function TopBar() {
 // Both strings are AquaTerra's own copy (CLAUDE.md §2).
 export function Footer() {
   return (
-    <footer className="mt-12 bg-near-black">
+    <footer className="bg-near-black">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 px-5 py-9 text-center sm:px-8 sm:flex-row sm:justify-between sm:gap-8 sm:text-left lg:px-10">
         <div className="flex shrink-0 items-center gap-3">
           <Logo className="h-8 w-8" />

@@ -8,6 +8,22 @@ hardcoded — so **replace them in place and keep the filename.**
 |---|---|---|
 | `logo.png` | the nav wordmark and the footer, via `<Logo>` in `src/components/SiteChrome.jsx` | square, 256×256 or larger, transparent background, sRGB PNG. Rendered at 28–32px and masked to a circle, so keep the mark centred with a little breathing room |
 | `opengraph.jpg` | the social preview card, via `<meta property="og:image">` in `index.html` | **1200×630 exactly.** JPEG, sRGB, under 300KB. Anything text-heavy gets unreadable in a Slack or WhatsApp preview — big type only |
+| `footer-vid.mp4` | the orbit banner above the footer, via `OrbitBanner.jsx` | H.264 MP4, **landscape**, 1280×720 is plenty. **Keep it under 3MB** — it autoplays for everyone who scrolls that far. No audio track (it plays muted; an audio track is bytes nobody will ever hear) |
+| `footer-vid.jpg` | *optional.* The still the banner draws for readers on reduced motion | a frame from the video, same aspect. Its absence is silent — the bubbles keep their team-colour tint instead |
+
+### About `footer-vid.mp4`
+
+The banner shows **eight circular windows onto the same frame**, each one a
+different slice from left to right. So the footage wants people spread across
+the width rather than one subject dead centre, and it is cropped to a square the
+height of the frame — anything near the top or bottom edge gets cut.
+
+It is decoded once and drawn to eight small canvases, only while the banner is
+on screen. See the comment at the top of `OrbitBanner.jsx` before changing how
+it loads.
+
+**`DESCRIPTION` in that file is the only thing a screen reader gets.** If you
+replace the video with different footage, change that string with it.
 
 ## Replacing one
 

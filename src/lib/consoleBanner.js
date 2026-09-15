@@ -1,5 +1,5 @@
 import { AQ_TOTALS, TEAM_ROSTER, editionList, latestEdition, isUpcoming } from "../data/editions";
-import { issueSections } from "./issueSections";
+import { SECTION_MANIFEST, issueSections } from "./issueSections";
 import { TEAMS, isPlaceholder } from "./utils";
 
 // The console easter egg.
@@ -12,10 +12,10 @@ import { TEAMS, isPlaceholder } from "./utils";
 // It also leaves `aq` on the window — the actual egg. The banner is just the
 // note telling you it's there.
 //
-// Every colour below is a mid-tone, and the one line that carries the actual
-// message is logged with no %c at all, so it takes the console's own text
-// colour. A near-black string is invisible in a dark DevTools theme and a pale
-// one is invisible in a light theme; there is no safe "text" colour to pick.
+// Every colour below is a mid-tone, and the lines carrying the actual message
+// are logged with no %c at all, so they take the console's own text colour. A
+// near-black string is invisible in a dark DevTools theme and a pale one is
+// invisible in a light theme; there is no safe "text" colour to pick.
 const PALETTE = {
   cream: "#f4efe0",
   ink: "#0a0a0a",
@@ -34,16 +34,44 @@ const line = (fg, size = 12, extra = "") =>
   `color:${fg};font-size:${size}px;${SANS}${extra}`;
 const mono = (fg, size = 12, extra = "") =>
   `color:${fg};font-size:${size}px;${MONO}${extra}`;
+const swatch = (colour) => `background:${colour};padding:3px 9px;line-height:20px;`;
 
-// "15,000+ bananas distributed" is the house style in miniature, so the egg
-// keeps it rather than restating the member count a third time.
-const totalFor = (needle) =>
-  AQ_TOTALS.find((t) => t.label.includes(needle)) || AQ_TOTALS[0];
+// The tokens are CSS variables, which console styles can't resolve. Read them
+// off the document when a command actually runs — by then the stylesheet is
+// certainly parsed, which it may not be when the banner first prints.
+function hex(team) {
+  const name = team.raw.replace(/^var\(|\)$/g, "");
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || PALETTE.green;
+}
 
 function table(rows) {
   if (typeof console.table === "function") console.table(rows);
   else console.log(rows);
 }
+
+// A rule made of the eight identity colours. It is the most AquaTerra thing
+// that fits in a console.
+function paletteRule() {
+  const cells = TEAM_ROSTER.map(() => "%c ").join("");
+  console.log(cells, ...TEAM_ROSTER.map((t) => swatch(hex(TEAMS[t.key]))));
+}
+
+const totalFor = (needle) =>
+  AQ_TOTALS.find((t) => t.label.includes(needle)) || AQ_TOTALS[0];
+
+const COMMANDS = [
+  ["aq.teams()", "the eight, and how many people are in each"],
+  ["aq.numbers()", "every figure AquaTerra has published"],
+  ["aq.issues()", "every edition, and whether it is out yet"],
+  ["aq.sections()", "what an issue is made of"],
+  ["aq.colours()", "the eight identity colours, as actual colours"],
+  ["aq.todo()", "what the desk still owes the current issue"],
+  ["aq.bananas()", "the only number anyone remembers"],
+  ["aq.read()", "open the latest issue"],
+];
+
+const WIDEST = Math.max(...COMMANDS.map(([name]) => name.length));
 
 const aq = Object.freeze({
   // Canonical names only. Never uppercase a team name (CLAUDE.md §2).
@@ -55,7 +83,10 @@ const aq = Object.freeze({
         members: entry.members,
       }))
     );
-    console.log(`%cfive volunteer teams, three student businesses. ${TEAMS.crftd.name} is one person.`, line(PALETTE.quiet));
+    console.log(
+      `%cfive volunteer teams, three student businesses. ${TEAMS.crftd.name} is one person.`,
+      line(PALETTE.quiet)
+    );
   },
 
   numbers() {
@@ -73,6 +104,58 @@ const aq = Object.freeze({
         read: `/${e.year}/${e.slug}`,
       }))
     );
+    console.log("%caq.read() opens the latest one.", line(PALETTE.quiet));
+  },
+
+  sections() {
+    table(
+      SECTION_MANIFEST.map((s, i) => ({
+        no: String(i + 1).padStart(2, "0"),
+        section: typeof s.label === "function" ? "The opener" : s.label,
+        "what it is": s.blurb,
+        "in the latest issue": issueSections(latestEdition).some((x) => x.id === s.id) ? "yes" : "no",
+      }))
+    );
+    console.log("%ca section only appears when the issue has something to put in it.", line(PALETTE.quiet));
+  },
+
+  colours() {
+    for (const entry of TEAM_ROSTER) {
+      const team = TEAMS[entry.key];
+      const value = hex(team);
+      console.log("%c      ", swatch(value), `${team.name} — ${value}`);
+    }
+    console.log("%ceach team owns one. nothing else on the site uses them.", line(PALETTE.quiet));
+  },
+
+  // The one genuinely useful command: what is still bracketed, and where.
+  todo() {
+    const owed = [];
+    const walk = (node, path) => {
+      if (isPlaceholder(node)) owed.push(path);
+      else if (Array.isArray(node)) node.forEach((v, i) => walk(v, `${path}[${i}]`));
+      else if (node && typeof node === "object") {
+        for (const [k, v] of Object.entries(node)) walk(v, path ? `${path}.${k}` : k);
+      }
+    };
+    walk(latestEdition, "");
+
+    const bySection = new Map();
+    for (const path of owed) {
+      const head = path.split(/[.[]/)[0];
+      bySection.set(head, (bySection.get(head) || 0) + 1);
+    }
+
+    console.log(
+      `%cedition ${String(latestEdition.editionNumber).padStart(2, "0")} — ${owed.length} field${owed.length === 1 ? "" : "s"} still waiting on the desk`,
+      line(owed.length ? PALETTE.gold : PALETTE.green, 13, "font-weight:700;")
+    );
+    if (owed.length === 0) {
+      console.log("%cnothing bracketed. someone did the work.", line(PALETTE.quiet));
+      return;
+    }
+    table([...bySection].map(([section, count]) => ({ section, waiting: count })));
+    console.log("%cthey are the [bracketed] ones in src/data/editions.js.", line(PALETTE.quiet));
   },
 
   bananas() {
@@ -81,16 +164,29 @@ const aq = Object.freeze({
     console.log("%cbananas distributed. nobody planned it that way.", line(PALETTE.quiet, 12));
   },
 
+  read() {
+    const path = `/${latestEdition.year}/${latestEdition.slug}`;
+    console.log(`%copening ${latestEdition.month} ${latestEdition.year}…`, line(PALETTE.green, 12));
+    window.location.assign(path);
+  },
+
   help() {
-    console.log("%caq.teams()%c    the eight, and how many people are in each", mono(PALETTE.green), line(PALETTE.quiet));
-    console.log("%caq.numbers()%c  everything AquaTerra has counted since 2021", mono(PALETTE.green), line(PALETTE.quiet));
-    console.log("%caq.issues()%c   every edition, and whether it's out yet", mono(PALETTE.green), line(PALETTE.quiet));
-    console.log("%caq.bananas()%c  the only number anyone remembers", mono(PALETTE.green), line(PALETTE.quiet));
+    console.log("%cwhat you can type", line(PALETTE.green, 13, "font-weight:700;"));
+    for (const [name, what] of COMMANDS) {
+      console.log(
+        `%c${name.padEnd(WIDEST + 2)}%c${what}`,
+        mono(PALETTE.green, 12, "font-weight:700;"),
+        line(PALETTE.quiet)
+      );
+    }
+    paletteRule();
   },
 });
 
 export function printConsoleBanner() {
   if (typeof console === "undefined" || typeof window === "undefined") return;
+
+  paletteRule();
 
   // The nav's own lockup, rebuilt out of two console pills.
   console.log(
@@ -117,7 +213,12 @@ export function printConsoleBanner() {
   );
   console.log("%cpick a team, show up, and get to work.", line(PALETTE.grape, 12, "font-weight:600;"));
 
-  console.log("%c\ntype %caq.help()%c to poke around.", line(PALETTE.quiet), mono(PALETTE.green, 12, "font-weight:700;"), line(PALETTE.quiet));
+  console.log(
+    `%c\n${COMMANDS.length} things to type. start with %caq.help()%c`,
+    line(PALETTE.quiet),
+    mono(PALETTE.green, 12, "font-weight:700;"),
+    line(PALETTE.quiet)
+  );
 
   window.aq = aq;
 }
