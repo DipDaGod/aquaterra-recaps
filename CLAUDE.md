@@ -382,6 +382,36 @@ no air in it, and that proportion is the whole look. The stage carries its own
 bubbles' top percentages collapse onto the single line of the word and bunch
 around it.
 
+### The card foil
+
+The opened team card (the collectible set, §9) behaves like a foil trading
+card: it tilts towards the pointer, the foil travels across it, and a sideways
+drag throws it to the next card. `HoloCard.jsx` owns the pointer, the `.holo*`
+rules in `index.css` own the look.
+
+- **The foil is AquaTerra's own eight team colours**, not a rainbow. §4 forbids
+  a ninth colour, and the palette makes a better spectrum than a generic one.
+- **`hard-light`, not `color-dodge`.** Crftd's ground is `#000` and ShikshAQ's
+  is bright yellow. Dodge leaves the black card completely untouched and blows
+  the yellow one out to white; hard-light lets the foil drive, so it reads on
+  both. Both of those were tried.
+- **The bands are set in px**, so the foil looks the same on a phone as on a
+  desktop, and **the layer moves by transform, not by `background-position`**.
+  Moving the position tiles the gradient, and a repeating gradient at an angle
+  does not meet itself cleanly — the seam showed as a hard line down the card.
+  The layer is drawn 40% past every edge and travels 13% of itself, so a corner
+  can never come uncovered. Nothing else may translate it: a per-card offset is
+  what ate that overhang the first time.
+- Each card varies **its angle into the palette and its band width**. That is
+  the per-card uniqueness, and unlike an offset it costs no travel.
+- A pointer move writes custom properties on one element inside one rAF.
+  Pointer moves fire far more often than the screen refreshes, and a React
+  render per move is a render per pixel.
+- Under reduced motion the card does not tilt, but **the swipe still works** —
+  moving through the set is navigation, not decoration.
+- **Only the opened card does this.** Eight of them tilting at once in the grid
+  is a screensaver, and the effect is the payoff for opening one.
+
 ### Cursors and selection
 
 Both are set once, in `@layer base` in `index.css`. Don't set them per-component
@@ -585,12 +615,28 @@ renders a button in that month's hero; leave them off and no button appears.
 
 - **Every figure in `games` must be a verified fact** (§2). A game whose answers
   are invented is rule 0 with a scoreboard attached. Re-check them before
-  publishing.
+  publishing. That extends to the lines the games reveal: a `note` or a `then`
+  may only restate something §2 or the roster already says, because the reveal
+  is what the player takes away.
 - `bigger` entries need `value` (the number the game compares) and `display`
-  (how the site writes it, e.g. `"1,300+"`). Never let the two disagree.
-- `guess` rounds need `max` and `step` for the slider track.
+  (how the site writes it, e.g. `"1,300+"`). Never let the two disagree. An
+  optional `note` is the verified line the reveal leaves you with; the margin
+  between the two figures is computed, not authored, and is written as "the
+  other" rather than "as many" because the pair is often two different kinds of
+  thing.
+  - **Pairs are drawn from within 6× of each other.** The pool spans 1 to
+    15,000, and an unbiased draw mostly asks whether 15,000 is more than 1,
+    which is not a question. Keep the pool deep enough that near pairs exist.
+- `guess` is a **pool, not a run**: four rounds are drawn from it each time, so
+  a second go asks different questions. Give it more than four. Rounds need
+  `max` and `step` for the slider track, and a `prompt` that carries enough
+  context to reason from — "how many members does AQ have?" is a shrug,
+  "sixteen students started it in June 2021, how many now?" is a guess.
 - `match` clues are trimmed from the teams' own bios on the live site, never
-  rewritten.
+  rewritten. `then` is the line a correct match leaves on the board — again
+  that team's own published detail, not new trivia.
+  - Both columns are shuffled. With the teams in roster order the board is
+    solvable top-down off the teams section further up the same page.
 - `featured[].category` is free text, but it also becomes a filter chip — reuse
   an existing category rather than inventing a synonym. The ones in use:
   Welfare, Events, Student business, Workshop, Collabs, Social, Photography.
@@ -687,7 +733,10 @@ before reversing one.
     show up, and get to work." **Do not invent a prize** — there isn't one to
     offer, and a fake one is worse than none.
   - Navigation inside the pop-out is the row of eight dots, which doubles as the
-    progress meter. No arrows there either.
+    progress meter, and a sideways drag on the card itself. No arrows there
+    either — a drag is a gesture, not a control.
+  - The card is drawn as a foil card, so it behaves like one: see "The card
+    foil" in §4 for what is load-bearing in that.
   - Crftd's identity colour is `#000`, so the card and its chips carry a faint
     cream ring; without it a black card has no edge against the scrim.
 - **Edition 1 is September 2026**, not October. Corrected by the desk.

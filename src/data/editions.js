@@ -85,61 +85,100 @@ export const AQ_TOTALS = [
 // publishing.
 const AQ_GAMES = {
   lockup: { caps: "HOW WELL DO YOU KNOW", accent: "aq" },
-  lead: "three games. no prizes, no leaderboard, no sign-up. just find out how much you actually picked up.",
+  lead: "three games. no prizes, no leaderboard, no sign-up. every figure in them is real, and every reveal leaves you one more.",
 
-  // `value` is what the game compares, `display` how the site writes it.
+  // `value` is what the game compares, `display` how the site writes it, and
+  // `note` the line the reveal leaves you with. A note may only restate
+  // verified facts (CLAUDE.md §2) — the reveal is the reward, so it has to be
+  // true.
   bigger: [
-    { label: "drives written up", value: 540, display: "540+" },
-    { label: "members, ages 14–19", value: 1300, display: "1,300+" },
+    { label: "drives written up", value: 540, display: "540+", note: "written up one at a time since June 2021." },
+    { label: "members, ages 14–19", value: 1300, display: "1,300+", note: "sixteen students started it. this is where that went." },
     { label: "saplings planted", value: 4000, display: "4,000+" },
-    { label: "kids reached in teaching workshops", value: 3500, display: "3,500+" },
-    { label: "bananas distributed", value: 15000, display: "15,000+" },
-    { label: "followers on @ngo.aquaterra", value: 3200, display: "3,200+" },
-    { label: "drives, blogs & openings", value: 570, display: "570+" },
-    { label: "members in the Welfare Team", value: 62, display: "62" },
-    { label: "members in Social Media", value: 29, display: "29" },
-    { label: "members in AQ.Ventures", value: 23, display: "23" },
-    { label: "teams", value: 8, display: "8" },
+    { label: "kids reached in teaching workshops", value: 3500, display: "3,500+", note: "the Welfare Team's number." },
+    { label: "bananas distributed", value: 15000, display: "15,000+", note: "fifteen thousand bananas. nobody planned that." },
+    { label: "followers on @ngo.aquaterra", value: 3200, display: "3,200+", note: "Social Media runs the account, the reels and the site." },
+    { label: "drives, blogs & openings in the directory", value: 570, display: "570+", note: "a different count from the 540+ drives — this one includes the blogs and the openings." },
+    { label: "members in the Welfare Team", value: 62, display: "62", note: "the biggest of the eight." },
+    { label: "members in Social Media", value: 29, display: "29", note: "the team behind the 3,200+ followers." },
+    { label: "members in AQ.Ventures", value: 23, display: "23", note: "a student business, not a volunteer team." },
+    { label: "members in Human Resources", value: 6, display: "6", note: "six people handle recruitment, onboarding, certificates and every Letter of Recommendation." },
+    { label: "members in the Events Team", value: 3, display: "3", note: "three people. Paradox, Disco Diwali, Starry Nights, every fundraiser AQ has run." },
+    { label: "members in the Collabs Team", value: 2, display: "2", note: "two, for every school, college and NGO partnership." },
+    { label: "members in ShikshAQ", value: 2, display: "2", note: "two people, one tuition platform, launched 2026." },
+    { label: "members in Crftd", value: 1, display: "1", note: "one person runs the streetwear label. the profits fund welfare." },
+    { label: "teams", value: 8, display: "8", note: "five volunteer teams, three student businesses." },
+    { label: "Sundarbans relief trips", value: 8, display: "8", note: "relief trips, run by the Welfare Team." },
+    { label: "students who founded AQ", value: 16, display: "16", note: "June 2021, Kolkata." },
+    { label: "events at Paradox 2026", value: 10, display: "10+", note: "six days in June 2026. 100% of the profits funded welfare." },
+    { label: "days Paradox 2026 ran", value: 6, display: "6", note: "1–6 June 2026, in Kolkata." },
   ],
 
-  // `max` and `step` set the slider track.
+  // `max` and `step` set the slider track. A run draws four of these at random,
+  // so the second go isn't the first one again. Prompts carry the context that
+  // makes the guess a thought rather than a shrug.
   guess: [
     {
-      prompt: "how many bananas has AQ handed out?",
+      prompt: "AquaTerra has handed out bananas at drive after drive since 2021. how many, roughly?",
       value: 15000, display: "15,000+", max: 30000, step: 250,
       note: "fifteen thousand. nobody planned it that way.",
     },
     {
-      prompt: "how many saplings has AQ planted?",
+      prompt: "one number AQ keeps in the ground rather than on a poster: how many saplings has it planted?",
       value: 4000, display: "4,000+", max: 10000, step: 100,
-      note: "4,000+ and counting.",
+      note: "4,000+, and the count only goes one way.",
     },
     {
-      prompt: "how many members does AQ have?",
+      prompt: "sixteen students started AquaTerra in June 2021. how many members are there now?",
       value: 1300, display: "1,300+", max: 3000, step: 50,
-      note: "1,300+. it started with 16.",
+      note: "1,300+, across eight teams.",
     },
     {
-      prompt: "how many kids has the Welfare Team reached in teaching workshops?",
+      prompt: "the Welfare Team teaches. how many kids has it reached in teaching workshops?",
       value: 3500, display: "3,500+", max: 8000, step: 100,
-      note: "3,500+, across teaching workshops.",
+      note: "3,500+, workshop by workshop.",
+    },
+    {
+      prompt: "every drive gets written up afterwards. how many write-ups are there?",
+      value: 540, display: "540+", max: 1500, step: 10,
+      note: "540+ drives written up. the directory counts 570+ once you add the blogs and openings.",
+    },
+    {
+      prompt: "how many people follow @ngo.aquaterra?",
+      value: 3200, display: "3,200+", max: 8000, step: 50,
+      note: "3,200+ — run by 29 people on the Social Media team.",
+    },
+    {
+      prompt: "the Welfare Team has been down to the Sundarbans more than once. how many relief trips so far?",
+      value: 8, display: "8", max: 30, step: 1,
+      note: "8 trips. same as the number of teams, which is a coincidence.",
+    },
+    {
+      prompt: "the biggest of the eight teams is Welfare. how many members does it have?",
+      value: 62, display: "62", max: 150, step: 1,
+      note: "62. Crftd, at the other end, is one person.",
+    },
+    {
+      prompt: "Paradox 2026 ran in June. how many events were packed into it?",
+      value: 10, display: "10+", max: 40, step: 1,
+      note: "10+ events across six days, and 100% of the profits went to welfare.",
     },
   ],
 
   // Clues are trimmed from the teams' own bios on the live site, never
-  // rewritten.
+  // rewritten. `then` is the line the match leaves behind — that team's own
+  // published detail, nothing new.
   match: [
-    { team: "welfare", clue: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips." },
-    { team: "social", clue: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra." },
-    { team: "events", clue: "Paradox. Disco Diwali. Starry Nights." },
-    { team: "collabs", clue: "School collabs, college collabs, NGO partnerships, outreach." },
-    { team: "hr", clue: "Recruitment, onboarding, certificates, Letters of Recommendation." },
-    { team: "shikshaq", clue: "Tuition discovery platform built by AQ members for Kolkata students." },
-    { team: "ventures", clue: "Helps student entrepreneurs turn ideas into visible brands." },
-    { team: "crftd", clue: "Student-run streetwear brand. Profits fund AQ welfare." },
+    { team: "welfare", clue: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips.", then: "62 members — the biggest team AQ has." },
+    { team: "social", clue: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra.", then: "29 members, on reels, carousels, copy and strategy." },
+    { team: "events", clue: "Paradox. Disco Diwali. Starry Nights.", then: "3 members. Paradox 2026 ran six days in June." },
+    { team: "collabs", clue: "School collabs, college collabs, NGO partnerships, outreach.", then: "2 members, holding every partnership AQ has." },
+    { team: "hr", clue: "Recruitment, onboarding, certificates, Letters of Recommendation.", then: "6 members. they are why anyone at AQ has a Letter of Recommendation." },
+    { team: "shikshaq", clue: "Tuition discovery platform built by AQ members for Kolkata students.", then: "2 members. a student business, launched 2026." },
+    { team: "ventures", clue: "Helps student entrepreneurs turn ideas into visible brands.", then: "23 members, doing free marketing for student founders." },
+    { team: "crftd", clue: "Student-run streetwear brand. Profits fund AQ welfare.", then: "1 member. the profits go to AQ welfare projects and events." },
   ],
 };
-
 export const editions = {
   // EDITION 01 — September 2026. The orientation issue, not a recap: what
   // AquaTerra is, the 8 teams, how roles work. September, not October — the

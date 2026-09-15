@@ -421,6 +421,100 @@ button:focus-visible,
 }
 .celebrate-in { animation: celebrate-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* The opened team card, as a foil trading card (HoloCard.jsx). The card tilts
+   towards the pointer and the foil travels across it; dragging sideways throws
+   it to the next card in the set.
+
+   The foil is AquaTerra's own eight team colours, not a rainbow: CLAUDE.md §4
+   forbids a ninth colour, and the palette makes a better spectrum than a
+   generic one anyway. Each card runs it at its own angle and its own band
+   width, so no two of the eight shine alike.
+
+   Everything animated here is a transform or an opacity — no layout, and
+   nothing repaints the content underneath. */
+.holo-scene { perspective: 1100px; }
+
+.holo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  transform: translate3d(var(--dx, 0px), 0, 0)
+             rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* A vertical drag still scrolls the overlay; only the horizontal axis is
+     ours, which is what makes a swipe and a scroll distinguishable. */
+  touch-action: pan-y;
+  cursor: grab;
+}
+.holo:active { cursor: grabbing; }
+
+/* While the pointer is on the card it must track the pointer, not chase it
+   460ms behind. The transition is for the release. */
+.holo[data-live="1"],
+.holo[data-live="1"] .holo-foil,
+.holo[data-live="1"] .holo-glare { transition: none; }
+
+.holo-foil,
+.holo-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: opacity 460ms ease;
+  will-change: transform, opacity;
+}
+
+.holo-foil {
+  /* The layer is drawn 40% past every edge and moved with a transform. Moving
+     it by `background-position` instead tiles the gradient, and a repeating
+     gradient at an angle does not meet itself cleanly — the seam showed as a
+     hard line down the card. The travel (13% of this layer) is well inside the
+     overhang, so a corner can never come uncovered.
+
+     Bands are set in px, not percentages, so the foil looks the same on a
+     phone as on a desktop. Each card varies both the angle and the band width;
+     nothing translates the layer per card, because that is exactly what eats
+     the overhang. */
+  inset: -40%;
+  background: repeating-linear-gradient(
+    var(--holo-a, 104deg),
+    var(--color-team-welfare) 0px,
+    var(--color-team-events) calc(var(--holo-w, 19px) * 1),
+    var(--color-team-shikshaq) calc(var(--holo-w, 19px) * 2),
+    var(--color-team-ventures) calc(var(--holo-w, 19px) * 3),
+    var(--color-team-hr) calc(var(--holo-w, 19px) * 4),
+    var(--color-team-social) calc(var(--holo-w, 19px) * 5),
+    var(--color-team-collabs) calc(var(--holo-w, 19px) * 6),
+    var(--color-cream-soft) calc(var(--holo-w, 19px) * 7),
+    var(--color-team-welfare) calc(var(--holo-w, 19px) * 8)
+  );
+  transform: translate3d(var(--fx, 0%), var(--fy, 0%), 0);
+  /* hard-light lets the foil drive the result, so it reads on Crftd's black
+     and on ShikshAQ's yellow alike. color-dodge does nothing on the one and
+     blows out the other. */
+  mix-blend-mode: hard-light;
+  opacity: calc(var(--holo-o, 0.1) * 0.42);
+  transition: opacity 460ms ease, transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.holo-glare {
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.5),
+    rgb(255 255 255 / 0.1) 42%,
+    transparent 66%
+  );
+  mix-blend-mode: soft-light;
+  opacity: var(--holo-o, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo, .holo-foil, .holo-glare { transition: none; }
+  .holo { transform: none; }
+  .holo-foil { opacity: 0.1; transform: none; }
+  .holo-glare { opacity: 0.12; }
+}
+
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
