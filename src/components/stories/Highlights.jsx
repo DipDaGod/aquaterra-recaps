@@ -11,6 +11,20 @@ export default function Highlights({ edition }) {
   const chapters = useMemo(() => chaptersFor(slides), [slides]);
   const [startAt, setStartAt] = useState(null);
 
+  // The stories are a trailer for the issue underneath them, so they end — and
+  // every slide offers — a way into the part of the page they came from.
+  function openSection(id) {
+    setStartAt(null);
+    const target = id
+      ? document.getElementById(id)
+      : document.querySelector("main section[id]");
+    if (!target) return;
+    // After the close, or the overlay is still up and the scroll is locked.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => target.scrollIntoView({ behavior: "smooth", block: "start" }))
+    );
+  }
+
   if (slides.length < 2) return null;
 
   const runtime = Math.round(slides.reduce((a, s) => a + s.ms, 0) / 1000);
@@ -67,7 +81,12 @@ export default function Highlights({ edition }) {
       </p>
 
       {startAt !== null && (
-        <StoryPlayer slides={slides} startAt={startAt} onClose={() => setStartAt(null)} />
+        <StoryPlayer
+          slides={slides}
+          startAt={startAt}
+          onClose={() => setStartAt(null)}
+          onOpenSection={openSection}
+        />
       )}
     </div>
   );

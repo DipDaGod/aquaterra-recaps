@@ -13,8 +13,18 @@ export const CHAPTERS = [
   { id: "impact", label: "Impact", accent: "lemon" },
 ];
 
+// A slide holds for as long as it takes to read it. A fixed duration gave a
+// three-word headline and a twenty-word one the same 3.6 seconds, so the long
+// ones got cut off and the short ones sat there.
+function dwell(base, ...text) {
+  const words = text.filter(Boolean).join(" ").trim().split(/\s+/).filter(Boolean).length;
+  return Math.min(6200, base + words * 230);
+}
+
 export function buildStories(edition) {
   const slides = [];
+  // `section` is the id of the part of the issue a slide came from, so the
+  // player can offer a way into it. Slides that aren't about one leave it off.
   const push = (chapter, slide) => slides.push({ ...slide, chapter, id: `${chapter}-${slides.length}` });
 
   push("numbers", {
@@ -24,15 +34,15 @@ export function buildStories(edition) {
     eyebrow: `Edition ${String(edition.editionNumber).padStart(2, "0")}`,
     meta: `${edition.month} ${edition.year}`,
     tagline: edition.tagline,
-    ms: 3600,
+    ms: dwell(2600, edition.lockup?.caps, edition.lockup?.accent, edition.tagline),
   });
 
   // Cycled so four figures in a row aren't four identical cards.
   const statAccents = ["green", "sky", "lemon", "grape"];
   (edition.glance || []).forEach((stat, i) => {
     push("numbers", {
-      kind: "stat", value: stat.value, label: stat.label,
-      accent: statAccents[i % statAccents.length], ms: 2900,
+      kind: "stat", value: stat.value, label: stat.label, section: "numbers",
+      accent: statAccents[i % statAccents.length], ms: dwell(2200, stat.label),
     });
   });
 
@@ -42,7 +52,8 @@ export function buildStories(edition) {
       kind: "teams",
       lockup: edition.teams.lockup,
       teams: roster.map((t) => ({ key: t.key, name: TEAMS[t.key]?.name, members: t.members })),
-      accent: "grape", ms: 4600,
+      section: "teams",
+      accent: "grape", ms: 3000 + roster.length * 260,
     });
   }
 
@@ -55,16 +66,24 @@ export function buildStories(edition) {
       date: f.date,
       meta: [f.location, f.people],
       image: f.image,
-      accent: "tomato", ms: 3600,
+      section: f.team ? `feature-${f.team}` : "featured",
+      accent: "tomato", ms: dwell(2400, f.title, f.category),
     });
   }
 
   const p = edition.photography;
   if (p?.featured) {
-    push("frames", { kind: "photo", image: p.featured, caption: p.featuredCaption, credit: p.featured.credit, accent: "sky", ms: 3600, hero: true });
+    push("frames", {
+      kind: "photo", image: p.featured, caption: p.featuredCaption,
+      credit: p.featured.credit, section: "photography", accent: "sky",
+      ms: dwell(2600, p.featuredCaption), hero: true,
+    });
   }
   for (const frame of p?.gallery || []) {
-    push("frames", { kind: "photo", image: frame, caption: frame.label, credit: frame.credit, accent: "sky", ms: 2600 });
+    push("frames", {
+      kind: "photo", image: frame, caption: frame.label, credit: frame.credit,
+      section: "photography", accent: "sky", ms: dwell(2000, frame.label),
+    });
   }
 
   if (edition.impact) {
@@ -72,15 +91,18 @@ export function buildStories(edition) {
       kind: "impact",
       headline: edition.impact.headline,
       metrics: edition.impact.metrics || [],
-      accent: "lemon", ms: 4400,
+      section: "impact",
+      accent: "lemon", ms: dwell(2800, edition.impact.headline),
     });
   }
 
+  // The run ends on a card that goes somewhere, rather than just stopping.
+  // Long, because it is the one slide worth sitting on.
   push("impact", {
     kind: "end",
     month: edition.month,
     year: edition.year,
-    accent: "green", ms: 4200,
+    accent: "green", ms: 9000,
   });
 
   return slides;

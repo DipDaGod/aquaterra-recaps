@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { SECTION_ACCENTS, cx } from "../../lib/utils";
 
 const reduced = () =>
@@ -9,21 +9,26 @@ const reduced = () =>
 // overflow-hidden box so it is masked by the line above rather than fading in
 // on the spot.
 //
-// The separator is an ordinary space, not a non-breaking one: each word is an
-// inline-block, so an nbsp between two of them removes the only break
-// opportunity in the line and a long lockup can never wrap.
+// The separator has to be an ordinary space and it has to sit OUTSIDE the
+// masking span. Two traps, and this has been caught in both:
+//   - a non-breaking space removes the only break opportunity between two
+//     inline-blocks, so a long lockup can never wrap
+//   - a space *inside* the overflow-hidden inline-block is trailing whitespace
+//     and gets trimmed, so every headline renders as "WHATIS aquaterra."
 export function Words({ text, className = "", base = 0, from = 0 }) {
   if (!text) return null;
   const words = String(text).split(" ");
   return (
     <span className={className}>
       {words.map((word, i) => (
-        <span key={`${word}-${i}`} className="story-line">
-          <span className="story-word" style={{ "--i": i + from, "--base": `${base}ms` }}>
-            {word}
+        <Fragment key={`${word}-${i}`}>
+          <span className="story-line">
+            <span className="story-word" style={{ "--i": i + from, "--base": `${base}ms` }}>
+              {word}
+            </span>
           </span>
           {i < words.length - 1 ? " " : ""}
-        </span>
+        </Fragment>
       ))}
     </span>
   );

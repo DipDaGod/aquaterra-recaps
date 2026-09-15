@@ -459,6 +459,16 @@ used repeatedly rather than eight bespoke sections.
 - **`src/lib/buildStories.js`** derives the stories player entirely from the
   edition object. Nothing is authored for the player, so a story can never drift
   from the page it summarises.
+  - A slide's `ms` is **computed from how much there is to read**, not fixed per
+    kind. A three-word headline and a twenty-word one got the same 3.6s, so the
+    long ones were cut off and the short ones sat there.
+  - A slide carries the `section` it came from, which is what lets the player
+    offer a way into that part of the page. The run is a trailer for the issue;
+    it should not be a dead end.
+  - The player groups its progress bar **by chapter** and puts a tappable
+    chapter rail under it. Twenty-one equal segments in a 26rem card were 12px
+    each and told you nothing, and the run is over a minute long — without the
+    rail there is no way to skip a part you don't want.
 - **`isPlaceholder()`** lets the placeholder state be *designed* rather than just
   look broken: bracketed copy renders dimmed, short fields get a dashed rule. It
   disappears on its own as real copy lands.
@@ -693,6 +703,13 @@ before reversing one.
 - **A non-breaking space on both sides of a middle dot** welds the whole string
   into one unbreakable run. Bind the side that must travel with the word, not
   both.
+- **Whitespace inside an `overflow: hidden` inline-block is trimmed.** The
+  stories' kinetic type puts each word in its own masking span; a separating
+  space placed *inside* that span vanishes and every headline renders as
+  "WHATIS aquaterra." The space has to sit between the spans — and it has to be
+  an ordinary space, because a non-breaking one there stops the line wrapping.
+  Both halves of that have now been got wrong once each, so `stories.mjs`
+  asserts the rendered text of four headlines.
 - **Stale values across editions.** Stat labels repeat month to month, so React
   reuses the component; animated counters are keyed off `value` so a new number
   re-counts instead of showing last month's figure.

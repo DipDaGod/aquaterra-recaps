@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import StorySlide from "./StorySlide";
+import { chaptersFor } from "../../lib/buildStories";
 import { useOverlay } from "../../lib/useOverlay";
 import { SECTION_ACCENTS, cx } from "../../lib/utils";
 
@@ -10,7 +11,7 @@ import { SECTION_ACCENTS, cx } from "../../lib/utils";
 // Timing runs on requestAnimationFrame, not a CSS animation: the global
 // reduced-motion rule clamps every animation to 0.001ms, which would blast a
 // CSS-driven progress bar through every slide at once.
-export default function StoryPlayer({ slides, startAt = 0, onClose }) {
+export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSection }) {
   const [index, setIndex] = useState(startAt);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -18,6 +19,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
   const [dir, setDir] = useState(1);
 
   const closeRef = useRef(null);
+  const swipe = useRef(null);
   const elapsed = useRef(0);
   const last = useRef(0);
   const frame = useRef(0);
@@ -32,6 +34,17 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
   const slide = slides[index];
   const total = slides.length;
 
+  // The run is over a minute long. Grouping the progress by chapter, and making
+  // the chapters tappable, is what lets someone skip the part they don't want
+  // instead of sitting through it.
+  const chapters = useMemo(
+    () => chaptersFor(slides).filter((c) => c.id !== "all"),
+    [slides]
+  );
+  const current = chapters.find(
+    (c) => index >= c.start && index < c.start + c.count
+  );
+
   const go = useCallback((next) => {
     if (next < 0) { setIndex(0); elapsed.current = 0; setProgress(0); return; }
     if (next >= total) { onClose(); return; }
@@ -40,6 +53,13 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
     elapsed.current = 0;
     setProgress(0);
   }, [total, onClose, index]);
+
+  // Fetch the next photograph while this slide is still up, so a real frame
+  // doesn't pop in a beat late.
+  useEffect(() => {
+    const next = slides[index + 1]?.image?.src;
+    if (next) { const img = new Image(); img.src = next; }
+  }, [index, slides]);
 
   // Advance on its own clock.
   useEffect(() => {
@@ -77,7 +97,8 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
 
   // Press and hold pauses, as it does on Instagram; a quick press is a tap, and
   // which half it lands in decides direction.
-  function onPointerDown() {
+  function onPointerDown(e) {
+    swipe.current = { x: e.clientX, y: e.clientY };
     held.current = performance.now();
     holding.current = true;
     setPaused(true);
@@ -90,6 +111,21 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
   function onPointerUp(e) {
     const quick = performance.now() - held.current < 250;
     releaseHold();
+
+    // Swipe: sideways moves, downwards closes — the gesture people already
+    // expect from every other stories player.
+    const from = swipe.current;
+    swipe.current = null;
+    if (from) {
+      const dx = e.clientX - from.x;
+      const dy = e.clientY - from.y;
+      if (Math.abs(dy) > 70 && Math.abs(dy) > Math.abs(dx)) {
+        if (dy > 0) onClose();
+        return;
+      }
+      if (Math.abs(dx) > 60) { go(index + (dx < 0 ? 1 : -1)); return; }
+    }
+
     if (!quick) return;
     const box = e.currentTarget.getBoundingClientRect();
     go(e.clientX - box.left < box.width * 0.33 ? index - 1 : index + 1);
@@ -113,18 +149,49 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
           style={{ background: "linear-gradient(to bottom, rgb(10 10 10 / 0.75) 0%, transparent 100%)" }}
         />
 
-        <div className="absolute inset-x-0 top-0 z-20 flex gap-1 p-3">
-          {slides.map((s, i) => (
-            <span key={s.id} className="h-0.5 flex-1 overflow-hidden rounded-full bg-cream-soft/25">
-              <span
-                className={cx("block h-full rounded-full bg-cream-soft", i === index && "story-active-bar")}
-                style={{ width: i < index ? "100%" : i === index ? `${progress * 100}%` : "0%" }}
-              />
-            </span>
+        {/* One group per chapter. Twenty-one equal segments in a 26rem card
+            were 12px each and told you nothing; grouped, you can see both where
+            you are in the chapter and how many chapters are left. */}
+        <div className="absolute inset-x-0 top-0 z-20 flex gap-2.5 p-3">
+          {chapters.map((c) => (
+            <div key={c.id} className="flex gap-1" style={{ flex: c.count }}>
+              {slides.slice(c.start, c.start + c.count).map((s, n) => {
+                const i = c.start + n;
+                return (
+                  <span key={s.id} className="h-0.5 flex-1 overflow-hidden rounded-full bg-cream-soft/25">
+                    <span
+                      className={cx("block h-full rounded-full bg-cream-soft", i === index && "story-active-bar")}
+                      style={{ width: i < index ? "100%" : i === index ? `${progress * 100}%` : "0%" }}
+                    />
+                  </span>
+                );
+              })}
+            </div>
           ))}
         </div>
 
-        <div className="absolute right-2 top-6 z-20 flex items-center gap-1">
+        {/* Skip a whole chapter. */}
+        <div className="scroll-quiet absolute inset-x-0 top-6 z-20 flex gap-1.5 overflow-x-auto px-3 pb-1 pr-24">
+          {chapters.map((c) => {
+            const on = c.id === current?.id;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => go(c.start)}
+                aria-current={on ? "true" : undefined}
+                className={cx(
+                  "shrink-0 rounded-full px-2.5 py-1 transition-colors",
+                  on ? "bg-cream-soft text-ink" : "text-cream-soft/45 hover:bg-cream-soft/15 hover:text-cream-soft/80"
+                )}
+              >
+                <span className="u-mono text-[0.55rem]">{c.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="absolute right-2 top-5 z-30 flex items-center gap-1">
           <button
             type="button"
             onClick={() => { holding.current = false; setPaused((p) => !p); }}
@@ -154,7 +221,12 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
             key={slide.id}
             className={cx("h-full", dir >= 0 ? "story-enter-next" : "story-enter-prev")}
           >
-            <StorySlide slide={slide} seed={index} />
+            <StorySlide
+              slide={slide}
+              seed={index}
+              onOpenSection={onOpenSection}
+              onReplay={() => go(0)}
+            />
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+import { RotateCcw, ArrowDown } from "lucide-react";
 import Photo from "../Photo";
 import { Meta, MetaRow } from "../Lockup";
 import { Words, CountUp, Wash, Ghost, Ring } from "./StoryFx";
@@ -12,6 +13,28 @@ const KEN = [
   { "--kx": "2%", "--ky": "-3%" },
   { "--kx": "-2%", "--ky": "3%" },
 ];
+
+// A quiet way out of the trailer and into the thing itself. Only on slides that
+// actually came from a section of the issue.
+//
+// It arrives early on purpose: the shortest slides are only 2.4s, and a chip
+// that lands at 0.7s leaves no time to notice it, let alone reach it.
+function IntoTheIssue({ slide, onOpenSection }) {
+  if (!slide.section || !onOpenSection) return null;
+  return (
+    <button
+      type="button"
+      onPointerDown={swallow}
+      onPointerUp={swallow}
+      onClick={() => onOpenSection(slide.section)}
+      className="story-rise absolute inset-x-0 bottom-9 z-10 mx-auto flex w-fit items-center gap-1.5 rounded-full bg-cream-soft/10 px-3.5 py-1.5 text-cream-soft/70 backdrop-blur-sm transition-colors hover:bg-cream-soft/25 hover:text-cream-soft"
+      style={{ "--i": 3 }}
+    >
+      <Meta className="text-[0.55rem]">See it in the issue</Meta>
+      <ArrowDown className="h-3 w-3" strokeWidth={2.5} />
+    </button>
+  );
+}
 
 function Rise({ i = 0, className = "", children }) {
   return (
@@ -39,9 +62,24 @@ function Frame({ item, seed = 0 }) {
   );
 }
 
-export default function StorySlide({ slide, seed = 0 }) {
+// Buttons live inside the tap layer, so they have to stop the press from also
+// counting as "next slide".
+function swallow(e) {
+  e.stopPropagation();
+}
+
+export default function StorySlide({ slide, seed = 0, onOpenSection, onReplay }) {
   const accent = slide.accent || "green";
 
+  return (
+    <>
+      {body(slide, seed, accent, onOpenSection, onReplay)}
+      <IntoTheIssue slide={slide} onOpenSection={onOpenSection} />
+    </>
+  );
+}
+
+function body(slide, seed, accent, onOpenSection, onReplay) {
   switch (slide.kind) {
     case "cover":
       return (
@@ -201,9 +239,33 @@ export default function StorySlide({ slide, seed = 0 }) {
             </h2>
             <Rise i={4}>
               <p className="max-w-xs text-pretty text-cream-soft/75">
-                the whole issue is below — the teams, the drives, the frames, and a quiz you will
-                probably lose.
+                that was the trailer. the issue itself has the teams, the drives, the
+                frames and three games you will probably lose.
               </p>
+            </Rise>
+            {/* It used to say "the whole issue is below" and then just stop.
+                Now it takes you there. */}
+            <Rise i={6} className="mt-1 flex flex-wrap items-center justify-center gap-2.5">
+              <button
+                type="button"
+                onPointerDown={swallow}
+                onPointerUp={swallow}
+                onClick={() => onOpenSection?.(null)}
+                className="inline-flex items-center gap-2 rounded-full bg-cream-soft px-5 py-2.5 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
+              >
+                Read the issue
+                <ArrowDown className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                onPointerDown={swallow}
+                onPointerUp={swallow}
+                onClick={onReplay}
+                aria-label="Play the stories again"
+                className="grid h-10 w-10 place-items-center rounded-full border border-cream-soft/25 text-cream-soft/70 transition-colors hover:border-cream-soft/60 hover:text-cream-soft"
+              >
+                <RotateCcw className="h-4 w-4" strokeWidth={2} />
+              </button>
             </Rise>
           </div>
         </div>
