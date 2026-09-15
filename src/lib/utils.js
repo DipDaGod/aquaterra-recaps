@@ -33,15 +33,18 @@ export const TONES = {
 // `caps` exists so the display form is a deliberate per-team value. Never run a
 // CSS `uppercase` over a team name — it would also hit prose, where CLAUDE.md
 // §2 bans the caps forms.
+//
+// `raw` is the identity colour as a CSS value, for grounds and chips a Tailwind
+// class can't reach.
 export const TEAMS = {
-  welfare: { name: "Welfare Team", caps: "WELFARE TEAM", kind: "volunteer team", emoji: "🌱", bg: "bg-team-welfare", on: "text-cream-soft", ink: "text-team-welfare-ink" },
-  social: { name: "Social Media", caps: "SOCIAL MEDIA", kind: "volunteer team", emoji: "✍️", bg: "bg-team-social", on: "text-cream-soft", ink: "text-team-social-ink" },
-  collabs: { name: "Collabs Team", caps: "COLLABS TEAM", kind: "volunteer team", emoji: "⚙️", bg: "bg-team-collabs", on: "text-cream-soft", ink: "text-team-collabs-ink" },
-  shikshaq: { name: "ShikshAQ", caps: "SHIKSHAQ", kind: "student business", emoji: "⚡", bg: "bg-team-shikshaq", on: "text-ink", ink: "text-team-shikshaq-ink" },
-  hr: { name: "Human Resources", caps: "HUMAN RESOURCES", kind: "volunteer team", emoji: "⚙️", bg: "bg-team-hr", on: "text-cream-soft", ink: "text-team-hr-ink" },
-  events: { name: "Events Team", caps: "EVENTS TEAM", kind: "volunteer team", emoji: "🎪", bg: "bg-team-events", on: "text-ink", ink: "text-team-events-ink" },
-  ventures: { name: "AQ.Ventures", caps: "AQ.VENTURES", kind: "student business", emoji: "⚙️", bg: "bg-team-ventures", on: "text-cream-soft", ink: "text-team-ventures-ink" },
-  crftd: { name: "Crftd", caps: "CRFTD", kind: "student business", emoji: "✍️", bg: "bg-team-crftd", on: "text-cream-soft", ink: "text-team-crftd-ink" },
+  welfare: { name: "Welfare Team", caps: "WELFARE TEAM", kind: "volunteer team", emoji: "🌱", bg: "bg-team-welfare", on: "text-cream-soft", ink: "text-team-welfare-ink", raw: "var(--color-team-welfare)" },
+  social: { name: "Social Media", caps: "SOCIAL MEDIA", kind: "volunteer team", emoji: "✍️", bg: "bg-team-social", on: "text-cream-soft", ink: "text-team-social-ink", raw: "var(--color-team-social)" },
+  collabs: { name: "Collabs Team", caps: "COLLABS TEAM", kind: "volunteer team", emoji: "⚙️", bg: "bg-team-collabs", on: "text-cream-soft", ink: "text-team-collabs-ink", raw: "var(--color-team-collabs)" },
+  shikshaq: { name: "ShikshAQ", caps: "SHIKSHAQ", kind: "student business", emoji: "⚡", bg: "bg-team-shikshaq", on: "text-ink", ink: "text-team-shikshaq-ink", raw: "var(--color-team-shikshaq)" },
+  hr: { name: "Human Resources", caps: "HUMAN RESOURCES", kind: "volunteer team", emoji: "⚙️", bg: "bg-team-hr", on: "text-cream-soft", ink: "text-team-hr-ink", raw: "var(--color-team-hr)" },
+  events: { name: "Events Team", caps: "EVENTS TEAM", kind: "volunteer team", emoji: "🎪", bg: "bg-team-events", on: "text-ink", ink: "text-team-events-ink", raw: "var(--color-team-events)" },
+  ventures: { name: "AQ.Ventures", caps: "AQ.VENTURES", kind: "student business", emoji: "⚙️", bg: "bg-team-ventures", on: "text-cream-soft", ink: "text-team-ventures-ink", raw: "var(--color-team-ventures)" },
+  crftd: { name: "Crftd", caps: "CRFTD", kind: "student business", emoji: "✍️", bg: "bg-team-crftd", on: "text-cream-soft", ink: "text-team-crftd-ink", raw: "var(--color-team-crftd)" },
 };
 
 // Per-issue accents. An edition picks one and every accent word, section

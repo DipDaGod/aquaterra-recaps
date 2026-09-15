@@ -327,7 +327,8 @@ a random emphasis.
 - Team cards: a solid team-colour block on top with a small card-fan motif, then
   the name in display caps, then `volunteer team · N members`, then a two-line
   description. No avatar stack (there are no member photos, and the count is
-  already on the card). One arrow per card, in a white disc on the colour block.
+  already on the card). **No arrow** — the card doesn't go anywhere, it opens the
+  team's collectible card (§9). A tick appears on the block once it's been read.
 - Meta strings joined with middle dots: `8 DEPARTMENTS · 570+ DRIVES, BLOGS & OPENINGS`.
 - Links and CTAs carry a trailing `→`.
 
@@ -545,7 +546,23 @@ before reversing one.
 - **No Groundwork Diaries section.** Removed entirely.
 - **No avatar stacks on team cards** — there are no member photos, and the
   member count is already on the card.
-- **No "roles open" line on team cards**, and one arrow per card, not two.
+- **No "roles open" line on team cards**, and no arrow at all. The card used to
+  link to that team's story in the issue; the desk asked for the arrow and the
+  jump to go.
+- **The eight teams are a collectible set.** Tapping a card opens it as a
+  trading-card-style pop-out, and reading all eight completes the set — progress
+  is kept in `localStorage` under `aq:teams-read`, so it persists across reloads
+  and across issues (it is the same eight teams every month).
+  - The card shows only that team's own published data. There is **no per-team
+    trivia to reveal** that isn't already on the page, and inventing some would
+    be rule 0. The fun is the collecting, not new facts.
+  - The reward for finishing is the full palette in one place plus the site's own
+    "pick a team, show up, and get to work." **Do not invent a prize** — there
+    isn't one to offer, and a fake one is worse than none.
+  - Navigation inside the pop-out is the row of eight dots, which doubles as the
+    progress meter. No arrows there either.
+  - Crftd's identity colour is `#000`, so the card and its chips carry a faint
+    cream ring; without it a black card has no edge against the scrim.
 - **Edition 1 is September 2026**, not October. Corrected by the desk.
 - **1,300+ is the current member count**, resolving the live site's own conflict
   with an HR bio that still says 1,100+.
@@ -586,6 +603,13 @@ before reversing one.
   slide instantly.
 - **Tailwind v4 has no `xs:` breakpoint** and its opacity scale has no `/97`.
   Both failed silently.
+- **A flex-centred overlay clips its own top** once the content grows taller than
+  the viewport: the overflow goes above the scroll origin and cannot be reached.
+  Scroll on the outer box and centre on an inner one that is free to grow past
+  it (`min-h-full` + `justify-center`).
+- **`localStorage` throws** in a private window and returns nothing when site
+  data is blocked. Every access is wrapped, and the page has to work with the
+  set simply starting empty.
 - **A non-breaking space on both sides of a middle dot** welds the whole string
   into one unbreakable run. Bind the side that must travel with the word, not
   both.

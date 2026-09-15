@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ProjectCard from "./ProjectCard";
 import Section from "./Section";
 import ShowMore from "./ShowMore";
@@ -8,7 +8,9 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
   const projects = useMemo(() => edition.featured ?? [], [edition.featured]);
 
   // Only the first story for a team carries that team's anchor, so two stories
-  // from one team can't produce a duplicate id.
+  // from one team can't produce a duplicate id. Nothing in the page links to
+  // these any more — the team cards open a card instead of jumping — but they
+  // keep a shared #feature-<team> URL working.
   const anchored = useMemo(() => {
     const seen = new Set();
     return projects.map((p) => {
@@ -28,19 +30,6 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
   }, [projects]);
 
   const [active, setActive] = useState("All");
-
-  // A team card links to #feature-<team>. Those anchors only exist on rendered
-  // cards, so a filter left on from earlier would swallow the jump — clear it
-  // when one is targeted.
-  useEffect(() => {
-    const clear = () => {
-      if (window.location.hash.startsWith("#feature-")) setActive("All");
-    };
-    clear();
-    window.addEventListener("hashchange", clear);
-    return () => window.removeEventListener("hashchange", clear);
-  }, []);
-
   const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
 
   if (projects.length === 0) return null;
