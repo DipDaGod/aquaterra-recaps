@@ -32,16 +32,16 @@ function Empty({ year }) {
           <>
             <p className="mt-4 text-lg font-medium">{year} hasn&apos;t happened yet.</p>
             <p className="mt-1.5 max-w-sm text-sm text-ink-soft">
-              issues go up once a month has wrapped, so this year fills in one at a
-              time. start with {year - 1}.
+              an issue goes up when its month wraps, so the year fills in one
+              month at a time. start with {year - 1}.
             </p>
           </>
         ) : (
           <>
             <p className="mt-4 text-lg font-medium">nothing published for {year} yet.</p>
             <p className="mt-1.5 max-w-sm text-sm text-ink-soft">
-              issues go up once a month has wrapped. pick another year above to read
-              back through the archive.
+              an issue goes up when its month wraps. pick another year above to
+              read back through the archive.
             </p>
           </>
         )}

@@ -41,8 +41,9 @@ export default function HeadlineNumbers() {
         </dl>
 
         <p className="mt-10 max-w-xl text-pretty text-cream-soft/60">
-          not one month&apos;s work. everything AquaTerra has counted since sixteen students
-          started it in Kolkata. the issues below are where the months get written down.
+          these are not one month&apos;s numbers. they are everything AquaTerra has
+          counted since sixteen students started it in Kolkata. the issues below are
+          where the months get written down, one at a time.
         </p>
       </div>
     </Section>

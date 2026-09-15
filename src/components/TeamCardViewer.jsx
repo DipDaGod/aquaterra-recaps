@@ -24,7 +24,7 @@ function Card({ entry, number, total }) {
 
   return (
     <article
-      className="story-enter-next relative flex aspect-[5/7] w-full max-w-[21rem] flex-col overflow-hidden rounded-[1.75rem] p-5 shadow-2xl ring-1 ring-cream-soft/20 sm:p-6"
+      className="story-enter-next relative flex aspect-[5/7] w-full max-w-[21rem] select-none flex-col overflow-hidden rounded-[1.75rem] p-5 shadow-2xl ring-1 ring-cream-soft/20 sm:p-6"
       style={{ background: team.raw }}
     >
       <div className={cx("flex items-start justify-between gap-3", team.on)}>
@@ -58,7 +58,7 @@ function Card({ entry, number, total }) {
           </Meta>
         </p>
 
-        <p className="mt-3 text-pretty text-sm leading-snug opacity-90">{entry.blurb}</p>
+        <p className="mt-3 select-text text-pretty text-sm leading-snug opacity-90">{entry.blurb}</p>
       </div>
     </article>
   );

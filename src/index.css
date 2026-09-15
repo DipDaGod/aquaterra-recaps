@@ -133,6 +133,50 @@ body[data-scroll-locked] {
   overflow: hidden;
 }
 
+/* Tailwind v4 dropped the v3 preflight rule that gave buttons `cursor: pointer`
+   — they inherit the browser default, which is an arrow. Nothing in this app
+   set a cursor, so every button on the site read as unclickable.
+
+   These sit in @layer base on purpose. Written bare they are element+pseudo
+   selectors, which out-specify a single-class Tailwind utility — so
+   `cursor-zoom-in` on a photo lost to `button:not(:disabled)`. Inside the base
+   layer the utilities layer always wins, whatever the specificity. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /* The slider in "How close?" is dragged, not clicked. */
+  input[type="range"] { cursor: grab; }
+  input[type="range"]:active { cursor: grabbing; }
+  input[type="range"]:disabled { cursor: not-allowed; }
+
+  /* Chrome is not prose: selecting a button's label, a section numeral or the
+     emoji inside a card motif is never what someone meant to do. Anything
+     hidden from assistive tech is decorative by definition, so it goes too.
+
+     Section headings are NOT in this list: they are the article's own words and
+     should stay quotable. Their terminal period is aria-hidden, so a copied
+     headline comes out without it, which is right — it is a typographic mark,
+     not punctuation someone wrote. */
+  button,
+  [role="tab"],
+  [aria-hidden="true"],
+  .u-mono {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
 ::selection {
   background-color: var(--color-green);
   color: var(--color-cream);

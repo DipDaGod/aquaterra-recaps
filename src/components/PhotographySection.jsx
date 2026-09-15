@@ -55,7 +55,7 @@ export default function PhotographySection({ edition, index, label, accentKey, v
           type="button"
           onClick={() => setOpenIndex(0)}
           aria-label="Open the frame of the month"
-          className="group mb-4 block w-full overflow-hidden rounded-[2rem] bg-ink text-left"
+          className="group mb-4 block w-full cursor-zoom-in overflow-hidden rounded-[2rem] bg-ink text-left"
         >
           <div className="relative aspect-[16/10] w-full overflow-hidden sm:aspect-[2/1]">
             <div className="h-full w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]">
@@ -77,7 +77,9 @@ export default function PhotographySection({ edition, index, label, accentKey, v
             </span>
 
             <span className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 p-5 sm:p-7">
-              <span className={cx("max-w-xl text-pretty text-cream-soft", isPlaceholder(p.featuredCaption) && "opacity-70")}>
+              {/* The caption is the article's words, not the button's label —
+                  it stays selectable even though it sits inside one. */}
+              <span className={cx("max-w-xl select-text text-pretty text-cream-soft", isPlaceholder(p.featuredCaption) && "opacity-70")}>
                 {p.featuredCaption}
               </span>
               <Meta className="inline-flex items-center gap-1.5 text-cream-soft/70">
@@ -103,7 +105,7 @@ export default function PhotographySection({ edition, index, label, accentKey, v
               onClick={() => setOpenIndex(i + offset)}
               aria-label={`Open frame ${i + 1 + offset} of ${viewable.length}${item.credit ? `, shot by ${item.credit}` : ""}`}
               className={cx(
-                "group relative mb-3 block w-full break-inside-avoid overflow-hidden rounded-2xl",
+                "group relative mb-3 block w-full cursor-zoom-in break-inside-avoid overflow-hidden rounded-2xl",
                 ratio[item.size] || ratio.md
               )}
             >

@@ -203,6 +203,13 @@ AquaTerra writes in a specific register. Match it; don't write NGO copy.
      times over it stopped being a fact and started reading like a compliance
      disclaimer, so it came out of every sentence that isn't labelling the
      number. The same goes for any figure: repetition cheapens it.
+8. **Read it back for the accidental second meaning.** "issues go up once a month
+   has wrapped" parses as "issues go up once a month" — the frequency, not the
+   condition. It shipped twice. "an issue goes up when its month wraps" cannot
+   be misread.
+9. **A lead must not argue with the heading above it.** "THE drives." sat over
+   "everything the month actually held, not just the drives", and "THE ONES WHO
+   turned up." over "the members who showed up".
 3. **Short declaratives.** Periods where a lesser writer uses commas.
 4. **Parentheses carry the warmth.** *student stories from the ground
    (Sundarbans trips, plantation drives, the late-night event builds) written by
@@ -336,6 +343,27 @@ a random emphasis.
   team's collectible card (§9). A tick appears on the block once it's been read.
 - Meta strings joined with middle dots: `8 DEPARTMENTS · 570+ DRIVES, BLOGS & OPENINGS`.
 - Links and CTAs carry a trailing `→`.
+
+### Cursors and selection
+
+Both are set once, in `@layer base` in `index.css`. Don't set them per-component
+unless an element genuinely differs.
+
+- **Tailwind v4 dropped the preflight rule that gave buttons `cursor: pointer`.**
+  They inherit the browser default — an arrow — so every button on the site read
+  as unclickable until this was added. Disabled controls get `not-allowed`, the
+  slider gets `grab`/`grabbing`, a photo that opens large gets `zoom-in`.
+- **Those rules live in `@layer base` for a reason.** Written bare they are
+  element+pseudo selectors, which out-specify a single-class Tailwind utility —
+  `cursor-zoom-in` on a photo lost to `button:not(:disabled)`. Inside the base
+  layer the utilities layer always wins.
+- **Chrome is not prose.** Buttons, tabs, `.u-mono` labels and anything
+  `aria-hidden` are `user-select: none`: selecting a button's label, a section
+  numeral or the emoji in a card motif is never what someone meant.
+- **Article text stays selectable** — the opener, blurbs, captions, and section
+  headings, which are the issue's own words and should be quotable. Where prose
+  sits *inside* a button (the frame-of-the-month caption, the pop-out card's
+  blurb) it carries `select-text` explicitly.
 
 ### Do not "improve" these
 

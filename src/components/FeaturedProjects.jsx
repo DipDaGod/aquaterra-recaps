@@ -45,7 +45,7 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
       size={size}
       caps="THE"
       accent="drives"
-      lead="welfare, events, the student businesses, media — everything the month actually held, not just the drives."
+      lead="welfare, events, the student businesses, media — everything the month actually held."
       aside={`${projects.length} ${projects.length === 1 ? "story" : "stories"}`}
     >
 

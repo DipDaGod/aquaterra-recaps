@@ -20,11 +20,11 @@ export default function RhythmCard() {
           <Meta>The rhythm</Meta>
         </span>
         <p className="mt-4 text-pretty text-lg leading-snug text-ink">
-          one issue a month, up once the month has wrapped.
+          one issue a month, up as soon as the month wraps.
         </p>
         <p className="mt-3 text-pretty text-sm leading-relaxed text-ink-soft">
           {next
-            ? `edition ${String(next.editionNumber).padStart(2, "0")} is being written now — it is readable, but the copy in it is still placeholder.`
+            ? `edition ${String(next.editionNumber).padStart(2, "0")} is being written now. you can read it, but most of the copy in it is still coming.`
             : "the next one goes up at the end of this month."}
         </p>
       </div>
@@ -32,7 +32,7 @@ export default function RhythmCard() {
       <dl className="mt-6 border-t border-line pt-4">
         <dt><Meta className="text-ink-3">Coming</Meta></dt>
         <dd className="mt-1.5 text-pretty text-sm text-ink-soft">
-          {soon} hasn&apos;t happened yet. it fills in one month at a time.
+          {soon} hasn&apos;t happened yet. it fills in a month at a time.
         </dd>
       </dl>
     </div>

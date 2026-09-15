@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Lockup, { Meta } from "./Lockup";
 import Photo from "./Photo";
 import LatestNotice from "./LatestNotice";
-import { latestEdition, editionList } from "../data/editions";
+import { latestEdition } from "../data/editions";
 
 const collage = [
   { tone: "green", icon: "Users", label: "[Students at a drive]" },
@@ -46,7 +46,7 @@ export default function RecapHero() {
                 href="#archive"
                 className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-ink/40 hover:bg-cream-soft"
               >
-                All {editionList.length} editions
+                All editions
                 <ArrowDown className="h-4 w-4" strokeWidth={2} />
               </a>
             </div>

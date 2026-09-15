@@ -197,7 +197,7 @@ export const editions = {
 
     teams: {
       lockup: { caps: "PICK A LANE, THEN", accent: "turn up" },
-      lead: "eight teams. five run on volunteers, three are student businesses. every one of them is run by the members themselves.",
+      lead: "eight teams. five run on volunteers, three are student businesses run by members.",
       roster: TEAM_ROSTER,
     },
 

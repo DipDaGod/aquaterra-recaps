@@ -16,7 +16,7 @@ const GAMES = [
     available: (g) => g.bigger?.length >= 2 },
   { id: "close", name: "How close?", icon: Gauge, blurb: "drag the slider to where you think the real number sits.",
     available: (g) => g.guess?.length > 0 },
-  { id: "match", name: "Match the teams", icon: Shapes, blurb: "pair all eight teams to what they actually do.",
+  { id: "match", name: "Match the teams", icon: Shapes, blurb: "match all eight teams to what they actually do.",
     available: (g) => g.match?.length > 0 },
 ];
 

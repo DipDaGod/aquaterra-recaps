@@ -112,7 +112,7 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
       </div>
 
       <div
-        className="relative flex min-h-0 flex-1 items-center justify-center px-2 sm:px-16"
+        className="relative flex min-h-0 flex-1 select-none items-center justify-center px-2 sm:px-16"
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
       >

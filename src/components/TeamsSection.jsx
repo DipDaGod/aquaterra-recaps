@@ -133,7 +133,7 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
           ))}
         </span>
         {!done && (
-          <span className="text-sm text-ink-3">tap a team to open its card.</span>
+          <span className="text-sm text-ink-3">tap any team to open its card. there are eight.</span>
         )}
       </div>
 

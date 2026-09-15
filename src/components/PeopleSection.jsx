@@ -75,7 +75,7 @@ export default function PeopleSection({ edition, index, label, accentKey, varian
       size={size}
       caps="THE ONES WHO"
       accent="turned up"
-      lead="not the org account, not the desk — the members who showed up."
+      lead="not the org account, not the desk. the members who were actually there."
     >
 
       <ul className={cx("grid gap-4", columns)}>
