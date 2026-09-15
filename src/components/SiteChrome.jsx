@@ -2,8 +2,9 @@ import { useEffect, useId, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { X, Menu } from "lucide-react";
 import { Meta } from "./Lockup";
+import Mascot from "./Mascot";
 import { sectionAccent } from "../lib/utils";
-import { getEdition, latestEdition } from "../data/editions";
+import { getEdition } from "../data/editions";
 import { issueSections } from "../lib/issueSections";
 
 // Renders the real logo once it exists at /public/assets/logo.png; falls
@@ -125,55 +126,100 @@ export function TopBar() {
   );
 }
 
-// A masthead rather than a send-off. The previous one led with a big italic
-// tagline, a handwritten "love, the AquaTerra team" and four coloured tiles
-// linking back to the parent site — warm, but it read as a greetings card and
-// three of those tiles duplicated a nav that no longer exists.
+// Rebuilt against a screenshot of the parent site's own footer, supplied by
+// the desk. Two parts, exactly as it runs there: a cream letter panel inset on
+// a black ground, then a black bar carrying the wordmark, the two socials and
+// the legal lines.
 //
-// What's left is what a magazine actually puts at the back: who makes it, how
-// often, and the legal line. Every string is the parent site's own copy.
-export function Footer() {
-  const { pathname } = useLocation();
-  const [, year, month] = pathname.split("/");
-  const edition = year && month ? getEdition(year, month) : latestEdition;
+// The handwritten sign-off is back. It came out of the previous version as
+// "corny" — it turns out to be the live site's own, and aq.md §4 reserves
+// Caveat for precisely this one use. Still once. Don't spread it.
+//
+// Every string below is AquaTerra's own copy: the letter is aq.md §3's
+// reference passage verbatim, the legal line and "est. 2021 · 1,300+ members"
+// are §2.
+const SOCIALS = [
+  { label: "Instagram", href: "https://www.instagram.com/ngo.aquaterra" },
+  // aq.md §2 confirms the LinkedIn exists and is named "NGO AquaTerra" but
+  // publishes no URL, and a company slug is not something to guess. Renders as
+  // a plain pill until the desk supplies it.
+  { label: "LinkedIn", href: null },
+];
 
+function Social({ label, href }) {
+  const skin =
+    "inline-flex items-center justify-center rounded-full border border-cream-soft/15 bg-cream-soft/5 px-5 py-2.5 text-cream-soft";
+  if (!href) {
+    return (
+      <span className={`${skin} opacity-55`} title="[LinkedIn URL]">
+        <Meta>{label}</Meta>
+      </span>
+    );
+  }
   return (
-    <footer className="mt-10 border-t border-line/80">
-      <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-12 lg:px-10">
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-md">
-            <Meta className="block text-ink-3">The magazine</Meta>
-            <p className="mt-3 text-pretty text-lg leading-snug text-ink">
-              One issue a month, written by the AquaTerra members who were there.
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className={`${skin} transition-colors hover:border-cream-soft/35 hover:bg-cream-soft/15`}
+    >
+      <Meta>{label}</Meta>
+    </a>
+  );
+}
+
+export function Footer() {
+  return (
+    <footer className="mt-12 bg-near-black">
+      <div className="mx-auto max-w-6xl px-3 py-3 sm:px-5 sm:py-5">
+        {/* The letter. Centred, on cream, inset so the black shows around it. */}
+        <div className="rounded-[1.75rem] bg-cream px-6 py-12 text-center sm:rounded-[2rem] sm:px-10 sm:py-16 lg:py-20">
+          <p className="u-display text-[clamp(1.75rem,6vw,3rem)] text-ink">
+            welcome, <span className="font-accent italic text-green">friend</span>
+          </p>
+
+          <div className="mx-auto mt-7 max-w-2xl space-y-5 text-pretty text-[0.975rem] leading-relaxed text-ink-2 sm:text-base">
+            <p>
+              AquaTerra exists because a few students in Kolkata decided a Saturday afternoon
+              could go to a feeding drive instead of nothing in particular, and then showed up
+              again the next one.
             </p>
-            <p className="mt-2 text-pretty text-sm text-ink-2">
-              Free forever. No donations, no fees.
+            <p>
+              whether it is your first drive or your fiftieth, this is a letter to the people
+              who make AQ what it is: <strong className="font-semibold text-ink">you</strong>.
+              not the org account, not the desk, the volunteer who turned up.
             </p>
+            <p className="text-ink">thank you for making it real.</p>
           </div>
 
-          {edition && (
-            <dl className="flex gap-8 sm:gap-10">
-              <div>
-                <dt><Meta className="text-ink-3">Current issue</Meta></dt>
-                <dd className="mt-1.5 font-display text-2xl font-bold tracking-[-0.02em]">
-                  {String(edition.editionNumber).padStart(2, "0")}
-                </dd>
-              </div>
-              <div>
-                <dt><Meta className="text-ink-3">Dated</Meta></dt>
-                <dd className="mt-1.5 font-display text-2xl font-bold tracking-[-0.02em]">
-                  {edition.month.slice(0, 3)} {String(edition.year).slice(2)}
-                </dd>
-              </div>
-            </dl>
-          )}
+          {/* The one handwritten thing on the site. */}
+          <p className="mt-8 font-hand text-[clamp(1.75rem,5vw,2.5rem)] leading-none text-green">
+            love, the AquaTerra team
+          </p>
         </div>
 
-        <div className="mt-9 flex flex-col gap-2 border-t border-line/80 pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <Meta className="text-ink-3">
-            © {new Date().getFullYear()} AQUATERRA · OPEN COMMUNITY, NO RIGHTS RESERVED.
-          </Meta>
-          <Meta className="text-ink-3/70">Kolkata · ages 14–19</Meta>
+        {/* The bar. */}
+        <div className="flex flex-col items-center gap-6 px-2 py-8 text-center sm:px-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:text-left">
+          <div className="flex shrink-0 items-center gap-3">
+            <Logo className="h-8 w-8" />
+            <span className="u-display text-xl text-cream-soft sm:text-2xl">AQUATERRA</span>
+            <Mascot className="h-6 w-6" color="var(--color-team-social)" />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
+            {SOCIALS.map((s) => (
+              <Social key={s.label} {...s} />
+            ))}
+          </div>
+
+          <div className="lg:text-right">
+            <Meta className="block text-cream-soft/70">
+              © {new Date().getFullYear()} AQUATERRA · OPEN COMMUNITY, NO RIGHTS RESERVED.
+            </Meta>
+            <Meta className="mt-1.5 block text-cream-soft/40">
+              Kolkata · est. 2021 · 1,300+ members
+            </Meta>
+          </div>
         </div>
       </div>
     </footer>
