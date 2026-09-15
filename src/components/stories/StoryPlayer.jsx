@@ -30,32 +30,30 @@ function Chevron({ dir, chapter, onClick }) {
   );
 }
 
-// The topic either side of the one you are on, scaled back and dimmed — the
-// carousel a stories player uses to say "there is more, in both directions".
-// Hidden below lg, where the active card takes the whole screen and swiping is
-// how you move between topics.
-function ChapterPeek({ chapter, onClick }) {
-  if (!chapter) return <span aria-hidden="true" className="hidden w-[13rem] shrink-0 lg:block" />;
+// A topic that is not the live one: its accent, its card count, its name. It
+// fills the same box as the live card and is scaled down by the stage, so the
+// two can transition into one another.
+function ChapterFace({ chapter, onClick }) {
   const a = SECTION_ACCENTS[chapter.accent] || SECTION_ACCENTS.green;
-
   return (
     <button
       type="button"
       onClick={onClick}
+      tabIndex={-1}
       aria-label={`Go to ${chapter.label} — ${chapter.count} ${chapter.count === 1 ? "card" : "cards"}`}
-      className="hidden w-[13rem] shrink-0 flex-col items-center gap-3 opacity-55 transition-opacity duration-300 hover:opacity-100 lg:flex"
+      className="relative grid h-full w-full place-items-center overflow-hidden bg-ink sm:rounded-[2rem]"
     >
-      <span className="relative grid h-[min(52vh,26rem)] w-full place-items-center overflow-hidden rounded-[1.5rem] bg-ink">
-        <span aria-hidden="true" className="absolute inset-0 opacity-30" style={{ background: a.raw }} />
-        <span className={cx("relative grid h-16 w-16 place-items-center rounded-full p-[3px]", a.rule)}>
-          <span className="grid h-full w-full place-items-center rounded-full bg-ink">
-            <span className="u-display text-base text-cream-soft">
-              {String(chapter.count).padStart(2, "0")}
-            </span>
+      <span aria-hidden="true" className="absolute inset-0 opacity-30" style={{ background: a.raw }} />
+      <span className={cx("relative grid h-20 w-20 place-items-center rounded-full p-[3px]", a.rule)}>
+        <span className="grid h-full w-full place-items-center rounded-full bg-ink">
+          <span className="u-display text-lg text-cream-soft">
+            {String(chapter.count).padStart(2, "0")}
           </span>
         </span>
       </span>
-      <Meta className="text-cream-soft/70">{chapter.label}</Meta>
+      <Meta className="absolute inset-x-0 bottom-8 text-center text-cream-soft/75">
+        {chapter.label}
+      </Meta>
     </button>
   );
 }
@@ -69,6 +67,17 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
 
   const closeRef = useRef(null);
   const swipe = useRef(null);
+  // A phone turns the topics like faces of a cube; anything wider slides and
+  // scales them. Two different transforms, so the choice has to be made in JS.
+  const [cube, setCube] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const sync = () => setCube(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
   const elapsed = useRef(0);
   const last = useRef(0);
   const frame = useRef(0);
@@ -103,6 +112,17 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
     elapsed.current = 0;
     setProgress(0);
   }, [total, onClose, index]);
+
+  // Tapping back stops at the first card of the topic you are in. Crossing into
+  // the one before is what the chevrons, the peeks and a swipe are for — so a
+  // stray tap can't walk you backwards out of what you are reading.
+  const goCard = useCallback(
+    (delta) => {
+      if (delta >= 0) { go(index + 1); return; }
+      go(Math.max(current?.start ?? 0, index - 1));
+    },
+    [go, index, current]
+  );
 
   // Forward and back move a whole topic. Inside one, the cards advance on their
   // own or on a tap.
@@ -143,13 +163,13 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowRight") go(index + 1);
-      else if (e.key === "ArrowLeft") go(index - 1);
+      else if (e.key === "ArrowRight") goCard(1);
+      else if (e.key === "ArrowLeft") goCard(-1);
       else if (e.key === " " || e.key === "Spacebar") { e.preventDefault(); setPaused((p) => !p); }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [index, go, onClose]);
+  }, [index, goCard, onClose]);
 
   if (!slide) return null;
 
@@ -189,7 +209,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
 
     if (!quick) return;
     const box = e.currentTarget.getBoundingClientRect();
-    go(e.clientX - box.left < box.width * 0.33 ? index - 1 : index + 1);
+    goCard(e.clientX - box.left < box.width * 0.33 ? -1 : 1);
   }
 
   // Portalled into <body> — see useOverlay for why.
@@ -200,12 +220,67 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
       aria-modal="true"
       aria-label={`${slide.chapter} story, ${index + 1} of ${total}`}
     >
-      <div className="flex h-full w-full items-center justify-center gap-3 sm:h-auto sm:gap-4">
-        <ChapterPeek chapter={prevChapter} onClick={() => goChapter(-1)} />
-        <Chevron dir="prev" chapter={prevChapter} onClick={() => goChapter(-1)} />
+      {/* The stage. Every topic is a face in the same box; the live one is at
+          scale 1 and the rest are pushed aside — so moving between them is one
+          transition, the outgoing card shrinking as the incoming one rises to
+          size, rather than a swap.
 
+          On a phone the faces sit on a cube instead: each is rotated a quarter
+          turn further round and pushed out by half the card's width, and the
+          stage counter-rotates, so a move turns the cube to the next face. */}
       <div
-        className="relative flex h-full w-full max-w-[26rem] flex-col overflow-hidden bg-ink transition-shadow duration-700 sm:h-[min(90vh,46rem)] sm:rounded-[2rem]"
+        className="relative flex h-full w-full items-center justify-center"
+        style={cube ? { perspective: "1400px" } : undefined}
+      >
+        <div
+          className="relative h-full w-full max-w-[26rem] sm:h-[min(90vh,46rem)]"
+          style={{
+            transformStyle: cube ? "preserve-3d" : undefined,
+            // translateZ pulls the cube back by its own radius, so the face
+            // facing you sits flat at z = 0. Without it every live face is
+            // pushed toward the viewer and perspective scales it up past the
+            // edges of the screen.
+            transform: cube ? `translateZ(-50vw) rotateY(${-at * 90}deg)` : undefined,
+            transition: "transform 560ms cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          {chapters.map((c, i) => {
+            const d = i - at;
+            const live = d === 0;
+            const face = cube
+              ? {
+                  transform: `rotateY(${i * 90}deg) translateZ(50vw)`,
+                  backfaceVisibility: "hidden",
+                  opacity: Math.abs(d) <= 1 ? 1 : 0,
+                }
+              : {
+                  transform: `translateX(${d * 23}rem) scale(${live ? 1 : 0.58})`,
+                  opacity: live ? 1 : Math.abs(d) === 1 ? 0.55 : 0,
+                };
+            return (
+              <div
+                key={c.id}
+                data-topic-face={c.id}
+                data-live={live ? "true" : undefined}
+                aria-hidden={live ? undefined : "true"}
+                className={cx(
+                  "absolute inset-0 transition-[transform,opacity] duration-[560ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  // The peeks are a wide-screen thing — but the cube needs its
+                  // other faces present, or the outgoing one vanishes the
+                  // instant the move starts and only the incoming face turns.
+                  !live && !cube && "hidden lg:block",
+                  !live && !cube && "cursor-pointer"
+                )}
+                style={{
+                  ...face,
+                  // On the cube you move by swiping, and an edge-on face should
+                  // not be able to swallow a tap meant for the live one.
+                  pointerEvents: live ? "auto" : cube || Math.abs(d) > 1 ? "none" : "auto",
+                }}
+              >
+                {live ? (
+      <div
+        className="relative flex h-full w-full flex-col overflow-hidden bg-ink transition-shadow duration-700 sm:rounded-[2rem]"
         style={{ boxShadow: `0 0 90px -20px ${accentRaw}` }}
       >
         <div
@@ -302,9 +377,25 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           </span>
         </p>
       </div>
+                ) : (
+                  <ChapterFace chapter={c} onClick={() => go(c.start)} />
+                )}
+              </div>
+            );
+          })}
+        </div>
 
-        <Chevron dir="next" chapter={nextChapter} onClick={() => goChapter(1)} />
-        <ChapterPeek chapter={nextChapter} onClick={() => goChapter(1)} />
+        {/* In the gap between the live card (half-width 13rem) and a peek
+            (centred at 23rem, half-width 7.54rem, so its near edge is at
+            15.46rem). Fixed offsets, because the faces themselves are moving. */}
+        <div className="pointer-events-none absolute inset-0 hidden items-center justify-center sm:flex">
+          <span className="pointer-events-auto absolute right-[calc(50%+13.2rem)]">
+            <Chevron dir="prev" chapter={prevChapter} onClick={() => goChapter(-1)} />
+          </span>
+          <span className="pointer-events-auto absolute left-[calc(50%+13.2rem)]">
+            <Chevron dir="next" chapter={nextChapter} onClick={() => goChapter(1)} />
+          </span>
+        </div>
       </div>
     </div>,
     document.body

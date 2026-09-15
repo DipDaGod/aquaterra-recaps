@@ -469,9 +469,25 @@ used repeatedly rather than eight bespoke sections.
     the live chapter centred, the ones either side peeking back at reduced
     scale, chevrons in the gaps between them. The card header names the current
     chapter and its position inside it, where Instagram names the account.
+  - **Every topic is a face on one stage**, at `[data-topic-face]`. Moving is a
+    single transition — the outgoing card shrinking as the incoming one rises to
+    size — not a swap. On a phone the same faces sit on a **cube**: each is
+    rotated a further quarter turn and pushed out by half the card's width, and
+    the stage counter-rotates. The stage is also pulled back by that same
+    radius, so the face you are looking at lands flat at 1:1; without it,
+    perspective magnifies the live face past the edges of the screen.
+    The two transforms differ, so the phone/desktop choice is made in JS from a
+    `matchMedia`, not in CSS.
+  - The non-live faces must stay rendered on a phone. Hiding them (they are
+    `hidden lg:block` on wide screens) makes the outgoing face vanish the
+    instant a move starts, and only the incoming one turns.
   - **Tap moves a card, swipe moves a topic**, swipe down closes. Keep that
     split — it is what the gestures mean everywhere else, and what the desk
     asked for.
+  - **Tapping back stops at the first card of the current topic.** Crossing out
+    of a topic backwards is what a swipe, a chevron or a peek is for, so a stray
+    tap can't walk you out of what you are reading. Forward still crosses, as
+    the auto-advance does.
   - The progress bar is grouped **by chapter**. Twenty-one equal segments in a
     26rem card were 12px each and told you nothing.
   - Two earlier attempts at chapter navigation are worth not repeating: a row of
