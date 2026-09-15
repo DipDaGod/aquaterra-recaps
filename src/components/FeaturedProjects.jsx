@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import ProjectCard from "./ProjectCard";
 import Section from "./Section";
+import ShowMore from "./ShowMore";
 import { cx } from "../lib/utils";
 
 export default function FeaturedProjects({ edition, index, label, accentKey, variant, ground, size }) {
@@ -74,7 +75,12 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
 
       {/* The first card of the unfiltered view runs full width as the lead
           story; inside a filter every card is equal so the grid stays even. */}
-      <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
+      <ShowMore
+        after={3}
+        total={filtered.length}
+        noun={active === "All" ? "stories" : `${active.toLowerCase()} stories`}
+        className="grid gap-5 sm:gap-6 lg:grid-cols-2"
+      >
         {filtered.map((project, i) => {
           const lead = active === "All" && i === 0 && filtered.length > 1;
           return (
@@ -83,7 +89,7 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
             </div>
           );
         })}
-      </div>
+      </ShowMore>
     </Section>
   );
 }

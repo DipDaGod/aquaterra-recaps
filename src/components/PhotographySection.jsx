@@ -3,6 +3,7 @@ import { Expand, Camera } from "lucide-react";
 import Photo from "./Photo";
 import Lightbox from "./Lightbox";
 import Section from "./Section";
+import ShowMore from "./ShowMore";
 import { Meta } from "./Lockup";
 import { cx } from "../lib/utils";
 
@@ -58,7 +59,12 @@ export default function PhotographySection({ edition, index, label, accentKey, v
       )}
 
       {gallery.length > 0 && (
-        <div className={cx("gap-3", columnsFor(gallery.length))}>
+        <ShowMore
+          after={4}
+          total={gallery.length}
+          noun="frames"
+          className={cx("gap-3", columnsFor(gallery.length))}
+        >
           {gallery.map((item, i) => (
             <button
               key={i}
@@ -81,7 +87,7 @@ export default function PhotographySection({ edition, index, label, accentKey, v
               </span>
             </button>
           ))}
-        </div>
+        </ShowMore>
       )}
 
       {openIndex !== null && (

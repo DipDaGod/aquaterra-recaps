@@ -1,4 +1,5 @@
 import Section from "./Section";
+import ShowMore from "./ShowMore";
 import { Meta } from "./Lockup";
 import { TEAMS, cx } from "../lib/utils";
 
@@ -93,11 +94,16 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
       aside={`${volunteer} volunteer teams · ${roster.length - volunteer} student businesses · ${openRoles} roles open`}
     >
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ShowMore
+        after={4}
+        total={roster.length}
+        noun="teams"
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
         {roster.map((entry, i) => (
           <TeamCard key={entry.key} entry={entry} tilt={TILTS[i % TILTS.length]} />
         ))}
-      </div>
+      </ShowMore>
 
       <p className="mt-6">
         <Meta className="text-ink-soft/70">
