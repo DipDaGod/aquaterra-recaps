@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import EditionHero from "../components/EditionHero";
 import MonthNavigation from "../components/MonthNavigation";
+import OpenerEssay from "../components/OpenerEssay";
 import StatsGrid from "../components/StatsGrid";
 import TeamsSection from "../components/TeamsSection";
 import FeaturedProjects from "../components/FeaturedProjects";
@@ -50,6 +51,7 @@ export default function EditionPage() {
       <EditionHero edition={edition} />
       <MonthNavigation edition={edition} />
 
+      <OpenerEssay edition={edition} {...at("opener")} />
       <StatsGrid edition={edition} {...at("numbers")} />
       <TeamsSection edition={edition} {...at("teams")} />
       <FeaturedProjects edition={edition} {...at("featured")} />

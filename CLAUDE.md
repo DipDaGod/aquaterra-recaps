@@ -365,6 +365,11 @@ used repeatedly rather than eight bespoke sections.
   - `size` (`"lead"` / `"sub"`) is prominence, declared per section. It is
     deliberately not derived from `variant` — that is how a supporting section
     ended up shouting at the same scale as a lead one.
+  - `label` may be a **function of the edition**, for a section whose subject
+    changes from issue to issue. The opener uses this: it is "What is AquaTerra"
+    in Edition 01 and "The month" in Edition 02, and the index says which.
+  - `blurb` is the section in one line. It lives here, not in the archive page
+    that prints it, so the two can't drift.
   - The section accents are *editorial*, not a claim that Photography belongs to
     Social Media. This is the one area the parent site doesn't cover. If it ever
     reads as a team claim, set every `accent` to `"green"` and the issue goes
@@ -412,12 +417,25 @@ One file, one object. Nothing else.
 3. Update, at minimum: `key`, `slug` (lowercase month name — this is the URL),
    `month` (capitalised), `year`, `editionNumber`, `accent`, `lockup`,
    `tagline`, `cover`.
-4. Set `LATEST_KEY` at the top of the file to the new key. This drives the
-   "Latest" badge, the archive's featured card and the "now live" strip.
-5. Replace the content. **Anything you do not have a real value for stays a
+4. Give it `status: "upcoming"` while the month it recaps is still running. The
+   archive then shows it as in progress — dashed border, "IN PROGRESS" badge,
+   readable but not announced as live. **Delete that line on publication day and
+   move `LATEST_KEY`.**
+5. Set `LATEST_KEY` to the newest edition that is actually *out*. It is not
+   simply the last object in the file — an upcoming issue sits below it. This
+   drives the "Latest" badge, the archive's featured card and the "now live"
+   strip, so an issue that isn't published must not hold it.
+6. Give it an `accent` no neighbouring issue is using, so two issues never read
+   as the same page with different words.
+7. Replace the content. **Anything you do not have a real value for stays a
    `[bracketed placeholder]`** — that is not laziness, it is rule 0.
-6. Save. The archive grid, the year selector, the month strip, the prev/next
+8. Save. The archive grid, the year selector, the month strip, the prev/next
    links, the section numbering and the stories player all pick it up.
+
+Three blocks are shared rather than copied, because none of them is a month's
+data: `TEAM_ROSTER` (the 8 teams), `AQ_GAMES` (the games — organisation running
+totals, not monthly figures) and `AQ_TOTALS` (the headline numbers the archive
+prints). Point at them; don't duplicate them into a new edition.
 
 ### Which sections appear
 
@@ -427,6 +445,7 @@ file.**
 
 | Field | Section |
 |---|---|
+| `opener` | the opening essay — prose, a pull quote, a fact panel |
 | `glance` | the numbers |
 | `teams` | the 8 teams, each in its identity colour |
 | `featured` | the month's stories, mixed across teams |
@@ -456,6 +475,11 @@ renders a button in that month's hero; leave them off and no button appears.
   Welfare, Events, Student business, Workshop, Collabs, Social, Photography.
 - `featured[].team` must be a key from `TEAMS`. It is also what a team card
   links to (`#feature-<team>`), so at most one story per team gets the anchor.
+- `opener` is the issue's prose answer to whatever its headline asks. Edition
+  01's headline is "WHAT IS aquaterra."; its opener is where that gets answered,
+  and every fact in it is from §2. It takes `label` (names the section in the
+  index), `lockup`, `standfirst`, `body` (an array of paragraphs — the first
+  gets a drop cap), `pull` (one line set large), `byline` and `facts`.
 - `people` entries stay bracketed until the desk supplies real names, roles,
   quotes and portraits. §2 is explicit about this.
 - `impact.progress[].percent` may be `null` — the bar then renders as an empty
@@ -525,6 +549,18 @@ before reversing one.
 - **Edition 1 is September 2026**, not October. Corrected by the desk.
 - **1,300+ is the current member count**, resolving the live site's own conflict
   with an HR bio that still says 1,100+.
+- **The issue answers its own headline.** Edition 01 asked "what is AquaTerra"
+  and never said. The `opener` section exists so a headline that asks a question
+  gets one, above the numbers rather than after them.
+- **An upcoming issue is visible but not announced.** It sits in the archive
+  marked in progress. The alternative — letting it take `LATEST_KEY` — has the
+  "now live" strip telling 1,300+ members an issue is out when it isn't.
+- **The year after the last published one shows as "soon"**, selectable, and
+  explains itself when picked. It used to be a hardcoded dead grey pill. Both
+  the published years and the coming one are derived, so neither can go stale.
+- **The archive carries the running totals and the format**, because an archive
+  of one or two issues is otherwise a nearly empty page. Both read from existing
+  sources — `AQ_TOTALS` and the section manifest — so neither can drift.
 - **Three mini games, not a quiz.** Eight multiple-choice questions in a row is
   a worksheet. Each game has a different interaction: tap to compare, drag to
   estimate, pair to learn.

@@ -30,7 +30,8 @@ Anything else redirects to `/`.
   monthly edition.** Every page renders from this one object; there is no
   per-month component. See `CLAUDE.md` §7.
 - `src/lib/issueSections.js` — the running order of an issue. One manifest
-  drives section numbering, the nav menu, and each section's colour and opener.
+  drives section numbering, the nav menu, each section's colour and opener, and
+  the "what's in an issue" block on the archive.
 - `src/lib/utils.js` — the 8 teams, the accent palettes, `isPlaceholder()`.
 - `src/lib/buildStories.js` — derives the Instagram-style stories player from
   the edition object. Nothing is authored for it separately.
@@ -40,7 +41,7 @@ Anything else redirects to `/`.
   here too.**
 - `src/components/` — every UI building block, each reusable across all
   editions. `Section.jsx` holds the shared page rhythm; `Lockup.jsx` holds the
-  house headline treatment.
+  house headline treatment; `OpenerEssay.jsx` is the issue's opening prose.
 - `src/styles/fonts.css` — the only file that names a typeface.
 - `public/recaps/<year>/<month>/` — edition photography. See that directory's
   README.

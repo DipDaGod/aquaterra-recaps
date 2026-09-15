@@ -1,7 +1,9 @@
-import { ArrowDown, Info } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import Lockup, { Meta } from "./Lockup";
 import Photo from "./Photo";
 import LatestNotice from "./LatestNotice";
+import { latestEdition, editionList } from "../data/editions";
 
 const collage = [
   { tone: "green", icon: "Users", label: "[Students at a drive]" },
@@ -33,19 +35,19 @@ export default function RecapHero() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href="#archive"
+              <Link
+                to={`/${latestEdition.year}/${latestEdition.slug}`}
                 className="inline-flex items-center gap-2 rounded-full bg-green px-6 py-3 text-sm font-semibold text-cream-soft shadow-[0_2px_0_0_var(--color-green-deep)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                Browse the archive
-                <ArrowDown className="h-4 w-4" strokeWidth={2} />
-              </a>
+                Read edition {String(latestEdition.editionNumber).padStart(2, "0")}
+                <ArrowRight className="h-4 w-4" strokeWidth={2} />
+              </Link>
               <a
-                href="#about-recaps"
+                href="#archive"
                 className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-ink/40 hover:bg-cream-soft"
               >
-                <Info className="h-4 w-4" strokeWidth={1.75} />
-                About the recaps
+                All {editionList.length} editions
+                <ArrowDown className="h-4 w-4" strokeWidth={2} />
               </a>
             </div>
           </div>

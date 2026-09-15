@@ -1,8 +1,12 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { AVAILABLE_YEARS, editionsForYear } from "../data/editions";
+import { AVAILABLE_YEARS, COMING_YEARS, editionsForYear } from "../data/editions";
 import { cx } from "../lib/utils";
 
-// A segmented control. Each year carries its edition count.
+// A segmented control. Years with editions carry their count; the year after
+// the last one is offered as coming soon, and selecting it explains itself
+// rather than being a dead, greyed-out pill.
+const YEARS = [...AVAILABLE_YEARS, ...COMING_YEARS];
+
 export default function YearSelector({ year, onChange }) {
   const selectable = AVAILABLE_YEARS.filter((y) => editionsForYear(y).length > 0);
   const idx = selectable.indexOf(year);
@@ -28,38 +32,36 @@ export default function YearSelector({ year, onChange }) {
       </button>
 
       <ul className="scroll-quiet flex max-w-full items-center gap-1 overflow-x-auto rounded-full border border-line bg-cream-soft p-1.5">
-        {AVAILABLE_YEARS.map((y) => {
+        {YEARS.map((y) => {
           const count = editionsForYear(y).length;
           const selected = y === year;
+          const soon = count === 0;
           return (
             <li key={y}>
               <button
                 type="button"
-                disabled={count === 0}
                 onClick={() => onChange(y)}
                 aria-current={selected ? "true" : undefined}
                 className={cx(
                   "flex shrink-0 items-baseline gap-2 rounded-full px-4 py-2 text-base font-semibold transition-colors sm:px-5 sm:text-lg",
                   selected
                     ? "bg-green text-cream-soft"
-                    : count === 0
-                    ? "cursor-not-allowed text-ink/25"
+                    : soon
+                    ? "text-ink/40 hover:bg-paper hover:text-ink-soft"
                     : "text-ink-soft hover:bg-paper hover:text-ink"
                 )}
               >
                 {y}
-                {count > 0 && (
-                  <span
-                    className={cx(
-                      "text-xs font-medium tabular-nums",
-                      selected ? "text-cream-soft/70" : "text-ink/35"
-                    )}
-                  >
-                    {count}
-                  </span>
-                )}
+                <span
+                  className={cx(
+                    "text-xs font-medium tabular-nums",
+                    selected ? "text-cream-soft/70" : "text-ink/35"
+                  )}
+                >
+                  {soon ? "soon" : count}
+                </span>
                 <span className="sr-only">
-                  {count === 0 ? "no editions" : count === 1 ? "1 edition" : `${count} editions`}
+                  {soon ? "coming soon" : count === 1 ? "1 edition" : `${count} editions`}
                 </span>
               </button>
             </li>

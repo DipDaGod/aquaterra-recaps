@@ -2,25 +2,36 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import Photo from "./Photo";
 import Lockup, { Meta } from "./Lockup";
-import { cx } from "../lib/utils";
+import { isUpcoming } from "../data/editions";
+import { cx, issueAccentVars } from "../lib/utils";
 
+// Each card carries its own issue's accent, so the archive reads as a run of
+// distinct issues rather than one template printed twice — --issue-accent is
+// otherwise only set on an edition page's root, and every card came out green.
+//
 // Two layouts, one card. `featured` lays the cover beside the text on large
 // screens. Both size from their content — no fixed heights — so a row lines up
 // without any one card ballooning.
 export default function EditionCard({ edition, featured = false, id }) {
   const { year, slug, month, editionNumber, tagline, cover, cardStats, isLatest, lockup } = edition;
   const title = lockup || { caps: month?.toUpperCase(), accent: String(year) };
+  const upcoming = isUpcoming(edition);
 
   return (
     <Link
       id={id}
       to={`/${year}/${slug}`}
       aria-label={`${month} ${year} recap — edition ${editionNumber}`}
+      style={issueAccentVars(edition.accent)}
       className={cx(
         "group relative flex h-full flex-col overflow-hidden rounded-3xl border bg-cream-soft",
         "shadow-(--shadow-card) transition-[box-shadow,transform,border-color] duration-300",
         "hover:-translate-y-1 hover:shadow-(--shadow-card-hover)",
-        isLatest ? "border-green/70" : "border-line hover:border-green/40",
+        upcoming
+          ? "border-dashed border-line hover:border-ink/30"
+          : isLatest
+          ? "border-(--issue-accent)/60"
+          : "border-line hover:border-(--issue-accent)/40",
         featured && "lg:flex-row"
       )}
     >
@@ -32,13 +43,24 @@ export default function EditionCard({ edition, featured = false, id }) {
             : "aspect-[4/3]"
         )}
       >
-        <div className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]">
+        <div
+          className={cx(
+            "h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]",
+            upcoming && "opacity-70 saturate-[0.65]"
+          )}
+        >
           <Photo item={cover} />
         </div>
 
+        {upcoming && (
+          <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-dashed border-cream-soft/60 bg-near-black/80 px-3 py-1.5 text-cream-soft backdrop-blur-sm">
+            <Meta>In progress</Meta>
+          </span>
+        )}
+
         {isLatest && (
           <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-near-black/85 px-3 py-1.5 text-cream-soft backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-bright" />
+            <span className="h-1.5 w-1.5 rounded-full bg-(--issue-accent)" />
             <Meta>Latest</Meta>
           </span>
         )}
@@ -49,6 +71,7 @@ export default function EditionCard({ edition, featured = false, id }) {
           <div className="min-w-0">
             <Meta className="text-ink-soft">
               Edition {String(editionNumber).padStart(2, "0")} · {month} {year}
+              {upcoming && " · out when the month wraps"}
             </Meta>
             <Lockup
               as="h3"
@@ -57,7 +80,7 @@ export default function EditionCard({ edition, featured = false, id }) {
               className={cx("mt-2", featured ? "text-4xl sm:text-5xl" : "text-2xl")}
             />
           </div>
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-ink/15 text-ink-soft transition-colors duration-300 group-hover:border-green group-hover:bg-green group-hover:text-cream-soft">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-ink/15 text-ink-soft transition-colors duration-300 group-hover:border-(--issue-accent) group-hover:bg-(--issue-accent) group-hover:text-cream-soft">
             <ArrowUpRight className="h-4 w-4" strokeWidth={1.75} />
           </span>
         </div>
