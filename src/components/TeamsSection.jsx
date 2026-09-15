@@ -9,18 +9,24 @@ import { TEAMS, cx } from "../lib/utils";
 // card's own ground showing around it), the fan motif was a faint hint rather
 // than three distinct white tiles, and the arrow sat inline instead of in a
 // white disc on the block's corner.
-function TeamCard({ entry, tilt }) {
+function TeamCard({ entry, tilt, storyId }) {
   const team = TEAMS[entry.key];
   if (!team) return null;
 
+  // A card points at that team's own story in this issue. Where the issue has
+  // no story for a team, the card is plain text — no link, and no arrow
+  // promising one.
+  const Tag = storyId ? "a" : "div";
 
   return (
-    <a
-      href={entry.href}
-      target="_blank"
-      rel="noreferrer"
+    <Tag
+      {...(storyId ? { href: `#${storyId}` } : {})}
       style={{ "--tilt": `${tilt}deg` }}
-      className="group flex h-full flex-col rounded-[1.75rem] border border-line bg-cream-soft p-2.5 shadow-(--shadow-card) transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:rotate-(--tilt) hover:shadow-(--shadow-card-hover)"
+      className={cx(
+        "group flex h-full flex-col rounded-[1.75rem] border border-line bg-cream-soft p-2.5 shadow-(--shadow-card)",
+        storyId &&
+          "transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:rotate-(--tilt) hover:shadow-(--shadow-card-hover)"
+      )}
     >
       {/* Inset colour block carrying the card-fan motif. */}
       <div className={cx("relative aspect-[5/4] shrink-0 overflow-hidden rounded-[1.25rem]", team.bg)}>
@@ -40,12 +46,14 @@ function TeamCard({ entry, tilt }) {
           </span>
         </span>
 
-        <span
-          aria-hidden="true"
-          className="absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full bg-cream-soft text-ink shadow-sm transition-transform duration-300 group-hover:translate-x-0.5 sm:h-9 sm:w-9"
-        >
-          →
-        </span>
+        {storyId && (
+          <span
+            aria-hidden="true"
+            className="absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full bg-cream-soft text-ink shadow-sm transition-transform duration-300 group-hover:translate-x-0.5 sm:h-9 sm:w-9"
+          >
+            →
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col px-1.5 pb-2 pt-3">
@@ -69,12 +77,12 @@ function TeamCard({ entry, tilt }) {
           {entry.members}&nbsp;{entry.members === 1 ? "member" : "members"}
         </Meta>
 
-        <p className="mt-2.5 line-clamp-3 text-pretty text-[0.8125rem] leading-snug text-ink-2 sm:line-clamp-4">
+        <p className="mt-2.5 text-pretty text-[0.8125rem] leading-snug text-ink-2">
           {entry.blurb}
         </p>
 
       </div>
-    </a>
+    </Tag>
   );
 }
 
@@ -85,6 +93,9 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
   const teams = edition.teams;
   const roster = teams?.roster || [];
   if (roster.length === 0) return null;
+
+  // Which teams have a story in this issue to point at.
+  const storyFor = new Set((edition.featured || []).map((f) => f.team).filter(Boolean));
 
   const volunteer = roster.filter((t) => TEAMS[t.key]?.kind === "volunteer team").length;
 
@@ -110,15 +121,15 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
         className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
       >
         {roster.map((entry, i) => (
-          <TeamCard key={entry.key} entry={entry} tilt={TILTS[i % TILTS.length]} />
+          <TeamCard
+            key={entry.key}
+            entry={entry}
+            tilt={TILTS[i % TILTS.length]}
+            storyId={storyFor.has(entry.key) ? `feature-${entry.key}` : null}
+          />
         ))}
       </ShowMore>
 
-      <p className="mt-6">
-        <Meta className="text-ink-soft/70">
-          Team data mirrored from ngoaquaterra.com · re-check before publishing
-        </Meta>
-      </p>
     </Section>
   );
 }

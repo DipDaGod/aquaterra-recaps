@@ -36,54 +36,45 @@ const LATEST_KEY = "2026-09";
 // member counts, bios and open-role counts all copied from its live markup.
 // aq.md §2: the live site wins, so this is the source for team data.
 //
-// `href` points at each team's real page on ngoaquaterra.com. `openRoles` is
-// the site's own count; 0 renders as "nothing open".
+// No `href`: nothing in the magazine links out to the parent site. A team card
+// points at that team's own story in this issue instead, and falls back to
+// being plain text when the issue has no story for it.
 //
 // The HR bio on the live site reads "1,100+ members" against a headline figure
 // of 1,300+; the desk confirmed 1,300+ is the current number, so it is used
 // here. Worth correcting on the parent site too.
-const TEAM_URL = "https://www.ngoaquaterra.com/teams";
-
 export const TEAM_ROSTER = [
   {
     key: "welfare", members: 62, openRoles: 2,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000002`,
-    blurb: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips. Dog feeding drives across Kolkata. 4,000+ saplings planted. This is the impact core.",
+    blurb: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips. Dog feeding drives.",
   },
   {
     key: "social", members: 29, openRoles: 3,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000003`,
-    blurb: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra. Reels, carousels, copy, strategy. Not a school club. A real brand account.",
+    blurb: "Instagram, LinkedIn, website. 3,200+ followers. Reels, carousels, copy, strategy.",
   },
   {
     key: "collabs", members: 2, openRoles: 0,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000004`,
-    blurb: "School collabs, college collabs, NGO partnerships, outreach. AQ grows through peer networks. This team builds those networks.",
+    blurb: "School collabs, college collabs, NGO partnerships, outreach.",
   },
   {
     key: "shikshaq", members: 2, openRoles: 1,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000007`,
-    blurb: "Tuition discovery platform built by AQ members for Kolkata students. Launched 2026. Product, design, content, growth. Still early. The team is small.",
+    blurb: "Tuition discovery platform built by AQ members for Kolkata students. Launched 2026.",
   },
   {
     key: "hr", members: 6, openRoles: 0,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000008`,
-    blurb: "Recruitment, onboarding, certificates, Letters of Recommendation. HR runs the intake pipeline for 1,300+ members.",
+    blurb: "Recruitment, onboarding, certificates, Letters of Recommendation.",
   },
   {
     key: "events", members: 3, openRoles: 2,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000001`,
-    blurb: "Paradox. Disco Diwali. Starry Nights. Every fundraiser AQ has ever run. Paradox 3.0 had 300 attendees and crossed 6-digit revenue. This team ran it.",
+    blurb: "Paradox. Disco Diwali. Starry Nights. Every fundraiser AQ has ever run.",
   },
   {
     key: "ventures", members: 23, openRoles: 0,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000006`,
-    blurb: "Aquaterra Ventures exists to help student entrepreneurs turn great ideas into visible brands. For the first three months we provide full marketing support completely free: strategy, content, branding and promotion, tailored to your business.",
+    blurb: "Free marketing for student founders — strategy, content, branding, promotion.",
   },
   {
     key: "crftd", members: 1, openRoles: 0,
-    href: `${TEAM_URL}/a1b2c3d4-0001-0000-0000-000000000005`,
-    blurb: "Student-run streetwear brand. Design, production, sales. Profits fund AQ welfare projects and events. The brand is real. The revenue is real.",
+    blurb: "Student-run streetwear brand. Profits fund AQ welfare projects and events.",
   },
 ];
 
@@ -247,19 +238,6 @@ export const editions = {
         { team: "crftd", clue: "Student-run streetwear brand. Profits fund AQ welfare." },
       ],
     },
-
-    inside: [
-      {
-        type: "Diary", meta: "Groundwork Diaries", title: "[Diary entry title]",
-        description: "[One line on what the entry covers, and who wrote it.]",
-        image: photo("cream", "PenSquare", "[Diary]"),
-      },
-      {
-        type: "Workshop", meta: "Workshop", title: "[Workshop title]",
-        description: "[What members learned or built.]",
-        image: photo("lavender", "Wrench", "[Workshop]"),
-      },
-    ],
 
     impact: {
       headline: "[One line on what this issue's work actually changed]",

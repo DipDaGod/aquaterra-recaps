@@ -24,7 +24,7 @@
 // They are set per SECTION, not per position, so a section looks the same from
 // issue to issue — and they are chosen so that no two that commonly sit next
 // to each other share both. Openings sits between impact and people when an
-// issue carries it; without it, diaries/impact/people still alternate.
+// issue carries it; the run still alternates without any one of them.
 export const SECTION_MANIFEST = [
   { id: "numbers", label: "The numbers", accent: "green", variant: "rule", ground: "plain", size: "sub",
     has: (e) => e.glance?.length > 0 },
@@ -41,9 +41,7 @@ export const SECTION_MANIFEST = [
     has: (e) => Boolean(e.games) && (
       e.games.bigger?.length >= 2 || e.games.guess?.length > 0 || e.games.match?.length > 0
     ) },
-  { id: "diaries", label: "Groundwork Diaries", accent: "teal", variant: "numeral", ground: "plain", size: "sub",
-    has: (e) => e.inside?.length > 0 },
-  { id: "impact", label: "The impact", accent: "green", variant: "rule", ground: "plain", size: "sub",
+  { id: "impact", label: "The impact", accent: "teal", variant: "numeral", ground: "plain", size: "sub",
     has: (e) => Boolean(e.impact) },
   { id: "openings", label: "Openings", accent: "pink", variant: "numeral", ground: "band",
     has: (e) => e.openings?.roles?.length > 0 },

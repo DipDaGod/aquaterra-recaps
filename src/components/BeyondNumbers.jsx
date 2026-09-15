@@ -1,5 +1,7 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import Photo from "./Photo";
+import { latestEdition } from "../data/editions";
 import Section from "./Section";
 import Lockup, { Meta } from "./Lockup";
 
@@ -30,15 +32,14 @@ export default function BeyondNumbers() {
             (the drives, the events, the student businesses, the frames somebody
             actually shot) by the members who were there.
           </p>
-          <a
-            href="https://www.ngoaquaterra.com/teams"
-            target="_blank"
-            rel="noreferrer"
+          {/* Points into the magazine, not out of it. */}
+          <Link
+            to={`/${latestEdition.year}/${latestEdition.slug}`}
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-cream-soft transition-transform hover:-translate-y-0.5 active:translate-y-0"
           >
-            Pick a team
-            <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
-          </a>
+            Read edition {String(latestEdition.editionNumber).padStart(2, "0")}
+            <ArrowRight className="h-4 w-4" strokeWidth={2} />
+          </Link>
         </div>
       </div>
     </Section>

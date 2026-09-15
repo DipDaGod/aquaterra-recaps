@@ -84,7 +84,11 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
         {filtered.map((project, i) => {
           const lead = active === "All" && i === 0 && filtered.length > 1;
           return (
-            <div key={`${project.title}-${i}`} className={lead ? "lg:col-span-2" : ""}>
+            <div
+              key={`${project.title}-${i}`}
+              id={project.team ? `feature-${project.team}` : undefined}
+              className={cx("scroll-mt-24", lead && "lg:col-span-2")}
+            >
               <ProjectCard project={project} index={i} wide={lead} />
             </div>
           );
