@@ -13,7 +13,6 @@ function TeamCard({ entry, tilt }) {
   const team = TEAMS[entry.key];
   if (!team) return null;
 
-  const open = entry.openRoles > 0;
 
   return (
     <a
@@ -49,7 +48,7 @@ function TeamCard({ entry, tilt }) {
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col px-1.5 pb-1 pt-3">
+      <div className="flex flex-1 flex-col px-1.5 pb-2 pt-3">
         {/* Display-caps title, as the live site sets it. Rendered from the
             team's explicit `caps` value — never a CSS uppercase, which would
             also hit prose. */}
@@ -70,21 +69,10 @@ function TeamCard({ entry, tilt }) {
           {entry.members}&nbsp;{entry.members === 1 ? "member" : "members"}
         </Meta>
 
-        <p className="mt-2.5 line-clamp-2 text-pretty text-[0.8125rem] leading-snug text-ink-2 sm:line-clamp-3">
+        <p className="mt-2.5 line-clamp-3 text-pretty text-[0.8125rem] leading-snug text-ink-2 sm:line-clamp-4">
           {entry.blurb}
         </p>
 
-        <div className="mt-auto pt-3">
-          {open ? (
-            <span className={cx("font-mono text-[0.65rem] tracking-[0.06em]", team.ink)}>
-              {entry.openRoles} {entry.openRoles === 1 ? "role" : "roles"} open →
-            </span>
-          ) : (
-            <span className="font-mono text-[0.65rem] tracking-[0.06em] text-ink-3/60">
-              nothing open
-            </span>
-          )}
-        </div>
       </div>
     </a>
   );
@@ -99,7 +87,6 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
   if (roster.length === 0) return null;
 
   const volunteer = roster.filter((t) => TEAMS[t.key]?.kind === "volunteer team").length;
-  const openRoles = roster.reduce((sum, t) => sum + (t.openRoles || 0), 0);
 
   return (
     <Section
@@ -113,7 +100,7 @@ export default function TeamsSection({ edition, index, label, accentKey, variant
       caps={teams.lockup?.caps}
       accent={teams.lockup?.accent}
       lead={teams.lead}
-      aside={`${volunteer} volunteer teams · ${roster.length - volunteer} student businesses · ${openRoles} roles open`}
+      aside={`${volunteer} volunteer teams · ${roster.length - volunteer} student businesses`}
     >
 
       <ShowMore
