@@ -351,6 +351,11 @@ around it. Every window is a different horizontal slice of the **same** video
 frame — one decoder, eight views — drawn to canvases rather than eight `<video>`
 elements.
 
+The video is **a strip, not an ordinary clip**: eight square panels side by
+side, one per bubble (currently 2560×320). The crops land on each panel exactly.
+Replace it with a 16:9 clip and the eight windows overlap so heavily they nearly
+all show the same thing — `public/assets/README.md` has the spec.
+
 It is deliberately cheap, and the constraints are load-bearing:
 
 - one `<video>`, `preload="none"`, not fetched until the banner is near the
