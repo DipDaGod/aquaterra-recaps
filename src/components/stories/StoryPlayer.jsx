@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { X, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import StorySlide from "./StorySlide";
 import { SECTION_ACCENTS, cx } from "../../lib/utils";
@@ -92,7 +93,11 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
     go(e.clientX - box.left < box.width * 0.33 ? index - 1 : index + 1);
   }
 
-  return (
+  // Rendered into <body>: a finished reveal animation leaves an identity
+  // transform on its section, and any transform on an ancestor makes that
+  // ancestor the containing block for position:fixed — which pinned this
+  // overlay inside the section instead of over the viewport.
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-near-black/95 p-0 sm:p-6"
       role="dialog"
@@ -182,6 +187,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose }) {
           </span>
         </p>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
