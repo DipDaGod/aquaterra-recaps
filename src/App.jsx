@@ -5,22 +5,33 @@ import RecapArchive from "./pages/RecapArchive";
 import EditionPage from "./pages/EditionPage";
 
 export default function App() {
-  // Keyed on the path so a navigation fades in rather than cutting. The hash is
-  // deliberately not in the key: jumping to #teams from the issue index is a
-  // scroll within the page, not a new page, and remounting on it would throw
-  // away the section you just asked to see.
+  // Keyed on the path so a navigation fades in rather than cutting. Two things
+  // are deliberately NOT in that key, because neither is a new page:
+  //
+  // - the hash. Jumping to #teams from the issue index is a scroll within the
+  //   page, and remounting on it would throw away the section you just asked
+  //   to see.
+  // - the /stories suffix. That route only opens the player over the issue;
+  //   keying on it would remount the whole page underneath the overlay and
+  //   lose your scroll position on the way in and out.
   //
   // Opacity only — a transform here would make this div the containing block
   // for every position:fixed overlay inside it (§9).
   const { pathname } = useLocation();
+  const page = pathname.replace(/\/stories(\/[^/]*)?\/?$/, "");
 
   return (
     <div className="min-h-screen bg-cream">
       <TopBar />
-      <div key={pathname} className="fade-in">
+      <div key={page} className="fade-in">
         <Routes>
           <Route path="/" element={<RecapArchive />} />
           <Route path="/:year/:month" element={<EditionPage />} />
+          {/* The stories run, as a link you can send someone. Same page
+              underneath — the route only decides whether the player is open,
+              and which chapter it starts on. An optional segment rather than
+              two routes, so there is one spelling of this path in the app. */}
+          <Route path="/:year/:month/stories/:chapter?" element={<EditionPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

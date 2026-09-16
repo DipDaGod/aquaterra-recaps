@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { Navigate, useLocation, useMatch, useNavigate, useParams } from "react-router-dom";
 import { Play } from "lucide-react";
 import StoryPlayer from "./StoryPlayer";
 import { buildStories, chaptersFor } from "../../lib/buildStories";
@@ -6,15 +7,53 @@ import { SECTION_ACCENTS, cx } from "../../lib/utils";
 
 // Instagram's highlight rings. The first opens the whole run; the rest jump
 // straight to their chapter.
+//
+// Whether the player is open is the URL's business, not this component's:
+// /2026/september/stories plays the run, /2026/september/stories/teams starts
+// on that chapter. So a run is a link you can send someone, opening one puts
+// that link in the address bar to copy, and the browser's Back button closes
+// the player for free — the route stops matching and it unmounts.
 export default function Highlights({ edition }) {
   const slides = useMemo(() => buildStories(edition), [edition]);
   const chapters = useMemo(() => chaptersFor(slides), [slides]);
-  const [startAt, setStartAt] = useState(null);
+
+  const { year, month } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const open = useMatch("/:year/:month/stories/:chapter?");
+
+  const base = `/${year}/${month}`;
+  const linkTo = (c) => (c.id === "all" ? `${base}/stories` : `${base}/stories/${c.id}`);
+
+  const named = open?.params?.chapter;
+  const chapter = named ? chapters.find((c) => c.id === named) : chapters[0];
+  const playable = slides.length >= 2;
+
+  // A link to a chapter this issue doesn't have still plays — it just plays the
+  // whole run, and the address bar is corrected to say so. A shared link going
+  // nowhere because an issue dropped a section is worse than starting at the
+  // top.
+  useEffect(() => {
+    if (open && playable && named && !chapter) {
+      navigate(`${base}/stories`, { replace: true });
+    }
+  }, [open, playable, named, chapter, navigate, base]);
+
+  // Closing goes back the way you came: a push if you opened it here, so Back
+  // and the close button agree, and a replace if you arrived on the link, so
+  // Back still leaves the site rather than reopening the player.
+  function close() {
+    if (location.state?.fromIssue) {
+      navigate(-1);
+      return;
+    }
+    navigate(base, { replace: true });
+  }
 
   // The stories are a trailer for the issue underneath them, so they end — and
   // every slide offers — a way into the part of the page they came from.
   function openSection(id) {
-    setStartAt(null);
+    close();
     const target = id
       ? document.getElementById(id)
       : document.querySelector("main section[id]");
@@ -25,7 +64,9 @@ export default function Highlights({ edition }) {
     );
   }
 
-  if (slides.length < 2) return null;
+  // An issue with nothing to play has no rings and no run, so its stories URL
+  // is a dead end. Send it back to the issue rather than showing an empty page.
+  if (!playable) return open ? <Navigate to={base} replace /> : null;
 
   const runtime = Math.round(slides.reduce((a, s) => a + s.ms, 0) / 1000);
 
@@ -39,7 +80,8 @@ export default function Highlights({ edition }) {
             <li key={c.id} className="shrink-0">
               <button
                 type="button"
-                onClick={() => setStartAt(c.start)}
+                data-chapter={c.id}
+                onClick={() => navigate(linkTo(c), { state: { fromIssue: true } })}
                 className="group flex w-[4.5rem] flex-col items-center gap-2"
               >
                 {/* Two rounded boxes rather than a border, so the gap between
@@ -80,11 +122,11 @@ export default function Highlights({ edition }) {
         </span>
       </p>
 
-      {startAt !== null && (
+      {open && (
         <StoryPlayer
           slides={slides}
-          startAt={startAt}
-          onClose={() => setStartAt(null)}
+          startAt={chapter?.start ?? 0}
+          onClose={close}
           onOpenSection={openSection}
         />
       )}

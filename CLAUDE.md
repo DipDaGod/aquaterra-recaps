@@ -32,13 +32,17 @@ use…" are all the same mistake. Don't.
 ## 1. What this repo is
 
 AquaTerra Recaps is a standalone monthly-recap site — a digital magazine — for
-AquaTerra. React 19, Vite, Tailwind v4, React Router. Two routes:
+AquaTerra. React 19, Vite, Tailwind v4, React Router. Three route patterns, two
+pages:
 
 - `/` — the archive page listing every edition
 - `/:year/:month` — one page per edition: that month's stats, the teams,
   featured stories, a photography section with a full-screen viewer, mini
   games, an impact panel, volunteer profiles, and an Instagram-style stories
   player at the top
+- `/:year/:month/stories/:chapter?` — the same edition page with the stories
+  player open. Not a third page: the route only decides whether the player is
+  up and which chapter it starts on, so a run is a link you can send someone
 
 Everything is data-driven from `src/data/editions.js`. There is no per-month
 component. Adding a month means copying one object; every page picks it up
@@ -586,6 +590,21 @@ used repeatedly rather than eight bespoke sections.
     text pills in a horizontal scroller (which painted `.scroll-quiet`'s cream
     scrollbar across the dark card), and a row of five rings inside the card
     (redundant once forward and back move a topic at a time).
+  - **The URL says whether the player is open**, not `Highlights`' own state.
+    `/2026/september/stories` plays the run and `/…/stories/teams` starts on
+    that chapter, so a run is shareable, opening one from a ring puts that link
+    in the address bar to copy, and the browser's Back button closes the player
+    for free — the route stops matching and it unmounts.
+    - Closing reads `location.state.fromIssue`: a push if you opened it here,
+      so Back and the close button agree, and a `replace` if you arrived on the
+      link, so Back still leaves the site rather than reopening the player.
+    - A chapter the issue doesn't have still plays — the whole run, with the
+      address bar corrected. An issue dropping a section (October and `teams`)
+      must not turn a link someone already sent into a dead one.
+    - **`App.jsx`'s page key strips the `/stories` suffix.** It is keyed on the
+      path so a navigation fades in, and keying on the full pathname remounts
+      the whole issue underneath the overlay and throws away your scroll
+      position on the way in and out.
 - **`isPlaceholder()`** lets the placeholder state be *designed* rather than just
   look broken: bracketed copy renders dimmed, short fields get a dashed rule. It
   disappears on its own as real copy lands.
@@ -883,6 +902,10 @@ before reversing one.
   returns `200 text/html` for a missing font, which the browser then tries to
   parse as a font. If you add a route containing a dot, that pattern will stop
   matching it.
+  - That is no longer hypothetical: `/:year/:month/stories/:chapter` puts a
+    `CHAPTERS` id straight into a path. A chapter called `aq.ventures` would
+    work perfectly in dev and 404 in production, where nothing you can do in a
+    browser would tell you why. Keep chapter ids plain.
 
 ---
 
