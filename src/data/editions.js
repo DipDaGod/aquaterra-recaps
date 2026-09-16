@@ -50,15 +50,15 @@ export const TEAM_ROSTER = [
     blurb: "Recruitment, onboarding, certificates, Letters of Recommendation.",
   },
   {
-    key: "events", members: 3,
+    key: "events", members: 6,
     blurb: "Paradox. Disco Diwali. Starry Nights. Every fundraiser AQ has ever run.",
   },
   {
-    key: "ventures", members: 23,
+    key: "ventures", members: 16,
     blurb: "Free marketing for student founders — strategy, content, branding, promotion.",
   },
   {
-    key: "crftd", members: 1,
+    key: "crftd", members: 3,
     blurb: "Student-run streetwear brand. Profits fund AQ welfare projects and events.",
   },
 ];
@@ -101,12 +101,12 @@ const AQ_GAMES = {
     { label: "drives, blogs & openings in the directory", value: 570, display: "570+", note: "a different count from the 540+ drives — this one includes the blogs and the openings." },
     { label: "members in the Welfare Team", value: 62, display: "62", note: "the biggest of the eight." },
     { label: "members in Social Media", value: 29, display: "29", note: "the team behind the 3,200+ followers." },
-    { label: "members in AQ.Ventures", value: 23, display: "23", note: "a student business, not a volunteer team." },
+    { label: "members in AQ.Ventures", value: 16, display: "16", note: "a student business, not a volunteer team." },
     { label: "members in Human Resources", value: 6, display: "6", note: "six people handle recruitment, onboarding, certificates and every Letter of Recommendation." },
-    { label: "members in the Events Team", value: 3, display: "3", note: "three people. Paradox, Disco Diwali, Starry Nights, every fundraiser AQ has run." },
+    { label: "members in the Events Team", value: 6, display: "6", note: "six of them. Paradox, Disco Diwali, Starry Nights, every fundraiser AQ has run." },
     { label: "members in the Collabs Team", value: 2, display: "2", note: "two, for every school, college and NGO partnership." },
     { label: "members in ShikshAQ", value: 2, display: "2", note: "two people, one tuition platform, launched 2026." },
-    { label: "members in Crftd", value: 1, display: "1", note: "one person runs the streetwear label. the profits fund welfare." },
+    { label: "members in Crftd", value: 3, display: "3", note: "three people run the streetwear label. the profits fund welfare." },
     { label: "teams", value: 8, display: "8", note: "five volunteer teams, three student businesses." },
     { label: "Sundarbans relief trips", value: 8, display: "8", note: "relief trips, run by the Welfare Team." },
     { label: "students who founded AQ", value: 16, display: "16", note: "June 2021, Kolkata." },
@@ -156,7 +156,7 @@ const AQ_GAMES = {
     {
       prompt: "the biggest of the eight teams is Welfare. how many members does it have?",
       value: 62, display: "62", max: 150, step: 1,
-      note: "62. Crftd, at the other end, is one person.",
+      note: "62. two of the eight teams have two people each.",
     },
     {
       prompt: "Paradox 2026 ran in June. how many events were packed into it?",
@@ -171,12 +171,12 @@ const AQ_GAMES = {
   match: [
     { team: "welfare", clue: "3,500+ kids reached in teaching workshops. 8 Sundarbans relief trips.", then: "62 members — the biggest team AQ has." },
     { team: "social", clue: "Instagram, LinkedIn, website. 3,200+ followers on @ngo.aquaterra.", then: "29 members, on reels, carousels, copy and strategy." },
-    { team: "events", clue: "Paradox. Disco Diwali. Starry Nights.", then: "3 members. Paradox 2026 ran six days in June." },
+    { team: "events", clue: "Paradox. Disco Diwali. Starry Nights.", then: "6 members. Paradox 2026 ran six days in June." },
     { team: "collabs", clue: "School collabs, college collabs, NGO partnerships, outreach.", then: "2 members, holding every partnership AQ has." },
     { team: "hr", clue: "Recruitment, onboarding, certificates, Letters of Recommendation.", then: "6 members. they are why anyone at AQ has a Letter of Recommendation." },
     { team: "shikshaq", clue: "Tuition discovery platform built by AQ members for Kolkata students.", then: "2 members. a student business, launched 2026." },
-    { team: "ventures", clue: "Helps student entrepreneurs turn ideas into visible brands.", then: "23 members, doing free marketing for student founders." },
-    { team: "crftd", clue: "Student-run streetwear brand. Profits fund AQ welfare.", then: "1 member. the profits go to AQ welfare projects and events." },
+    { team: "ventures", clue: "Helps student entrepreneurs turn ideas into visible brands.", then: "16 members, doing free marketing for student founders." },
+    { team: "crftd", clue: "Student-run streetwear brand. Profits fund AQ welfare.", then: "3 members. the profits go to AQ welfare projects and events." },
   ],
 };
 export const editions = {

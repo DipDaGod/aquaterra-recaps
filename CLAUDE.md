@@ -5,8 +5,10 @@ optional and this is not a summary — it is the whole thing. (It absorbed the
 old `aq.md`, which no longer exists. Any older instruction to "read aq.md"
 means read this.)
 
-Last verified: 15 September 2026, against the live site at ngoaquaterra.com
-and screenshots of it.
+Last verified: 16 September 2026, against the live site at ngoaquaterra.com
+and screenshots of it. The team member counts moved between 15 and 16
+September — they move often, so re-check them before publishing rather than
+trusting the table below.
 
 ---
 
@@ -103,12 +105,12 @@ Exact names and casing. Do not normalise, do not title-case, do not expand.
 |---|---|---|
 | Welfare Team | volunteer team | 62 |
 | Social Media | volunteer team | 29 |
-| Events Team | volunteer team | 3 |
+| Events Team | volunteer team | 6 |
 | Collabs Team | volunteer team | 2 |
 | Human Resources | volunteer team | 6 |
 | ShikshAQ | student business | 2 |
-| AQ.Ventures | student business | 23 |
-| Crftd | student business | 1 |
+| AQ.Ventures | student business | 16 |
+| Crftd | student business | 3 |
 
 Each team's own one-liner, as the site's summary describes them:
 

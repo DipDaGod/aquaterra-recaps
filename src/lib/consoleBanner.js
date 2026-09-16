@@ -76,8 +76,11 @@ const aq = Object.freeze({
         members: entry.members,
       }))
     );
+    // Counted, not written down. The line under this table used to name
+    // Crftd as a one-person team; the roster moved and the sentence didn't.
+    const volunteer = TEAM_ROSTER.filter((t) => TEAMS[t.key]?.kind === "volunteer team").length;
     console.log(
-      `%cfive volunteer teams, three student businesses. ${TEAMS.crftd.name} is one person.`,
+      `%c${volunteer} volunteer teams, ${TEAM_ROSTER.length - volunteer} student businesses.`,
       line(PALETTE.quiet)
     );
   },
