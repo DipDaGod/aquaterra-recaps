@@ -791,6 +791,24 @@ before reversing one.
     foil" in §4 for what is load-bearing in that.
   - Crftd's identity colour is `#000`, so the card and its chips carry a faint
     cream ring; without it a black card has no edge against the scrim.
+- **The console egg (`consoleBanner.js`) is for a reader, not the desk.**
+  `aq.todo()` listed every still-bracketed field in the current issue; the desk
+  had it removed. It was the one command that talked to the people making the
+  magazine rather than the people reading it, and an issue advertising its own
+  holes to anyone who opens DevTools is not the impression to leave.
+  - **Every command is a getter.** Typing `aq.teams` without the brackets reads
+    the property and stops, so the console prints the function's source and
+    nothing happens — which looks like the egg is broken. Reading one now
+    queues it for the next tick and returns the function, so `aq.teams` prints
+    its table a moment later and `aq.teams()` cancels that and runs straight
+    away. Either spelling prints once.
+  - `aq.read` is the exception: its output is navigating away, and a stray read
+    in the console should not take the page with it, so that one asks for the
+    brackets. Any future command that *does* something rather than printing
+    belongs in `ASKS_FIRST` beside it.
+  - Every figure it prints is read from the data, never typed into that file.
+    The line under `aq.teams()` used to call Crftd a one-person team; the
+    roster moved and the sentence didn't. It counts now.
 - **Edition 1 is September 2026**, not October. Corrected by the desk.
 - **1,300+ is the current member count**, resolving the live site's own conflict
   with an HR bio that still says 1,100+.

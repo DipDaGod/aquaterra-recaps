@@ -59,14 +59,13 @@ const COMMANDS = [
   ["aq.issues()", "every edition, and whether it is out yet"],
   ["aq.sections()", "what an issue is made of"],
   ["aq.colours()", "the eight identity colours, as actual colours"],
-  ["aq.todo()", "what the desk still owes the current issue"],
   ["aq.bananas()", "the only number anyone remembers"],
   ["aq.read()", "open the latest issue"],
 ];
 
 const WIDEST = Math.max(...COMMANDS.map(([name]) => name.length));
 
-const aq = Object.freeze({
+const RUN = {
   // Canonical names only. Never uppercase a team name (CLAUDE.md §2).
   teams() {
     table(
@@ -124,36 +123,6 @@ const aq = Object.freeze({
     console.log("%ceach team owns one. nothing else on the site uses them.", line(PALETTE.quiet));
   },
 
-  // The one genuinely useful command: what is still bracketed, and where.
-  todo() {
-    const owed = [];
-    const walk = (node, path) => {
-      if (isPlaceholder(node)) owed.push(path);
-      else if (Array.isArray(node)) node.forEach((v, i) => walk(v, `${path}[${i}]`));
-      else if (node && typeof node === "object") {
-        for (const [k, v] of Object.entries(node)) walk(v, path ? `${path}.${k}` : k);
-      }
-    };
-    walk(latestEdition, "");
-
-    const bySection = new Map();
-    for (const path of owed) {
-      const head = path.split(/[.[]/)[0];
-      bySection.set(head, (bySection.get(head) || 0) + 1);
-    }
-
-    console.log(
-      `%cedition ${String(latestEdition.editionNumber).padStart(2, "0")} — ${owed.length} field${owed.length === 1 ? "" : "s"} still waiting on the desk`,
-      line(owed.length ? PALETTE.gold : PALETTE.green, 13, "font-weight:700;")
-    );
-    if (owed.length === 0) {
-      console.log("%cnothing bracketed. someone did the work.", line(PALETTE.quiet));
-      return;
-    }
-    table([...bySection].map(([section, count]) => ({ section, waiting: count })));
-    console.log("%cthey are the [bracketed] ones in src/data/editions.js.", line(PALETTE.quiet));
-  },
-
   bananas() {
     const b = totalFor("bananas");
     console.log(`%c${b.value}`, `color:${PALETTE.gold};font-size:34px;font-weight:700;${SANS}`);
@@ -175,8 +144,61 @@ const aq = Object.freeze({
         line(PALETTE.quiet)
       );
     }
+    console.log("%cforget the brackets and it runs anyway. aq.read() asks first — it navigates.", line(PALETTE.quiet));
   },
-});
+};
+
+// Typing `aq.teams` without the brackets reads the property and stops there,
+// so the console prints the function's source and nothing happens — which
+// looks like the egg is broken.
+//
+// Every command is a getter instead. Reading one queues it for the next tick
+// and hands back the function, so `aq.teams` prints its table a moment later
+// and `aq.teams()` cancels the queued run and calls it straight away. Either
+// spelling gives you the output, and neither gives it to you twice.
+//
+// DevTools never fires this by accident: it renders a getter as `(...)` until
+// you click it, and its eager-evaluation preview abandons any expression with
+// a side effect.
+//
+// `read` is the exception. Its "output" is navigating away, and a stray
+// `aq.read` in the console should not take the page with it, so that one asks
+// for the brackets rather than assuming them.
+const ASKS_FIRST = { read: "it navigates, so this one wants the brackets" };
+
+function commands(map) {
+  const out = {};
+  for (const [name, run] of Object.entries(map)) {
+    let queued = 0;
+    const call = () => {
+      clearTimeout(queued);
+      queued = 0;
+      return run();
+    };
+    // Shown in place of the closure body anywhere a function gets printed.
+    call.toString = () => `aq.${name}()`;
+
+    const why = ASKS_FIRST[name];
+    Object.defineProperty(out, name, {
+      enumerable: true,
+      get() {
+        clearTimeout(queued);
+        queued = setTimeout(() => {
+          queued = 0;
+          if (why) {
+            console.log(`%caq.${name}() %c— ${why}.`, mono(PALETTE.green, 12, "font-weight:700;"), line(PALETTE.quiet));
+          } else {
+            run();
+          }
+        }, 0);
+        return call;
+      },
+    });
+  }
+  return Object.freeze(out);
+}
+
+const aq = commands(RUN);
 
 export function printConsoleBanner() {
   if (typeof console === "undefined" || typeof window === "undefined") return;
