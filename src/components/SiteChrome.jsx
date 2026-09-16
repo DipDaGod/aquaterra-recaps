@@ -111,7 +111,10 @@ export function TopBar() {
           <nav
             id={panelId}
             aria-label="In this issue"
-            className="reveal mt-2 rounded-[1.75rem] border border-line/70 bg-cream-soft p-3 shadow-(--shadow-card-hover) sm:p-4"
+            // .rise-in, not .reveal: .reveal is the 0.55s entrance a section gets
+            // once, on scroll. A menu you opened yourself should be there by the
+            // time you have finished clicking.
+            className="rise-in mt-2 rounded-[1.75rem] border border-line/70 bg-cream-soft p-3 shadow-(--shadow-card-hover) sm:p-4"
           >
             <Meta className="block px-2 pb-2 pt-1 text-ink-3">In this issue</Meta>
             <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">

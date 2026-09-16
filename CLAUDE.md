@@ -382,6 +382,48 @@ no air in it, and that proportion is the whole look. The stage carries its own
 bubbles' top percentages collapse onto the single line of the word and bunch
 around it.
 
+### Motion
+
+**One curve and one duration for the whole site**, set as tokens in `@theme`:
+
+```
+--ease-rise: cubic-bezier(0.22, 1, 0.36, 1);
+--default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+--default-transition-duration: 260ms;
+```
+
+The last two are **Tailwind v4 theme keys**, so they re-time every
+`transition-*` utility in the codebase at once. Tailwind's own defaults are
+150ms on `ease-in-out` — quick and symmetrical, and next to the
+`0.22, 1, 0.36, 1` the section reveals and the stories player already used, the
+rest of the site read as a different, snappier product. Change the token, not a
+component.
+
+The curve leaves fast and lands slow. That is what makes a hover feel answered
+rather than triggered, and it is the same curve the parent site's own
+transitions use.
+
+- **Everything interactive eases by default**, from a rule in `@layer base` on
+  `a`, `button`, `summary`, `label[for]`, the form elements and the ARIA
+  equivalents. A component that forgets `transition-colors` no longer snaps.
+  In the base layer, for the same reason the cursor rules are: a component that
+  *does* name its own transition still wins.
+- **That rule lists properties; it is never `all`.** `all` animates layout too,
+  and a transitioning width or height is a repaint every frame rather than a
+  compositor job. Colour, opacity, shadow, transform, filter — nothing that
+  moves a box.
+- **Content that appears in place uses `.rise-in`** (300ms) or `.fade-in`, not
+  `.reveal`. `.reveal` is the 0.55s entrance a section gets once, on scroll; on
+  something you triggered yourself, half a second reads as lag. Replay either by
+  giving the element a React `key` that changes with the content — that is how
+  the game panel, the game reveals, the story filter and the year switch move.
+- **`backwards`, not `both`**, on every one of these. A finished `both`
+  animation that touched `transform` leaves an identity matrix behind, and any
+  transform makes that element the containing block for a `position: fixed`
+  descendant. That trap is in §9 and it has bitten twice.
+- Reduced motion clamps every animation *and* every transition on the page to
+  0.001ms in one rule, so none of this needs a second opinion per component.
+
 ### The card foil
 
 The opened team card (the collectible set, §9) behaves like a foil trading
@@ -389,21 +431,25 @@ card: it tilts towards the pointer, the foil travels across it, and a sideways
 drag throws it to the next card. `HoloCard.jsx` owns the pointer, the `.holo*`
 rules in `index.css` own the look.
 
-- **The foil is AquaTerra's own eight team colours**, not a rainbow. §4 forbids
-  a ninth colour, and the palette makes a better spectrum than a generic one.
+**It is deliberately restrained, and it got there by being too much first.** The
+first version tilted 10° and banded the palette every ~19px, which at a glance
+was stripes rather than foil — busy enough to fight the card's own type. It is
+now 6° and **one wide pass** through the palette at under a quarter opacity. Do
+not turn it back up: the team's colour is the thing you are meant to see, and
+the foil is what happens when you move.
+
+- **The foil is AquaTerra's own team colours**, not a rainbow. §4 forbids a
+  ninth colour, and the palette makes a better spectrum than a generic one.
 - **`hard-light`, not `color-dodge`.** Crftd's ground is `#000` and ShikshAQ's
   is bright yellow. Dodge leaves the black card completely untouched and blows
   the yellow one out to white; hard-light lets the foil drive, so it reads on
   both. Both of those were tried.
-- **The bands are set in px**, so the foil looks the same on a phone as on a
-  desktop, and **the layer moves by transform, not by `background-position`**.
-  Moving the position tiles the gradient, and a repeating gradient at an angle
-  does not meet itself cleanly — the seam showed as a hard line down the card.
-  The layer is drawn 40% past every edge and travels 13% of itself, so a corner
-  can never come uncovered. Nothing else may translate it: a per-card offset is
-  what ate that overhang the first time.
-- Each card varies **its angle into the palette and its band width**. That is
-  the per-card uniqueness, and unlike an offset it costs no travel.
+- **The layer moves by transform, not by `background-position`.** Moving the
+  position tiles the gradient, and a gradient at an angle does not meet itself
+  cleanly — the seam showed as a hard line down the card. The layer is drawn
+  40% past every edge and travels 13% of itself, so a corner can never come
+  uncovered. Nothing else may translate it: a per-card offset is what ate that
+  overhang the first time, which is why per-card variety is **the angle only**.
 - A pointer move writes custom properties on one element inside one rAF.
   Pointer moves fire far more often than the screen refreshes, and a React
   render per move is a render per pixel.

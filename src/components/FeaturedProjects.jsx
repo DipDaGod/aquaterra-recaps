@@ -85,11 +85,15 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
 
       {/* The first card of the unfiltered view runs full width as the lead
           story; inside a filter every card is equal. */}
+      {/* Keyed on the filter, so changing it re-settles the grid instead of
+          swapping the cards underneath you — and resets "show all", which now
+          counts a different number of stories. */}
       <ShowMore
+        key={active}
         after={3}
         total={filtered.length}
         noun={active === "All" ? "stories" : `${active.toLowerCase()} stories`}
-        className="grid gap-5 sm:gap-6 lg:grid-cols-2"
+        className="rise-in grid gap-5 sm:gap-6 lg:grid-cols-2"
       >
         {filtered.map((project, i) => {
           const lead = active === "All" && i === 0 && filtered.length > 1;

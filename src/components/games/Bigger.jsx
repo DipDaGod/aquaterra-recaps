@@ -123,7 +123,7 @@ export default function Bigger({ pool }) {
       <div className="mt-6 flex min-h-20 flex-wrap items-start justify-between gap-4" aria-live="polite">
         <div className="max-w-lg text-sm">
           {answered && (
-            <>
+            <div key={top.label} className="rise-in">
               <p className={cx("font-semibold", right ? "text-green-bright" : "text-coral")}>
                 {right ? (MILESTONES[streak] || `right. ${streak} in a row.`) : "not that one."}
               </p>
@@ -135,7 +135,7 @@ export default function Bigger({ pool }) {
               {top.note && (
                 <p className="mt-1.5 text-pretty text-cream-soft/55">{top.note}</p>
               )}
-            </>
+            </div>
           )}
         </div>
         {answered && (

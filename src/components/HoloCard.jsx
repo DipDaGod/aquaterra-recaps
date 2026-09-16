@@ -13,7 +13,7 @@ import { cx } from "../lib/utils";
 // costs a compositor transform rather than a React render. Pointer positions
 // are coalesced into one rAF: a pointermove fires far more often than the
 // screen refreshes, and a render per move is a render per pixel.
-const TILT = 10;      // degrees at the edge of the card
+const TILT = 6;       // degrees at the edge of the card
 const SWING = 0.05;   // degrees of turn per pixel dragged
 const SWIPE = 56;     // pixels before a drag counts as a throw
 
@@ -81,7 +81,7 @@ export default function HoloCard({ seed = 0, onSwipe, className, children }) {
       // 13% of it can never uncover a corner.
       "--fx": `${px * 26}%`,
       "--fy": `${py * 26}%`,
-      "--holo-o": String(0.18 + Math.min(1, Math.hypot(px, py) * 2) * 0.55),
+      "--holo-o": String(0.22 + Math.min(1, Math.hypot(px, py) * 2) * 0.5),
     });
   }, [write]);
 
@@ -128,10 +128,10 @@ export default function HoloCard({ seed = 0, onSwipe, className, children }) {
         className="holo"
         data-live="0"
         style={{
-          // Each card's foil runs at its own angle and its own band width, so
-          // no two cards in the set shine the same way.
+          // Each card's foil runs at its own angle, so no two of the eight
+          // catch the light the same way. Angle only: anything that shifts the
+          // layer eats the overhang that keeps its corners covered.
           "--holo-a": `${104 + seed * 19}deg`,
-          "--holo-w": `${16 + (seed % 4) * 3}px`,
         }}
         onPointerMove={track}
         onPointerEnter={(e) => { if (ref.current) ref.current.dataset.live = "1"; track(e); }}

@@ -23,7 +23,7 @@ function Empty({ year }) {
   const Icon = coming ? Clock : CalendarOff;
 
   return (
-    <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8 lg:px-10">
+    <div key={year} className="rise-in mx-auto max-w-6xl px-5 pb-8 sm:px-8 lg:px-10">
       <div className="flex flex-col items-center rounded-3xl border border-dashed border-line bg-cream-soft/60 px-6 py-16 text-center">
         <span className="grid h-12 w-12 place-items-center rounded-full bg-paper text-ink-soft">
           <Icon className="h-5 w-5" strokeWidth={1.5} />
@@ -62,7 +62,7 @@ export default function EditionGrid({ editions, year }) {
   const cells = others.length + 1;
 
   return (
-    <section aria-label={`${year} editions`} className="mx-auto max-w-6xl px-5 pb-4 sm:px-8 lg:px-10">
+    <section key={year} aria-label={`${year} editions`} className="rise-in mx-auto max-w-6xl px-5 pb-4 sm:px-8 lg:px-10">
       <EditionCard
         edition={{ ...featured, isLatest: featured.key === latestEdition.key }}
         featured
