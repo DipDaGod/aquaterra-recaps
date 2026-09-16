@@ -368,12 +368,6 @@ export const editions = {
       ],
     },
 
-    teams: {
-      lockup: { caps: "WHO DID THE", accent: "work" },
-      lead: "[One line on which teams carried this month.]",
-      roster: TEAM_ROSTER,
-    },
-
     featured: [
       {
         title: "[Feature headline]", category: "Welfare", team: "welfare",

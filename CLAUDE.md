@@ -601,6 +601,11 @@ used repeatedly rather than eight bespoke sections.
   issue specifically, not a permanent removal.
 - **Edition 2 onward** publish at **month end** and recap the month just
   finished — drives run, internal updates, what's cooking.
+- **Edition 2 carries no `teams` section.** The desk's call, the same way
+  Edition 1 carries no `openings`. Both are per-issue decisions, not permanent
+  removals — put the field back when an issue wants it. Nothing else had to
+  change: a section renders only when the edition supplies its data, so the
+  numbering, the issue index and the stories player all closed up on their own.
 - Slugs, IDs and ordering follow whatever `src/data/editions.js` already does.
   Read it; don't invent a convention.
 
