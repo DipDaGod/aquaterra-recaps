@@ -83,6 +83,26 @@
 
   --shadow-card: 0 1px 2px rgb(10 10 10 / 0.04), 0 8px 24px -12px rgb(10 10 10 / 0.14);
   --shadow-card-hover: 0 2px 4px rgb(10 10 10 / 0.05), 0 18px 40px -16px rgb(10 10 10 / 0.22);
+
+  /* ===== Motion ==================================================
+     One curve and one duration for the whole site.
+
+     `--default-transition-*` are Tailwind v4 theme keys, so setting them here
+     re-times EVERY `transition-*` utility in the codebase at once. Tailwind's
+     own defaults are 150ms on ease-in-out, which is quick and symmetrical —
+     next to the 0.22/1/0.36/1 the section reveals and the stories player
+     already use, the rest of the site read as a different, snappier product.
+     Now one change moves all of it.
+
+     The curve leaves fast and lands slow, which is what makes a hover feel
+     answered rather than triggered. `--ease-rise` is the same curve as a
+     named token, for the hand-written keyframes and for `ease-rise` in markup.
+
+     Reduced motion clamps every transition on the page to 0.001ms further
+     down, so none of this needs a second opinion per component. */
+  --ease-rise: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 260ms;
 }
 
 html {
@@ -174,6 +194,29 @@ body[data-scroll-locked] {
   .u-mono {
     -webkit-user-select: none;
     user-select: none;
+  }
+
+  /* Every interactive element eases by default, so a component that forgets
+     `transition-colors` still doesn't snap. Deliberately a property list and
+     not `all`: `all` animates layout too, and a transitioning width or height
+     is a janky repaint on every frame rather than a compositor job.
+
+     In @layer base for the same reason the cursors above are — a component
+     that DOES name its own transition still wins, whatever the specificity. */
+  a,
+  button,
+  summary,
+  label[for],
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [role="tab"],
+  [role="switch"] {
+    transition-property: color, background-color, border-color, outline-color,
+      text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter;
+    transition-duration: var(--default-transition-duration);
+    transition-timing-function: var(--default-transition-timing-function);
   }
 }
 
@@ -440,7 +483,7 @@ button:focus-visible,
   border-radius: 1.75rem;
   transform: translate3d(var(--dx, 0px), 0, 0)
              rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 460ms var(--ease-rise);
   /* A vertical drag still scrolls the overlay; only the horizontal axis is
      ours, which is what makes a swipe and a scroll distinguishable. */
   touch-action: pan-y;
@@ -465,47 +508,47 @@ button:focus-visible,
 }
 
 .holo-foil {
-  /* The layer is drawn 40% past every edge and moved with a transform. Moving
-     it by `background-position` instead tiles the gradient, and a repeating
-     gradient at an angle does not meet itself cleanly — the seam showed as a
-     hard line down the card. The travel (13% of this layer) is well inside the
-     overhang, so a corner can never come uncovered.
+  /* One soft pass through the palette across the whole card, not a repeating
+     barcode of it. The first version banded every ~19px, which at a glance was
+     stripes rather than foil — busy enough to fight the card's own type. One
+     wide sweep at a third of the opacity reads as the same material and lets
+     the team's colour stay the thing you see.
 
-     Bands are set in px, not percentages, so the foil looks the same on a
-     phone as on a desktop. Each card varies both the angle and the band width;
-     nothing translates the layer per card, because that is exactly what eats
-     the overhang. */
+     The layer is still drawn 40% past every edge and moved with a transform.
+     Moving it by `background-position` tiles the gradient, and a gradient at an
+     angle does not meet itself cleanly — the seam showed as a hard line down
+     the card. Nothing else may translate it: a per-card offset is what ate that
+     overhang the first time.
+
+     hard-light stays, at low opacity. It lets the foil drive rather than the
+     ground, which is the only way one rule reads on Crftd's black AND on
+     ShikshAQ's yellow — dodge left the first untouched and blew the second to
+     white. Both were tried. */
   inset: -40%;
-  background: repeating-linear-gradient(
+  background: linear-gradient(
     var(--holo-a, 104deg),
-    var(--color-team-welfare) 0px,
-    var(--color-team-events) calc(var(--holo-w, 19px) * 1),
-    var(--color-team-shikshaq) calc(var(--holo-w, 19px) * 2),
-    var(--color-team-ventures) calc(var(--holo-w, 19px) * 3),
-    var(--color-team-hr) calc(var(--holo-w, 19px) * 4),
-    var(--color-team-social) calc(var(--holo-w, 19px) * 5),
-    var(--color-team-collabs) calc(var(--holo-w, 19px) * 6),
-    var(--color-cream-soft) calc(var(--holo-w, 19px) * 7),
-    var(--color-team-welfare) calc(var(--holo-w, 19px) * 8)
+    var(--color-team-events) 0%,
+    var(--color-team-shikshaq) 22%,
+    var(--color-cream-soft) 42%,
+    var(--color-team-hr) 62%,
+    var(--color-team-collabs) 82%,
+    var(--color-team-welfare) 100%
   );
   transform: translate3d(var(--fx, 0%), var(--fy, 0%), 0);
-  /* hard-light lets the foil drive the result, so it reads on Crftd's black
-     and on ShikshAQ's yellow alike. color-dodge does nothing on the one and
-     blows out the other. */
   mix-blend-mode: hard-light;
-  opacity: calc(var(--holo-o, 0.1) * 0.42);
-  transition: opacity 460ms ease, transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: calc(var(--holo-o, 0.1) * 0.24);
+  transition: opacity 460ms ease, transform 460ms var(--ease-rise);
 }
 
 .holo-glare {
   background: radial-gradient(
     circle at var(--mx, 50%) var(--my, 50%),
-    rgb(255 255 255 / 0.5),
-    rgb(255 255 255 / 0.1) 42%,
-    transparent 66%
+    rgb(255 255 255 / 0.34),
+    rgb(255 255 255 / 0.07) 44%,
+    transparent 68%
   );
   mix-blend-mode: soft-light;
-  opacity: var(--holo-o, 0.1);
+  opacity: calc(var(--holo-o, 0.1) * 0.7);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -514,6 +557,28 @@ button:focus-visible,
   .holo-foil { opacity: 0.1; transform: none; }
   .holo-glare { opacity: 0.12; }
 }
+
+/* Content that appears in place: a game's reveal, a swapped panel, a row that
+   was hidden a moment ago. Shorter than .fade-up because it happens often —
+   a half-second entrance on something you triggered yourself reads as lag.
+
+   Replay it by giving the element a React `key` that changes with the content.
+
+   `backwards`, not `both`, for the reason .reveal is: a finished `both`
+   animation that touched `transform` leaves an identity matrix behind, and any
+   transform makes that element the containing block for a position:fixed
+   descendant. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.rise-in { animation: rise-in 0.3s var(--ease-rise) backwards; }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in { animation: fade-in 0.28s var(--ease-rise) backwards; }
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(10px); }
@@ -535,6 +600,17 @@ button:focus-visible,
   [data-collapsed="true"][data-collapse-after="4"] > :nth-child(n + 5),
   [data-collapsed="true"][data-collapse-after="6"] > :nth-child(n + 7) {
     display: none;
+  }
+
+  /* Coming out of display:none starts an animation, so the rows that were
+     hidden a moment ago rise in rather than appearing fully formed. Going back
+     in is instant — display cannot be eased — but a collapse is a dismissal
+     and nobody watches one. */
+  [data-collapsed="false"][data-collapse-after="2"] > :nth-child(n + 3),
+  [data-collapsed="false"][data-collapse-after="3"] > :nth-child(n + 4),
+  [data-collapsed="false"][data-collapse-after="4"] > :nth-child(n + 5),
+  [data-collapsed="false"][data-collapse-after="6"] > :nth-child(n + 7) {
+    animation: rise-in 0.34s var(--ease-rise) backwards;
   }
 }
 

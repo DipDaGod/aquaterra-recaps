@@ -61,7 +61,7 @@ export default function HowClose({ rounds: pool }) {
     const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
     const best = Math.round(Math.max(...scores));
     return (
-      <div className="py-10 text-center">
+      <div className="rise-in py-10 text-center">
         <Meta className="text-cream-soft/50">Average accuracy</Meta>
         <p className="mt-4 font-display text-6xl font-bold tabular-nums text-cream-soft sm:text-7xl">
           {avg}<span className="text-cream-soft/40">%</span>
@@ -92,7 +92,7 @@ export default function HowClose({ rounds: pool }) {
         {locked && <Meta className="tabular-nums text-cream-soft/50">{Math.round(accuracy)}% close</Meta>}
       </div>
 
-      <p className="mt-6 max-w-2xl text-balance text-xl font-semibold leading-snug text-cream-soft sm:text-2xl">
+      <p key={step} className="rise-in mt-6 max-w-2xl text-balance text-xl font-semibold leading-snug text-cream-soft sm:text-2xl">
         {round.prompt}
       </p>
 
@@ -114,7 +114,7 @@ export default function HowClose({ rounds: pool }) {
         />
 
         {locked && (
-          <div className="relative mt-5 h-2 w-full rounded-full bg-cream-soft/15">
+          <div className="rise-in relative mt-5 h-2 w-full rounded-full bg-cream-soft/15">
             <span
               className="absolute top-1/2 h-4 w-1 -translate-y-1/2 rounded-full bg-cream-soft/60"
               style={{ left: `${pct(value, round.max)}%` }}
@@ -126,7 +126,7 @@ export default function HowClose({ rounds: pool }) {
           </div>
         )}
         {locked && (
-          <div className="mt-2 flex justify-between">
+          <div className="fade-in mt-2 flex justify-between">
             <Meta className="text-cream-soft/40">Your guess {value.toLocaleString()}</Meta>
             <Meta className="text-green-bright">Actual {round.display}</Meta>
           </div>

@@ -72,13 +72,17 @@ export default function MiniGames({ edition, index, label, accentKey, variant, g
         })}
       </div>
 
-      <p className="mt-4 text-center">
+      <p key={current.id} className="fade-in mt-4 text-center">
         <Meta className="text-cream-soft/45">{current.blurb}</Meta>
       </p>
 
       {/* Keyed on the game id, so switching resets rather than carrying a
-          half-finished round across. */}
-      <div className="mx-auto mt-7 max-w-3xl rounded-[2rem] border border-cream-soft/15 bg-cream-soft/[0.04] px-5 py-7 sm:px-8 sm:py-9">
+          half-finished round across — and so the panel rises in rather than
+          cutting to the next game. */}
+      <div
+        key={current.id}
+        className="rise-in mx-auto mt-7 max-w-3xl rounded-[2rem] border border-cream-soft/15 bg-cream-soft/[0.04] px-5 py-7 sm:px-8 sm:py-9"
+      >
         {current.id === "bigger" && <Bigger key="bigger" pool={games.bigger} />}
         {current.id === "close" && <HowClose key="close" rounds={games.guess} />}
         {current.id === "match" && <MatchTeams key="match" pairs={games.match} />}

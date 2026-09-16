@@ -67,7 +67,7 @@ export default function MatchTeams({ pairs }) {
   if (complete) {
     const perfect = tries === pairs.length;
     return (
-      <div className="py-10 text-center">
+      <div className="rise-in py-10 text-center">
         <Meta className="text-cream-soft/50">All {pairs.length} matched</Meta>
         <p className="mt-4 font-display text-6xl font-bold tabular-nums text-cream-soft sm:text-7xl">
           {tries}<span className="text-cream-soft/40"> taps</span>
@@ -112,10 +112,10 @@ export default function MatchTeams({ pairs }) {
         {pickedTeam ? (
           `now tap what ${TEAMS[pickedTeam].name} actually does.`
         ) : last ? (
-          <>
+          <span key={last} className="rise-in inline-block">
             <span className="font-semibold text-cream-soft">{TEAMS[last].name} — </span>
             {pairs.find((x) => x.team === last)?.then}
-          </>
+          </span>
         ) : (
           "tap a team, then tap what it does."
         )}
