@@ -750,6 +750,10 @@ See that directory's README before replacing either.
 Each of these was a deliberate call, most of them the desk's. Check `git log`
 before reversing one.
 
+- **Work goes on `main`.** The desk asked for this directly: commit and push
+  there by default, and only branch when a change is big or has several parts
+  that want reviewing separately. The site deploys from `main`, so work parked
+  on a branch is work nobody can see.
 - **The magazine links nowhere outside itself.** No parent-site links, no
   socials, not in the footer. Asked for twice.
 - **The footer is the bar only** — wordmark, mascot, two mono lines. The cream
