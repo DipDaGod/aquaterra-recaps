@@ -42,7 +42,7 @@ const MOOD_MS = 2800;
 //
 // Set it back to `null` to restore the shipped behaviour. That single edit is
 // the whole revert.
-const DEMO_EVERY_MS = 20000;
+const DEMO_EVERY_MS = null;
 // ─────────────────────────────────────────────────────────────────────────────
 
 const between = (lo, hi) => lo + Math.random() * (hi - lo);
