@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { TopBar, Footer } from "./components/SiteChrome";
 import OrbitBanner from "./components/OrbitBanner";
+import ScrollGhost from "./components/ScrollGhost";
 import RecapArchive from "./pages/RecapArchive";
 import EditionPage from "./pages/EditionPage";
 
@@ -37,6 +38,9 @@ export default function App() {
       </div>
       <OrbitBanner />
       <Footer />
+      {/* Outside the routed div, like the banner: it lives with the scrollbar,
+          not with the page, so a navigation must not remount it. */}
+      <ScrollGhost />
     </div>
   );
 }

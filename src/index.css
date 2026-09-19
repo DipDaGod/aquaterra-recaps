@@ -799,6 +799,61 @@ button:focus-visible,
   }
 }
 
+/* ===== The mascot behind the scrollbar ============================ */
+/* Leans out, has a look, thinks better of it, ducks back. One animation for the
+   whole performance — transform and opacity only, so it is a compositor job and
+   costs nothing on a phone.
+
+   The END state is off-screen at opacity 0, which is the resting state (§9).
+   Reduced motion clamps every animation to 0.001ms with the fill mode still
+   applied, so a keyframe list that ended mid-lean would freeze a ghost against
+   the edge of the page forever. Ending hidden means the clamp simply never
+   shows it — the same reason the confetti ends at opacity 0. The component
+   declines reduced motion outright as well; this is the second belt. */
+@keyframes ghost-peek {
+  /* Hiding behind the bar. */
+  0% { opacity: 0; transform: translate(115%, -50%) rotate(0deg); }
+  /* Out, overshooting, because nothing that leans is careful about it. */
+  12% { opacity: 1; transform: translate(-6%, -50%) rotate(-12deg); }
+  20% { transform: translate(6%, -50%) rotate(7deg); }
+  /* The emote: a double take. */
+  30% { transform: translate(0%, -50%) rotate(-5deg); }
+  40% { transform: translate(0%, -50%) rotate(4deg) scale(1.08); }
+  50% { transform: translate(0%, -50%) rotate(-3deg) scale(1); }
+  /* Sees you looking. */
+  62% { opacity: 1; transform: translate(0%, -50%) rotate(0deg); }
+  72% { opacity: 1; transform: translate(-4%, -50%) rotate(9deg); }
+  /* Gone. */
+  100% { opacity: 0; transform: translate(115%, -50%) rotate(2deg); }
+}
+
+.ghost-peek {
+  animation: ghost-peek 2.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  /* The keyframes translate by percentages of the sprite, so the element must
+     not also be centred by a utility — the animation owns the transform. */
+  transform: translate(115%, -50%);
+}
+
+/* ===== The page scrollbar ========================================= */
+/* The issue accent on a cream track, so the bar shifts colour with the issue
+   you are reading, the same way every rule and accent word does.
+   `--issue-accent` falls back to green at :root, which is what the archive gets.
+
+   Scoped to `html`, NEVER bare. A bare selector reaches every scrollable
+   element on the page — that is exactly how `.scroll-quiet`'s cream bar once
+   got painted down the middle of the dark stories card (§5).
+
+   The standard properties only, no `::-webkit-scrollbar` block. Once
+   `scrollbar-color` is set, Chrome and Firefox ignore those pseudo-elements
+   anyway, and in Safari they force the scrollbar to be permanently visible and
+   non-overlay — 14px of layout width taken for ever, on every page, to style
+   something the other two browsers were already styling properly. Safari below
+   18.2 keeps its own default bar instead, which is the right thing to lose. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--issue-accent) var(--color-cream-soft);
+}
+
 /* horizontal scrollers: keep the scrollbar functional but visually quiet */
 .scroll-quiet {
   scrollbar-width: thin;

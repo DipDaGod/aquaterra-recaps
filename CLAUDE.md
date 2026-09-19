@@ -572,6 +572,38 @@ the foil is what happens when you move.
 - **Only the opened card does this.** Eight of them tilting at once in the grid
   is a screensaver, and the effect is the payoff for opening one.
 
+### The scrollbar, and who lives behind it
+
+- **The page scrollbar carries `--issue-accent` on a cream track**, so the bar
+  shifts colour with the issue you are reading, like every rule and accent word.
+  Scoped to `html`, **never a bare selector** — a bare one reaches every
+  scrollable element, which is how `.scroll-quiet`'s cream bar once got painted
+  down the middle of the dark stories card (§5).
+  - Standard properties only. Once `scrollbar-color` is set, Chrome and Firefox
+    ignore `::-webkit-scrollbar` anyway, and in Safari that block forces the bar
+    permanently visible and non-overlay — layout width taken for ever to style
+    what the other two already style. Safari below 18.2 keeps its default bar.
+- **`ScrollGhost` is the mascot, and it lives behind that bar.** It leans out,
+  double-takes, and ducks back. The emote is **motion only** — the mascot's
+  face is AquaTerra's own artwork and inventing expressions for it would be
+  drawing on their character, so `<Mascot>` is reused exactly as it is.
+  - **The joke is the rarity.** It fires only on a scroll that has *stopped*,
+    after a viewport and a half of travel, at most once a minute, on a coin
+    flip, and never in the first few seconds of a visit. Turn any of those down
+    and it stops being a resident and becomes a widget. A missed coin flip
+    still spends the travel, or the odds would mean nothing.
+  - It rides the scroll position, so it leans out level with the thumb. That is
+    what ties it to the bar rather than to the page.
+  - `aria-hidden`, `pointer-events: none`, and z-40 — under the overlays, since
+    a ghost wandering across an open lightbox is a bug, not a joke.
+  - Shown on phones too. That is most of who reads this (§8), and hiding the
+    joke from them defeats it.
+  - **Its animation ends off-screen at opacity 0**, which is its resting state
+    (§9). Reduced motion clamps animations to 0.001ms with the fill mode still
+    applied, so keyframes ending mid-lean would freeze a ghost against the edge
+    of the page for ever. The component also declines reduced motion outright —
+    a character whose entire content is movement has nothing to show without it.
+
 ### Cursors and selection
 
 Both are set once, in `@layer base` in `index.css`. Don't set them per-component
