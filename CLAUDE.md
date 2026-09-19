@@ -613,13 +613,19 @@ the foil is what happens when you move.
   - **It lasts the visit, not for ever.** Nothing is written to `localStorage`,
     the same call as the team-card set (§9): finding it is something you did,
     not a badge the site remembers awarding you.
-  - The congrats is **the same full-screen takeover the eight-card set gets**,
-    through the same `<Takeover>`: the scrim, the confetti and the centred
-    column live there, not in either caller, so the site's two "that was worth
-    doing" moments cannot drift apart. `className` carries the positioning,
-    which is the only place they differ — the card set renders inside an
-    overlay that is already fixed and takes `absolute`; the ghost stands alone
-    and takes `fixed`.
+  - The congrats is **the same moment the eight-card set gets** — same
+    `<Takeover>`, same confetti, same stamp — in its **`variant="box"`** shape:
+    a panel that grows to a readable width and stops, with the page behind it
+    still live. Blacking out a page someone is reading is more than finding a
+    ghost is worth. **The card set keeps `variant="screen"`**, which §9
+    requires of it: its payoff used to be a block appended under the card that
+    you had to scroll to find, so it must take the screen.
+    - The burst is scaled to whatever contains it (0.42 in a box). At full
+      spread inside a 28rem panel every piece is off the edge on the first
+      frame and the throw never reads at all.
+    - `className` carries the positioning, the only other place the two callers
+      differ — the card set renders inside an overlay that is already fixed and
+      takes `absolute`; the ghost stands alone and takes `fixed`.
     - The confetti is AquaTerra's own team palette, never a generic rainbow
       (§4 forbids a ninth colour).
     - **It waits for the button.** A curtain that pulls itself back while you

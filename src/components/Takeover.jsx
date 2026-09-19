@@ -13,11 +13,11 @@ import { cx } from "../lib/utils";
 // clamps animations to 0.001ms with the fill mode still applied, so confetti
 // that ended mid-air would hang there for ever; ending invisible means the
 // clamp simply never shows it, and the takeover still reads correctly.
-function confetti(colours) {
+function confetti(colours, spread) {
   const pieces = [];
   for (let i = 0; i < 40; i++) {
     const angle = (i / 40) * Math.PI * 2 + (i % 3) * 0.24;
-    const dist = 130 + ((i * 37) % 190);
+    const dist = (130 + ((i * 37) % 190)) * spread;
     pieces.push({
       i,
       colour: colours[i % colours.length],
@@ -31,11 +31,36 @@ function confetti(colours) {
   return pieces;
 }
 
-// `className` carries the positioning, because the two callers differ there and
-// only there: the card set renders inside an overlay that is already fixed, so
-// it takes `absolute`; the ghost stands on its own and takes `fixed`.
-export default function Takeover({ colours, className = "", children }) {
-  const pieces = useMemo(() => confetti(colours), [colours]);
+// Two shapes, because two different sizes of moment.
+//
+//   "screen"  the whole viewport goes dark. Finishing the eight-card set earns
+//             this and §9 is explicit that it must: the payoff used to be a
+//             block appended under the card that you had to scroll to find.
+//   "box"     a panel that grows to a readable width and stops. For a smaller
+//             find, where blacking out the page someone is reading is more
+//             than the moment is worth.
+//
+// `className` carries the positioning, because that is the only other place the
+// callers differ: the card set renders inside an overlay that is already fixed,
+// so it takes `absolute`; the ghost stands on its own and takes `fixed`.
+export default function Takeover({ colours, variant = "screen", className = "", children }) {
+  const box = variant === "box";
+  // The burst is sized to what contains it. At full spread inside a 28rem panel
+  // every piece is off the edge on the first frame and the throw never reads.
+  const pieces = useMemo(() => confetti(colours, box ? 0.42 : 1), [colours, box]);
+
+  if (box) {
+    return (
+      // The page behind stays live — this is a panel, not a modal, so it must
+      // not swallow clicks meant for the issue underneath it.
+      <div className={cx("pointer-events-none inset-0 flex items-center justify-center px-5", className)}>
+        <div className="celebrate-in pointer-events-auto relative w-full max-w-md overflow-hidden rounded-[2rem] bg-near-black px-6 py-9 text-center shadow-[0_30px_80px_-24px_rgb(10_10_10_/_0.7)]">
+          <Burst pieces={pieces} />
+          <div className="relative">{children}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -44,27 +69,32 @@ export default function Takeover({ colours, className = "", children }) {
         className
       )}
     >
-      {/* Thrown from the centre, behind everything. */}
-      <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2">
-        {pieces.map((p) => (
-          <span
-            key={p.i}
-            className="burst absolute block"
-            style={{
-              "--x": p.x,
-              "--y": p.y,
-              "--r": p.r,
-              "--i": p.i,
-              width: p.size,
-              height: p.size,
-              background: p.colour,
-              borderRadius: p.round ? "999px" : "2px",
-            }}
-          />
-        ))}
-      </div>
-
+      <Burst pieces={pieces} />
       <div className="relative w-full max-w-md text-center">{children}</div>
+    </div>
+  );
+}
+
+// Thrown from the centre, behind everything.
+function Burst({ pieces }) {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2">
+      {pieces.map((p) => (
+        <span
+          key={p.i}
+          className="burst absolute block"
+          style={{
+            "--x": p.x,
+            "--y": p.y,
+            "--r": p.r,
+            "--i": p.i,
+            width: p.size,
+            height: p.size,
+            background: p.colour,
+            borderRadius: p.round ? "999px" : "2px",
+          }}
+        />
+      ))}
     </div>
   );
 }

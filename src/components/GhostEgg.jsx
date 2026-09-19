@@ -95,35 +95,37 @@ function Buddy({ still }) {
 }
 
 // ── The congrats ────────────────────────────────────────────────────────────
-// The same full-screen moment the eight-card set gets, through the same
-// <Takeover>: the site has one way of saying "that was worth doing", not one
-// per feature.
+// The same moment the eight-card set gets — same <Takeover>, same confetti,
+// same stamp — but in its "box" shape rather than across the whole screen.
+// Blacking out a page someone is reading is more than finding a ghost is
+// worth; the card set keeps the full takeover, which §9 requires of it.
 //
 // It promises nothing it can't give (§9) — the buddy IS the prize, and it says
 // so rather than inventing one.
 //
-// It waits for the button, like the card set does. A curtain that pulls itself
-// back while you are still reading it is worse than one you dismiss.
+// It waits for the button. A panel that takes itself away while you are still
+// reading it is worse than one you dismiss, and the page behind stays live in
+// the meantime.
 const PALETTE = Object.values(TEAMS).map((t) => t.raw);
 
 function Congrats({ onDone }) {
   return (
-    <Takeover colours={PALETTE} className="fixed z-50">
+    <Takeover colours={PALETTE} variant="box" className="fixed z-50">
       <Mascot
         smiling
-        className="ghost-dance mx-auto h-20 w-20"
+        className="ghost-dance mx-auto h-16 w-16"
         color="var(--color-green-bright)"
       />
 
       <h2
-        className="stamp u-display mt-7 text-[clamp(2.25rem,11vw,4rem)] leading-[0.9] text-cream-soft"
+        className="stamp u-display mt-6 text-[clamp(2rem,8vw,2.75rem)] leading-[0.9] text-cream-soft"
         style={{ animationDelay: "220ms" }}
       >
         YOU CAUGHT <em className="font-accent lowercase italic text-green-bright">it</em>
         <span aria-hidden="true">.</span>
       </h2>
 
-      <p className="fade-up mt-5 text-pretty text-lg leading-snug text-cream-soft/75" style={{ "--i": 6 }}>
+      <p className="fade-up mt-4 text-pretty leading-snug text-cream-soft/75" style={{ "--i": 6 }}>
         nobody was looking for that. it lives in the corner now, and it will
         hang about down there while you read.
       </p>
@@ -132,7 +134,7 @@ function Congrats({ onDone }) {
         type="button"
         onClick={onDone}
         autoFocus
-        className="fade-up mt-9 inline-flex items-center gap-2 rounded-full bg-cream-soft px-7 py-3 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
+        className="fade-up mt-7 inline-flex items-center gap-2 rounded-full bg-cream-soft px-7 py-3 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
         style={{ "--i": 8 }}
       >
         <Meta>Nice</Meta>
