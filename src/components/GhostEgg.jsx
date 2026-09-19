@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Mascot from "./Mascot";
+import Takeover from "./Takeover";
 import { Meta } from "./Lockup";
-import { cx } from "../lib/utils";
+import { TEAMS, cx } from "../lib/utils";
 
 // The easter egg. The mascot leans out from behind the scrollbar every few
 // minutes; catch it and it stays, down in the corner, for the rest of the visit.
@@ -24,9 +25,6 @@ const GAP_MAX_MS = 300000;
 // Long enough to notice it AND reach it. `ghost-peek` in index.css runs to the
 // same length; change one and change the other.
 const SHOW_MS = 3400;
-
-// How long the congrats holds before it takes itself away.
-const CONGRATS_MS = 5200;
 
 // The buddy's idle life: how long between its little performances, and how long
 // each one lasts.
@@ -97,37 +95,49 @@ function Buddy({ still }) {
 }
 
 // ── The congrats ────────────────────────────────────────────────────────────
-// Small on purpose. The full-screen takeover belongs to collecting all eight
-// team cards (§9); this is a smaller find and says so by being a card, not a
-// curtain. It promises nothing it can't give — the buddy IS the prize.
+// The same full-screen moment the eight-card set gets, through the same
+// <Takeover>: the site has one way of saying "that was worth doing", not one
+// per feature.
+//
+// It promises nothing it can't give (§9) — the buddy IS the prize, and it says
+// so rather than inventing one.
+//
+// It waits for the button, like the card set does. A curtain that pulls itself
+// back while you are still reading it is worse than one you dismiss.
+const PALETTE = Object.values(TEAMS).map((t) => t.raw);
+
 function Congrats({ onDone }) {
   return (
-    <div
-      role="status"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-24 sm:pb-28"
-    >
-      <div className="celebrate-in pointer-events-auto w-full max-w-sm rounded-[1.75rem] bg-ink p-6 text-center shadow-[0_24px_60px_-20px_rgb(10_10_10_/_0.6)]">
-        <div className="flex justify-center">
-          <Mascot smiling className="ghost-dance h-12 w-12" color="var(--color-green-bright)" />
-        </div>
-        <h2 className="u-display mt-4 text-3xl leading-[0.95] text-cream-soft">
-          YOU CAUGHT <em className="font-accent lowercase italic text-green-bright">it</em>
-          <span aria-hidden="true">.</span>
-        </h2>
-        <p className="mt-3 text-pretty text-sm leading-relaxed text-cream-soft/70">
-          nobody was looking for that. it lives in the corner now. it will hang
-          about down there while you read.
-        </p>
-        <button
-          type="button"
-          onClick={onDone}
-          autoFocus
-          className="mt-5 inline-flex items-center rounded-full bg-cream-soft px-5 py-2.5 text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
-        >
-          <Meta>Nice</Meta>
-        </button>
-      </div>
-    </div>
+    <Takeover colours={PALETTE} className="fixed z-50">
+      <Mascot
+        smiling
+        className="ghost-dance mx-auto h-20 w-20"
+        color="var(--color-green-bright)"
+      />
+
+      <h2
+        className="stamp u-display mt-7 text-[clamp(2.25rem,11vw,4rem)] leading-[0.9] text-cream-soft"
+        style={{ animationDelay: "220ms" }}
+      >
+        YOU CAUGHT <em className="font-accent lowercase italic text-green-bright">it</em>
+        <span aria-hidden="true">.</span>
+      </h2>
+
+      <p className="fade-up mt-5 text-pretty text-lg leading-snug text-cream-soft/75" style={{ "--i": 6 }}>
+        nobody was looking for that. it lives in the corner now, and it will
+        hang about down there while you read.
+      </p>
+
+      <button
+        type="button"
+        onClick={onDone}
+        autoFocus
+        className="fade-up mt-9 inline-flex items-center gap-2 rounded-full bg-cream-soft px-7 py-3 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 active:translate-y-0"
+        style={{ "--i": 8 }}
+      >
+        <Meta>Nice</Meta>
+      </button>
+    </Takeover>
   );
 }
 
@@ -201,12 +211,6 @@ export default function GhostEgg() {
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [caught]);
-
-  useEffect(() => {
-    if (!congrats) return undefined;
-    const t = setTimeout(() => setCongrats(false), CONGRATS_MS);
-    return () => clearTimeout(t);
-  }, [congrats]);
 
   return (
     <>

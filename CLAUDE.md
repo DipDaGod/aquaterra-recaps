@@ -613,10 +613,20 @@ the foil is what happens when you move.
   - **It lasts the visit, not for ever.** Nothing is written to `localStorage`,
     the same call as the team-card set (§9): finding it is something you did,
     not a badge the site remembers awarding you.
-  - The congrats is a card, not a curtain. The full-screen takeover belongs to
-    collecting all eight team cards; this is a smaller find and says so. **It
-    promises nothing it cannot give** — the buddy is the prize, and §9 forbids
-    inventing another.
+  - The congrats is **the same full-screen takeover the eight-card set gets**,
+    through the same `<Takeover>`: the scrim, the confetti and the centred
+    column live there, not in either caller, so the site's two "that was worth
+    doing" moments cannot drift apart. `className` carries the positioning,
+    which is the only place they differ — the card set renders inside an
+    overlay that is already fixed and takes `absolute`; the ghost stands alone
+    and takes `fixed`.
+    - The confetti is AquaTerra's own team palette, never a generic rainbow
+      (§4 forbids a ninth colour).
+    - **It waits for the button.** A curtain that pulls itself back while you
+      are still reading is worse than one you dismiss, so the auto-dismiss that
+      suited the earlier small card is gone.
+    - **It promises nothing it cannot give** — the buddy is the prize, and §9
+      forbids inventing another.
   - **Every one of these animations ends where it started** or off-screen at
     opacity 0 (§9). Reduced motion clamps animations to 0.001ms with the fill
     mode still applied, so a lean or a dance ending mid-flight would freeze a
