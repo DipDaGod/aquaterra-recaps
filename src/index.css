@@ -436,6 +436,75 @@ button:focus-visible,
   to   { transform: translate(-50%, -50%) translate3d(5px, 4px, 0); }
 }
 
+/* ===== The headline spotlight ===================================== */
+/* A small circle around the pointer inside which a display headline's caps turn
+   the accent colour — the colour the one italic word already has, so the
+   spotlight closes the gap between them rather than adding a ninth colour (§4).
+   `Lockup` renders the layers, `useSpotlight` writes the position.
+
+   It is a second copy of the text, masked, rather than a gradient clipped to
+   one: `background-clip: text` needs `color: transparent`, which would mean the
+   gradient has to supply the base colour too — and that colour is ink on cream
+   and cream on the dark sections. The copy keeps whatever colour it is over. */
+.aq-spot {
+  position: relative;
+}
+
+.aq-spot-lit {
+  position: absolute;
+  inset: 0;
+  /* Nothing here may affect layout: the lit copy has to break its lines exactly
+     like the base copy underneath it. Same box, same width, same wrapping. */
+  opacity: 0;
+  pointer-events: none;
+  /* The same sentence twice over: never part of a selection, so copying a
+     heading gives you its words once (§4 keeps article text selectable — this
+     is not article text, it is the same text again). */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Hover-capable pointers only, and only where the mask will actually cut the
+   circle out. Without the @supports the lit copy would sit unmasked over the
+   base one and simply recolour the whole heading. */
+@supports (mask-image: radial-gradient(#000, #000)) or
+  (-webkit-mask-image: radial-gradient(#000, #000)) {
+  @media (hover: hover) and (pointer: fine) {
+    .aq-spot-lit {
+      opacity: var(--spot-on, 0);
+      /* The radius is in `em`, so it scales with the heading it is on: one value
+         covers the 84px hero and a 34px supporting opener without the circle
+         swallowing the smaller one whole. */
+      --spot-r: 1.45em;
+      -webkit-mask-image: radial-gradient(
+        circle var(--spot-r) at var(--spot-x, -999px) var(--spot-y, -999px),
+        #000 0%,
+        #000 42%,
+        transparent 100%
+      );
+      mask-image: radial-gradient(
+        circle var(--spot-r) at var(--spot-x, -999px) var(--spot-y, -999px),
+        #000 0%,
+        #000 42%,
+        transparent 100%
+      );
+      /* Only the fade in and out is timed. The circle itself must track the
+         pointer exactly — a transition on the mask lags it behind the cursor,
+         which reads as the effect being broken rather than smooth. */
+      transition: opacity var(--default-transition-duration) var(--ease-rise);
+    }
+  }
+}
+
+/* Belt and braces: the hook declines reduced motion and so never sets
+   --spot-on, but a headline that recolours under the cursor is decoration and
+   should not depend on that. */
+@media (prefers-reduced-motion: reduce) {
+  .aq-spot-lit {
+    display: none;
+  }
+}
+
 /* ===== The team-card set ========================================== */
 /* Reading all eight takes over the screen. Every end state here is the
    invisible or settled one, so the global reduced-motion rule above can clamp

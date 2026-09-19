@@ -1,4 +1,5 @@
 import { cx } from "../lib/utils";
+import { useSpotlight } from "../lib/useSpotlight";
 
 // The house headline lockup (CLAUDE.md §4): heavy caps + ONE italic serif word
 // in an accent colour + a period.
@@ -7,15 +8,24 @@ import { cx } from "../lib/utils";
 //
 // The period renders here so it can never be forgotten, and sits outside the
 // italic so it stays upright. Size comes from the caller's `className`.
+//
+// `spotlight` adds the cursor circle (§4). It costs a second copy of the text,
+// so it is opt-in and belongs on the big headings — the page heroes and the
+// section openers — not on a card title.
 export default function Lockup({
   caps,
   accent,
   as: Tag = "h2",
   className = "",
   accentClassName = "text-(--issue-accent)",
+  spotlight = false,
 }) {
-  return (
-    <Tag className={cx("u-display text-balance uppercase", className)}>
+  const ref = useSpotlight();
+
+  // One copy of the words, rendered twice when the spotlight is on. Building it
+  // once is what stops the lit layer drifting from the base layer it sits over.
+  const words = (
+    <>
       {caps}
       {accent && (
         <>
@@ -24,6 +34,25 @@ export default function Lockup({
         </>
       )}
       <span aria-hidden="true">.</span>
+    </>
+  );
+
+  const cls = cx("u-display text-balance uppercase", className);
+
+  if (!spotlight) return <Tag className={cls}>{words}</Tag>;
+
+  return (
+    <Tag ref={ref} className={cx(cls, "aq-spot")}>
+      {words}
+      {/* The same words again, in the accent colour, masked to a circle at the
+          pointer. aria-hidden and unselectable: it is the same sentence, and
+          nobody should hear it twice or copy it twice. It inherits the accent
+          colour, so the em inside it lands on the colour it already had — the
+          spotlight paints the CAPS up to the one italic word, rather than
+          introducing a colour of its own (§4 forbids a ninth). */}
+      <span aria-hidden="true" className={cx("aq-spot-lit", accentClassName)}>
+        {words}
+      </span>
     </Tag>
   );
 }

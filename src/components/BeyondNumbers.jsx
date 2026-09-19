@@ -21,6 +21,7 @@ export default function BeyondNumbers() {
             caps="COME AND DO SOMETHING"
             accent="real"
             accentClassName="text-green-deep"
+            spotlight
             className="mt-3 text-4xl sm:text-5xl"
           />
           <p className="mt-5 max-w-md text-pretty text-lg text-ink-soft">

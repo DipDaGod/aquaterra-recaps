@@ -24,6 +24,7 @@ export default function RecapHero() {
               as="h1"
               caps="MONTHLY"
               accent="recaps"
+              spotlight
               className="mt-4 text-[clamp(2.75rem,11vw,5.25rem)]"
             />
             <p className="mt-6 max-w-md text-balance text-xl text-ink-soft sm:text-2xl">

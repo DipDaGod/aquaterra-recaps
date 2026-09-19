@@ -335,6 +335,43 @@ major section heading this way, through `<Lockup caps="THE" accent="drives" />`.
 Get the italic word right — it should be the noun that carries the meaning, not
 a random emphasis.
 
+### The headline spotlight
+
+A small circle follows the cursor across a display headline, and inside it the
+ALL-CAPS half turns the accent colour. `Lockup` takes `spotlight`,
+`useSpotlight` owns the pointer, the `.aq-spot*` rules in `index.css` own the
+look.
+
+- **It uses the accent colour the headline already has** — the issue accent, or
+  the section's own on a section opener — so the circle paints the caps up to
+  the one italic word rather than introducing a colour. §4 forbids a ninth
+  colour, and the effect reads as the lockup completing itself. Passing the
+  headline a colour of its own would break both.
+- **It is a second copy of the text, masked**, not a gradient clipped with
+  `background-clip: text`. Clipping needs `color: transparent`, so the gradient
+  would have to supply the base colour too — and that is ink on cream and cream
+  on the dark sections. The copy inherits whatever it is over.
+  - The copy is `aria-hidden` and `user-select: none`, or the heading is
+    announced twice and copies twice. `Lockup` builds the words **once** and
+    renders that same tree in both layers; build them twice and the layers drift.
+  - Nothing on the lit layer may affect layout. It is `inset: 0` on the heading
+    and must break its lines exactly like the base copy under it — any drift
+    shows as doubled glyphs, so it is asserted at several widths.
+- **The radius is in `em`** (`--spot-r`), so one value suits the 84px hero and a
+  34px supporting opener. A fixed radius swallows the small ones whole, and then
+  it is not a spotlight, it is a hover colour.
+- **Only the fade in and out is timed.** A transition on the mask itself lags
+  the circle behind the cursor, which reads as broken rather than smooth.
+- **A pointer move writes custom properties on one element inside one rAF**, the
+  same discipline as the card foil. The box is read inside that frame too, so it
+  is one layout read and one write per frame however fast the pointer moves.
+- Hover-capable fine pointers only, and off under reduced motion — in the CSS
+  *and* in the hook, so neither depends on the other. A touch would light the
+  circle wherever it last tapped and leave it there.
+- **It goes on standalone section headings**, the page heroes included. Not on
+  repeated card titles: a grid of them lighting up is the screensaver problem
+  the card foil already had.
+
 ### Shape and layout
 
 - Pills everywhere: nav items, filter chips, buttons, badges. Fully rounded.

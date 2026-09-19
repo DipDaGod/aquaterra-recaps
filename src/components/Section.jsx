@@ -53,7 +53,7 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, s
         <div className="min-w-0 flex-1">
           {label && <Meta className={cx("block", a.text)}>{label}</Meta>}
           {caps && (
-            <Lockup caps={caps} accent={accent} accentClassName={a.text}
+            <Lockup caps={caps} accent={accent} accentClassName={a.text} spotlight
               className={cx("mt-2", headClass, onDark && "text-cream-soft")} />
           )}
           {lead && <p className={leadClass}>{lead}</p>}
@@ -72,7 +72,7 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, s
           {label && <Meta className={onDark ? "text-cream-soft/60" : "text-ink-3"}>{label}</Meta>}
         </div>
         {caps && (
-          <Lockup caps={caps} accent={accent} accentClassName={a.text}
+          <Lockup caps={caps} accent={accent} accentClassName={a.text} spotlight
             className={cx("mt-4", headClass, onDark && "text-cream-soft")} />
         )}
         {lead && <p className={cx(leadClass, "mx-auto text-center")}>{lead}</p>}
@@ -90,7 +90,7 @@ function Opener({ index, label, caps, accent, lead, aside, variant, accentKey, s
           {label && <Meta className={onDark ? "text-cream-soft/60" : "text-ink-3"}>{label}</Meta>}
         </div>
         {caps && (
-          <Lockup caps={caps} accent={accent} accentClassName={a.text}
+          <Lockup caps={caps} accent={accent} accentClassName={a.text} spotlight
             className={cx(headClass, onDark && "text-cream-soft")} />
         )}
         {lead && <p className={leadClass}>{lead}</p>}

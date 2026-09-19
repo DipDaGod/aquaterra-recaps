@@ -42,6 +42,7 @@ export default function NextEdition({ prev, next }) {
             <Lockup
               caps={`${next.month.toUpperCase()} ${next.year} IS ALREADY`}
               accent="taking shape"
+              spotlight
               className="mt-4 text-3xl sm:text-4xl"
             />
           ) : (
@@ -49,6 +50,7 @@ export default function NextEdition({ prev, next }) {
               <Lockup
                 caps="THE NEXT ISSUE IS STILL BEING"
                 accent="written"
+                spotlight
                 className="mt-4 text-3xl sm:text-4xl"
               />
               <p className="mt-4 inline-flex items-center gap-2 text-sm text-ink-soft">

@@ -70,6 +70,7 @@ export default function EditionHero({ edition }) {
         as="h1"
         caps={lockup.caps}
         accent={lockup.accent}
+        spotlight
         className="mt-5 text-(length:--text-display-xl)"
       />
 

@@ -12,7 +12,7 @@ export default function IssueAnatomy() {
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <div className="max-w-2xl">
           <Meta className="block text-ink-3">The format</Meta>
-          <Lockup caps="WHAT'S IN AN" accent="issue" className="mt-3 text-(length:--text-display-m)" />
+          <Lockup caps="WHAT'S IN AN" accent="issue" spotlight className="mt-3 text-(length:--text-display-m)" />
         </div>
         <p className="max-w-sm text-pretty text-ink-2">
           not every issue carries every one — a month with no student-business news
