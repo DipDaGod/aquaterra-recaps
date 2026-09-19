@@ -44,14 +44,19 @@ export default function Lockup({
   return (
     <Tag ref={ref} className={cx(cls, "aq-spot")}>
       {words}
-      {/* The same words again, in the accent colour, masked to a circle at the
-          pointer. aria-hidden and unselectable: it is the same sentence, and
-          nobody should hear it twice or copy it twice. It inherits the accent
-          colour, so the em inside it lands on the colour it already had — the
-          spotlight paints the CAPS up to the one italic word, rather than
-          introducing a colour of its own (§4 forbids a ninth). */}
-      <span aria-hidden="true" className={cx("aq-spot-lit", accentClassName)}>
-        {words}
+      {/* The disc: a solid circle of the accent colour the headline already
+          carries, so the effect adds no colour of its own (§4 forbids a ninth).
+          It takes the colour from `accentClassName` and paints it as its own
+          background, which is why it is a plain circle rather than a mask — it
+          has to grow past the line box, and a masked rectangle would square it
+          off top and bottom. */}
+      <span aria-hidden="true" className={cx("aq-spot-disc", accentClassName)} />
+      {/* The same words again, knocked out of the disc in the page's own ground
+          colour and masked to the same circle. aria-hidden and unselectable: it
+          is the same sentence, and nobody should hear it twice or copy it
+          twice. */}
+      <span aria-hidden="true" className="aq-spot-lit">
+        <span className="aq-spot-knockout">{words}</span>
       </span>
     </Tag>
   );

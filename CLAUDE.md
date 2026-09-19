@@ -337,40 +337,59 @@ a random emphasis.
 
 ### The headline spotlight
 
-A small circle follows the cursor across a display headline, and inside it the
-ALL-CAPS half turns the accent colour. `Lockup` takes `spotlight`,
+A solid disc follows the cursor across a display headline, and the words inside
+it are knocked out in the page's own ground colour — the heading **inverts**
+under the circle rather than merely recolouring. `Lockup` takes `spotlight`,
 `useSpotlight` owns the pointer, the `.aq-spot*` rules in `index.css` own the
 look.
 
-- **It uses the accent colour the headline already has** — the issue accent, or
-  the section's own on a section opener — so the circle paints the caps up to
-  the one italic word rather than introducing a colour. §4 forbids a ninth
-  colour, and the effect reads as the lockup completing itself. Passing the
-  headline a colour of its own would break both.
-- **It is a second copy of the text, masked**, not a gradient clipped with
-  `background-clip: text`. Clipping needs `color: transparent`, so the gradient
-  would have to supply the base colour too — and that is ink on cream and cream
-  on the dark sections. The copy inherits whatever it is over.
-  - The copy is `aria-hidden` and `user-select: none`, or the heading is
-    announced twice and copies twice. `Lockup` builds the words **once** and
-    renders that same tree in both layers; build them twice and the layers drift.
-  - Nothing on the lit layer may affect layout. It is `inset: 0` on the heading
-    and must break its lines exactly like the base copy under it — any drift
-    shows as doubled glyphs, so it is asserted at several widths.
-- **The radius is in `em`** (`--spot-r`), so one value suits the 84px hero and a
-  34px supporting opener. A fixed radius swallows the small ones whole, and then
-  it is not a spotlight, it is a hover colour.
-- **Only the fade in and out is timed.** A transition on the mask itself lags
-  the circle behind the cursor, which reads as broken rather than smooth.
+Three layers: the headline itself, a disc of the accent colour over it, and the
+same words again in the ground colour, masked to that same circle.
+
+- **The disc is the accent colour the headline already has** — the issue accent
+  on a hero, the section's own on an opener — so it introduces no colour of its
+  own. §4 forbids a ninth. The knockout is `--spot-ground`: cream by default,
+  flipped to ink under `.bg-ink`, so a section knocks out in whatever is
+  actually behind it. That selector is why it cannot be forgotten on a new dark
+  section; don't replace it with a prop.
+- **The disc is a real circle, not a masked rectangle.** It has to stand clear
+  above and below the line, and a rectangle clipped to the element squares it
+  off there. It is centred by margin, not `transform` — a transform makes an
+  element the containing block for every `position: fixed` descendant, and that
+  trap is in §9 twice.
+- **The knockout layer bleeds out by one radius and pads its content back.** A
+  mask only paints inside the border box (`mask-clip` is border-box, and no
+  "don't clip" value ships), so at `inset: 0` the circle was sliced off wherever
+  it reached past the heading — which is any pointer near an edge, and this
+  display face overflows its own line box besides. The mask is re-centred by
+  the same radius.
+  - The copy is `aria-hidden`, and the heading is unselectable, so it is neither
+    announced nor copied twice. `Lockup` builds the words **once** and renders
+    that same tree in both layers; build them twice and the layers drift.
+  - Nothing on that layer may affect layout. It must break its lines exactly
+    like the base copy under it — any drift shows as doubled glyphs, so it is
+    asserted per text node at several widths. Measure **text nodes**, not a
+    range over the element: the two layers differ in structure on purpose, so
+    element boxes will not match and a range picks those up too.
+- **The radius is in `em`** (`--spot-r`, 0.55), so one value holds its
+  proportion on the 84px hero and a 34px opener alike. Size it against the cap
+  height, not the em box — at 1.15em it was a 193px circle on the hero that ate
+  the line below. A fixed pixel radius swallows the small headings whole, and
+  then it is not a spotlight, it is a hover colour.
+- **Only the fade in and out is timed.** A transition on the position or the
+  mask lags the circle behind the cursor, which reads as broken, not smooth.
 - **A pointer move writes custom properties on one element inside one rAF**, the
   same discipline as the card foil. The box is read inside that frame too, so it
   is one layout read and one write per frame however fast the pointer moves.
 - Hover-capable fine pointers only, and off under reduced motion — in the CSS
   *and* in the hook, so neither depends on the other. A touch would light the
-  circle wherever it last tapped and leave it there.
+  disc wherever it last tapped and leave it there.
 - **It goes on standalone section headings**, the page heroes included. Not on
   repeated card titles: a grid of them lighting up is the screensaver problem
   the card foil already had.
+- The disc can ride up over an eyebrow label when the pointer is at the very top
+  of a heading. That is accepted — it is a transient pointer effect, and the
+  alternative is clipping the disc back into a rectangle.
 
 ### Shape and layout
 
@@ -536,10 +555,17 @@ unless an element genuinely differs.
 - **Chrome is not prose.** Buttons, tabs, `.u-mono` labels and anything
   `aria-hidden` are `user-select: none`: selecting a button's label, a section
   numeral or the emoji in a card motif is never what someone meant.
-- **Article text stays selectable** — the opener, blurbs, captions, and section
-  headings, which are the issue's own words and should be quotable. Where prose
-  sits *inside* a button (the frame-of-the-month caption, the pop-out card's
-  blurb) it carries `select-text` explicitly.
+- **Article text stays selectable** — the opener, blurbs and captions, which are
+  the issue's own words and should be quotable. Where prose sits *inside* a
+  button (the frame-of-the-month caption, the pop-out card's blurb) it carries
+  `select-text` explicitly.
+- **Display headlines are the exception, and they are chrome.** Anything with
+  `spotlight` is `user-select: none` and takes `cursor: default`. The desk asked
+  for both: a text caret over a headline "doesn't look nice", and the headline
+  should not be selectable. `default` rather than `pointer` because the cursor
+  rules above are semantic — `pointer` promises a click, and a heading doesn't
+  do anything. This reverses the older rule that section headings stay
+  quotable; the headline is now the one piece of type you can't select.
 
 ### Do not "improve" these
 

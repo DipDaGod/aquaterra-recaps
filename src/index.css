@@ -437,69 +437,123 @@ button:focus-visible,
 }
 
 /* ===== The headline spotlight ===================================== */
-/* A small circle around the pointer inside which a display headline's caps turn
-   the accent colour — the colour the one italic word already has, so the
-   spotlight closes the gap between them rather than adding a ninth colour (§4).
-   `Lockup` renders the layers, `useSpotlight` writes the position.
+/* A solid disc follows the cursor across a display headline, and the words
+   inside it are knocked out in the page's own ground colour — the heading
+   inverts under the circle rather than merely recolouring.
 
-   It is a second copy of the text, masked, rather than a gradient clipped to
-   one: `background-clip: text` needs `color: transparent`, which would mean the
-   gradient has to supply the base colour too — and that colour is ink on cream
-   and cream on the dark sections. The copy keeps whatever colour it is over. */
+   Three layers: the headline itself, a disc of the accent colour over it, and
+   the same words again in the ground colour masked to that same circle.
+   `Lockup` renders them, `useSpotlight` writes the position.
+
+   The disc is a real circle, not a masked rectangle, because it has to grow
+   past the line box — the reference has it standing clear above and below the
+   text, and a rectangle clipped to the element would square it off there. The
+   knockout layer IS masked, because it must sit exactly over the base copy. */
 .aq-spot {
   position: relative;
-}
-
-.aq-spot-lit {
-  position: absolute;
-  inset: 0;
-  /* Nothing here may affect layout: the lit copy has to break its lines exactly
-     like the base copy underneath it. Same box, same width, same wrapping. */
-  opacity: 0;
-  pointer-events: none;
-  /* The same sentence twice over: never part of a selection, so copying a
-     heading gives you its words once (§4 keeps article text selectable — this
-     is not article text, it is the same text again). */
+  /* The radius is in `em`, so one value holds its proportion on the 84px hero
+     and on a 34px supporting opener alike — a fixed radius would swallow the
+     small ones whole. Sized against the cap height rather than the em box: the
+     disc should stand a little clear of the letters, not cover the line. At
+     1.15em it was a 193px circle on the hero and ate the line below it. */
+  --spot-r: 0.55em;
+  /* What the words turn inside the disc: the ground they are printed on. Cream
+     by default, and the ink sections flip it below — so a section ends up
+     knocking out in whichever colour is actually behind it. */
+  --spot-ground: var(--color-cream);
+  /* Neither half of this is prose any more: the desk asked for the headlines to
+     stop taking a text caret and stop being selectable (§4). */
+  cursor: default;
   user-select: none;
   -webkit-user-select: none;
 }
 
+.bg-ink .aq-spot {
+  --spot-ground: var(--color-ink);
+}
+
+.aq-spot-disc,
+.aq-spot-lit {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.aq-spot-disc {
+  /* Centred on the pointer by margin rather than a transform: a transform makes
+     an element the containing block for every `position: fixed` descendant, and
+     that trap is in §9 twice over. Nothing needs to be fixed inside a heading
+     today, and this way nothing can. */
+  left: var(--spot-x, -999px);
+  top: var(--spot-y, -999px);
+  width: calc(var(--spot-r) * 2);
+  height: calc(var(--spot-r) * 2);
+  margin: calc(var(--spot-r) * -1) 0 0 calc(var(--spot-r) * -1);
+  border-radius: 999px;
+  /* The colour comes from the accent class the headline already carries, so the
+     disc is the issue's accent on a hero and the section's own on an opener. */
+  background: currentColor;
+}
+
+.aq-spot-lit {
+  /* Grown by one radius on every side, then padded back by the same amount, so
+     the words sit exactly where the base copy has them while the box around
+     them is bigger. That box is the point: a mask only paints inside the border
+     box (`mask-clip` is border-box and has no "don't" value that ships), so at
+     `inset: 0` the circle was sliced off wherever it reached past the heading —
+     and this display face overflows its own line box, so the tops of the caps
+     went with it. The mask is re-centred by the same radius below.
+
+     Nothing here may affect layout: the knocked-out copy has to break its lines
+     exactly like the base copy underneath it. */
+  inset: calc(var(--spot-r) * -1);
+  padding: var(--spot-r);
+}
+
+/* Every word inside the disc, the italic one included. The em carries its own
+   accent colour from `Lockup`, and inside the disc that has to give way — these
+   rules sit outside `@layer`, which is what lets them beat a Tailwind utility. */
+.aq-spot-knockout,
+.aq-spot-knockout * {
+  color: var(--spot-ground);
+}
+
 /* Hover-capable pointers only, and only where the mask will actually cut the
-   circle out. Without the @supports the lit copy would sit unmasked over the
-   base one and simply recolour the whole heading. */
+   circle out. Without the @supports the knocked-out copy would sit unmasked
+   over the base one and simply recolour the whole heading. */
 @supports (mask-image: radial-gradient(#000, #000)) or
   (-webkit-mask-image: radial-gradient(#000, #000)) {
   @media (hover: hover) and (pointer: fine) {
+    .aq-spot-disc,
     .aq-spot-lit {
       opacity: var(--spot-on, 0);
-      /* The radius is in `em`, so it scales with the heading it is on: one value
-         covers the 84px hero and a 34px supporting opener without the circle
-         swallowing the smaller one whole. */
-      --spot-r: 1.45em;
-      -webkit-mask-image: radial-gradient(
-        circle var(--spot-r) at var(--spot-x, -999px) var(--spot-y, -999px),
-        #000 0%,
-        #000 42%,
-        transparent 100%
-      );
-      mask-image: radial-gradient(
-        circle var(--spot-r) at var(--spot-x, -999px) var(--spot-y, -999px),
-        #000 0%,
-        #000 42%,
-        transparent 100%
-      );
       /* Only the fade in and out is timed. The circle itself must track the
-         pointer exactly — a transition on the mask lags it behind the cursor,
-         which reads as the effect being broken rather than smooth. */
+         pointer exactly — a transition on the position or the mask lags it
+         behind the cursor, which reads as the effect being broken. */
       transition: opacity var(--default-transition-duration) var(--ease-rise);
+    }
+
+    /* A hard edge, unlike a glow: the disc has a rim, so the words have to stop
+       at the same rim. The last percent is a feather, or the circle aliases. */
+    .aq-spot-lit {
+      --spot-mask: radial-gradient(
+        circle var(--spot-r) at calc(var(--spot-x, -999px) + var(--spot-r))
+          calc(var(--spot-y, -999px) + var(--spot-r)),
+        #000 0,
+        #000 99%,
+        transparent 100%
+      );
+      -webkit-mask-image: var(--spot-mask);
+      mask-image: var(--spot-mask);
     }
   }
 }
 
 /* Belt and braces: the hook declines reduced motion and so never sets
-   --spot-on, but a headline that recolours under the cursor is decoration and
+   --spot-on, but a headline that inverts under the cursor is decoration and
    should not depend on that. */
 @media (prefers-reduced-motion: reduce) {
+  .aq-spot-disc,
   .aq-spot-lit {
     display: none;
   }
