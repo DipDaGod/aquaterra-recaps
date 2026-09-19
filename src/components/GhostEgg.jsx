@@ -34,6 +34,19 @@ const MOOD_MIN_MS = 14000;
 const MOOD_MAX_MS = 30000;
 const MOOD_MS = 2800;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TEMPORARY — DEMO MODE. NOT FOR PUBLICATION.
+//
+// A number here replaces both the two-minute wait and the three-to-five-minute
+// gap with that one interval, so the ghost can be watched without sitting on
+// the page for minutes first. Everything else is untouched: it is still on-SITE
+// time, it is still catchable, it still stops once caught.
+//
+// Set it back to `null` to restore the shipped behaviour. That single edit is
+// the whole revert.
+const DEMO_EVERY_MS = 20000;
+// ─────────────────────────────────────────────────────────────────────────────
+
 const between = (lo, hi) => lo + Math.random() * (hi - lo);
 
 // ── The buddy ───────────────────────────────────────────────────────────────
@@ -144,7 +157,7 @@ export default function GhostEgg() {
     // `since` is when that stretch began. Hidden time is simply never added.
     let banked = 0;
     let since = Date.now();
-    let dueAt = FIRST_MS;
+    let dueAt = DEMO_EVERY_MS ?? FIRST_MS;
     let timer = 0;
 
     const onSite = () => banked + (document.hidden ? 0 : Date.now() - since);
@@ -156,7 +169,7 @@ export default function GhostEgg() {
       // never half-leaves through the top or bottom edge.
       setTop(14 + pct * 72);
       setRun((n) => n + 1);
-      dueAt = onSite() + between(GAP_MIN_MS, GAP_MAX_MS);
+      dueAt = onSite() + (DEMO_EVERY_MS ?? between(GAP_MIN_MS, GAP_MAX_MS));
       clearTimeout(hideRef.current);
       hideRef.current = setTimeout(() => setRun(0), SHOW_MS);
       schedule();
