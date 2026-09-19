@@ -1,5 +1,10 @@
 // The little ghost character AquaTerra uses across its own site. Decorative.
-export default function Mascot({ className = "", color = "var(--color-green-bright)" }) {
+//
+// `smiling` is opt-in and off everywhere except the ghost buddy, which the desk
+// asked to smile. The face is AquaTerra's own artwork, so the default mascot
+// stays exactly as it was drawn in all six other places it appears — one prop,
+// one user, and nothing to unpick if the real mouth arrives and differs.
+export default function Mascot({ className = "", color = "var(--color-green-bright)", smiling = false }) {
   return (
     <svg
       viewBox="0 0 64 64"
@@ -15,6 +20,15 @@ export default function Mascot({ className = "", color = "var(--color-green-brig
       <circle cx="41" cy="28" r="4.2" fill="#17251d" />
       <circle cx="25.4" cy="26.6" r="1.3" fill="#fbf8ef" />
       <circle cx="42.4" cy="26.6" r="1.3" fill="#fbf8ef" />
+      {smiling && (
+        <path
+          d="M24.5 36.5Q32.5 43.8 40.5 36.5"
+          fill="none"
+          stroke="#17251d"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+        />
+      )}
     </svg>
   );
 }

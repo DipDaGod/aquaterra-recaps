@@ -585,26 +585,42 @@ the foil is what happens when you move.
     ignore `::-webkit-scrollbar` anyway, and in Safari that block forces the bar
     permanently visible and non-overlay — layout width taken for ever to style
     what the other two already style. Safari below 18.2 keeps its default bar.
-- **`ScrollGhost` is the mascot, and it lives behind that bar.** It leans out,
-  double-takes, and ducks back. The emote is **motion only** — the mascot's
-  face is AquaTerra's own artwork and inventing expressions for it would be
-  drawing on their character, so `<Mascot>` is reused exactly as it is.
-  - **The joke is the rarity.** It fires only on a scroll that has *stopped*,
-    after a viewport and a half of travel, at most once a minute, on a coin
-    flip, and never in the first few seconds of a visit. Turn any of those down
-    and it stops being a resident and becomes a widget. A missed coin flip
-    still spends the travel, or the odds would mean nothing.
-  - It rides the scroll position, so it leans out level with the thumb. That is
-    what ties it to the bar rather than to the page.
-  - `aria-hidden`, `pointer-events: none`, and z-40 — under the overlays, since
-    a ghost wandering across an open lightbox is a bug, not a joke.
-  - Shown on phones too. That is most of who reads this (§8), and hiding the
-    joke from them defeats it.
-  - **Its animation ends off-screen at opacity 0**, which is its resting state
-    (§9). Reduced motion clamps animations to 0.001ms with the fill mode still
-    applied, so keyframes ending mid-lean would freeze a ghost against the edge
-    of the page for ever. The component also declines reduced motion outright —
-    a character whose entire content is movement has nothing to show without it.
+- **`GhostEgg` is the mascot, and it lives behind that bar.** It leans out,
+  double-takes, and ducks back — and if you catch it mid-lean it stays, down in
+  the bottom-right corner, for the rest of the visit. `<Mascot>` throughout.
+  - **It counts time on the SITE, not time on the clock.** First sighting at two
+    minutes, then every three to five, and the timer stops dead while the tab is
+    in the background — a page left open in another window for an hour is no
+    closer to a sighting than one you closed after a minute. One timeout for
+    exactly the time still owed, torn down when the tab hides and rebuilt when
+    it returns; there is no polling.
+  - **It has to be catchable**, which is the whole difference from decoration.
+    It is a button, it holds still in the middle of its lean long enough to be
+    hit, and it does not peek again once it has been caught.
+  - **Reduced motion gets `.ghost-still` rather than nothing.** It appears
+    without the lean and is still clickable. An egg you can only find by
+    watching something move is an egg those readers cannot find at all — which
+    is a different thing from sparing them the movement.
+  - `aria-hidden` and off the tab order, on the ghost and the buddy both. It is
+    a joke with nothing behind it, and a control that announces itself at random
+    every few minutes is worse than one you cannot reach. The buddy carries no
+    meaning the page does not already say.
+  - The buddy **floats as its resting state** and now and then smiles, dances,
+    or both. `smiling` is an opt-in prop on `<Mascot>` with exactly one user:
+    the face is AquaTerra's own artwork, so the default mascot stays as drawn in
+    all six other places and there is nothing to unpick if the real mouth
+    arrives and differs.
+  - **It lasts the visit, not for ever.** Nothing is written to `localStorage`,
+    the same call as the team-card set (§9): finding it is something you did,
+    not a badge the site remembers awarding you.
+  - The congrats is a card, not a curtain. The full-screen takeover belongs to
+    collecting all eight team cards; this is a smaller find and says so. **It
+    promises nothing it cannot give** — the buddy is the prize, and §9 forbids
+    inventing another.
+  - **Every one of these animations ends where it started** or off-screen at
+    opacity 0 (§9). Reduced motion clamps animations to 0.001ms with the fill
+    mode still applied, so a lean or a dance ending mid-flight would freeze a
+    ghost against the edge of the page for ever.
 
 ### Cursors and selection
 

@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { TopBar, Footer } from "./components/SiteChrome";
 import OrbitBanner from "./components/OrbitBanner";
-import ScrollGhost from "./components/ScrollGhost";
+import GhostEgg from "./components/GhostEgg";
 import RecapArchive from "./pages/RecapArchive";
 import EditionPage from "./pages/EditionPage";
 
@@ -38,9 +38,10 @@ export default function App() {
       </div>
       <OrbitBanner />
       <Footer />
-      {/* Outside the routed div, like the banner: it lives with the scrollbar,
-          not with the page, so a navigation must not remount it. */}
-      <ScrollGhost />
+      {/* Outside the routed div, like the banner. It has to survive a
+          navigation: the timer counts time on the SITE, and a buddy that
+          vanished when you opened another issue would not be much of a buddy. */}
+      <GhostEgg />
     </div>
   );
 }

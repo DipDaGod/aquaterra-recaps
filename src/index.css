@@ -800,39 +800,65 @@ button:focus-visible,
 }
 
 /* ===== The mascot behind the scrollbar ============================ */
-/* Leans out, has a look, thinks better of it, ducks back. One animation for the
-   whole performance — transform and opacity only, so it is a compositor job and
-   costs nothing on a phone.
+/* Leans out, has a look, thinks better of it, ducks back — and if you catch it
+   mid-lean it stays for the rest of the visit. Transform and opacity only, so
+   the whole performance is a compositor job and costs nothing on a phone.
 
    The END state is off-screen at opacity 0, which is the resting state (§9).
    Reduced motion clamps every animation to 0.001ms with the fill mode still
-   applied, so a keyframe list that ended mid-lean would freeze a ghost against
-   the edge of the page forever. Ending hidden means the clamp simply never
-   shows it — the same reason the confetti ends at opacity 0. The component
-   declines reduced motion outright as well; this is the second belt. */
+   applied, so keyframes ending mid-lean would freeze a ghost against the edge
+   of the page for ever. Ending hidden means the clamp simply never shows it —
+   which is also why reduced motion gets `.ghost-still` instead: an egg you can
+   only find by watching something move is an egg those readers cannot find. */
 @keyframes ghost-peek {
   /* Hiding behind the bar. */
   0% { opacity: 0; transform: translate(115%, -50%) rotate(0deg); }
   /* Out, overshooting, because nothing that leans is careful about it. */
-  12% { opacity: 1; transform: translate(-6%, -50%) rotate(-12deg); }
-  20% { transform: translate(6%, -50%) rotate(7deg); }
+  9% { opacity: 1; transform: translate(-6%, -50%) rotate(-12deg); }
+  15% { transform: translate(6%, -50%) rotate(7deg); }
   /* The emote: a double take. */
-  30% { transform: translate(0%, -50%) rotate(-5deg); }
-  40% { transform: translate(0%, -50%) rotate(4deg) scale(1.08); }
-  50% { transform: translate(0%, -50%) rotate(-3deg) scale(1); }
-  /* Sees you looking. */
-  62% { opacity: 1; transform: translate(0%, -50%) rotate(0deg); }
-  72% { opacity: 1; transform: translate(-4%, -50%) rotate(9deg); }
+  23% { transform: translate(0%, -50%) rotate(-5deg); }
+  31% { transform: translate(0%, -50%) rotate(4deg) scale(1.08); }
+  38% { transform: translate(0%, -50%) rotate(-3deg) scale(1); }
+  /* Then it holds, which is the part that makes it catchable. */
+  75% { opacity: 1; transform: translate(0%, -50%) rotate(0deg); }
+  85% { opacity: 1; transform: translate(-4%, -50%) rotate(9deg); }
   /* Gone. */
   100% { opacity: 0; transform: translate(115%, -50%) rotate(2deg); }
 }
 
 .ghost-peek {
-  animation: ghost-peek 2.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: ghost-peek 3.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   /* The keyframes translate by percentages of the sprite, so the element must
      not also be centred by a utility — the animation owns the transform. */
   transform: translate(115%, -50%);
 }
+
+/* Reduced motion: present and catchable, just not performing. */
+.ghost-still {
+  transform: translate(0%, -50%);
+}
+
+/* ===== The ghost buddy ============================================ */
+/* Once caught it lives in the corner. Bobbing is its resting state; now and
+   then it dances. Both end where they start, so the reduced-motion clamp
+   leaves a ghost sitting still rather than frozen mid-jump — and the component
+   stops running them entirely in that case anyway. */
+@keyframes ghost-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -7px, 0) rotate(-3deg); }
+}
+.ghost-float { animation: ghost-float 3.6s ease-in-out infinite; }
+
+@keyframes ghost-dance {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  12% { transform: translate3d(-5px, -8px, 0) rotate(-14deg) scale(1.06); }
+  30% { transform: translate3d(5px, -2px, 0) rotate(13deg) scale(1.02); }
+  48% { transform: translate3d(-4px, -10px, 0) rotate(-10deg) scale(1.08); }
+  66% { transform: translate3d(4px, -1px, 0) rotate(9deg) scale(1.02); }
+  84% { transform: translate3d(-2px, -5px, 0) rotate(-5deg) scale(1.04); }
+}
+.ghost-dance { animation: ghost-dance 1.4s cubic-bezier(0.34, 1.3, 0.5, 1) infinite; }
 
 /* ===== The page scrollbar ========================================= */
 /* The issue accent on a cream track, so the bar shifts colour with the issue
