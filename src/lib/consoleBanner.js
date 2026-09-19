@@ -4,13 +4,24 @@ import { TEAMS, isPlaceholder } from "./utils";
 
 // The console easter egg.
 //
-// Two rules it lives by. Every figure it prints is read from the data rather
-// than typed in here, so it can't drift from the site or invent one
-// (CLAUDE.md §0); and the colours are the real tokens, so it looks like the
-// same organisation as the page behind it.
+// Three rules it lives by:
 //
-// It also leaves `aq` on the window — the actual egg. The banner is just the
-// note telling you it's there.
+//  - every figure it prints is read from the data rather than typed in here, so
+//    it can't drift from the site or invent one (CLAUDE.md §0)
+//  - the colours are the real tokens, so it looks like the same organisation as
+//    the page behind it
+//  - **it only ever says what the page already says, and it talks to the reader,
+//    never to the desk.** No editorial process, no what-isn't-finished-yet, no
+//    note to whoever publishes next. That is what got `aq.todo()` removed (§9),
+//    and a line telling a reader to go and re-check the figures was the same
+//    mistake in quieter clothes
+//
+// It is also deliberately under-explained. Whoever opened this can read a
+// table; the commands don't need a footnote each, and the banner doesn't need
+// a tutorial. One `aq.help()` and get out of the way.
+//
+// It leaves `aq` on the window — the actual egg. The banner is just the note
+// telling you it's there.
 //
 // Every colour below is a mid-tone, and the lines carrying the actual message
 // are logged with no %c at all, so they take the console's own text colour. A
@@ -50,15 +61,16 @@ function table(rows) {
   else console.log(rows);
 }
 
-const totalFor = (needle) =>
-  AQ_TOTALS.find((t) => t.label.includes(needle)) || AQ_TOTALS[0];
+// No fallback: the caller pairs the figure with a word of its own, so the wrong
+// row is worse than no row.
+const totalFor = (needle) => AQ_TOTALS.find((t) => t.label.includes(needle));
 
 const COMMANDS = [
-  ["aq.teams()", "the eight, and how many people are in each"],
-  ["aq.numbers()", "every figure AquaTerra has published"],
-  ["aq.issues()", "every edition, and whether it is out yet"],
+  ["aq.teams()", "the eight teams, and how many in each"],
+  ["aq.numbers()", "every figure AquaTerra publishes"],
+  ["aq.issues()", "every edition, out or still cooking"],
   ["aq.sections()", "what an issue is made of"],
-  ["aq.colours()", "the eight identity colours, as actual colours"],
+  ["aq.colours()", "the eight team colours, as colours"],
   ["aq.bananas()", "the only number anyone remembers"],
   ["aq.read()", "open the latest issue"],
 ];
@@ -85,8 +97,7 @@ const RUN = {
   },
 
   numbers() {
-    table(AQ_TOTALS.map(({ value, label }) => ({ figure: value, "what of": label })));
-    console.log("%cverified against the live site. they move — go and re-check them.", line(PALETTE.quiet));
+    table(AQ_TOTALS.map(({ value, label }) => ({ figure: value, "what it counts": label })));
   },
 
   issues() {
@@ -99,7 +110,6 @@ const RUN = {
         read: `/${e.year}/${e.slug}`,
       }))
     );
-    console.log("%caq.read() opens the latest one.", line(PALETTE.quiet));
   },
 
   sections() {
@@ -111,7 +121,6 @@ const RUN = {
         "in the latest issue": issueSections(latestEdition).some((x) => x.id === s.id) ? "yes" : "no",
       }))
     );
-    console.log("%ca section only appears when the issue has something to put in it.", line(PALETTE.quiet));
   },
 
   colours() {
@@ -120,11 +129,15 @@ const RUN = {
       const value = hex(team);
       console.log("%c      ", swatch(value), `${team.name} — ${value}`);
     }
-    console.log("%ceach team owns one. nothing else on the site uses them.", line(PALETTE.quiet));
+    console.log("%ceach team owns one.", line(PALETTE.quiet));
   },
 
   bananas() {
+    // The label is hardcoded and the figure is not, so a missing entry would
+    // print whatever came first under the word "bananas" — an invented fact,
+    // which is rule 0. Say nothing rather than guess.
     const b = totalFor("bananas");
+    if (!b) return;
     console.log(`%c${b.value}`, `color:${PALETTE.gold};font-size:34px;font-weight:700;${SANS}`);
     console.log("%cbananas distributed. nobody planned it that way.", line(PALETTE.quiet, 12));
   },
@@ -144,7 +157,7 @@ const RUN = {
         line(PALETTE.quiet)
       );
     }
-    console.log("%cforget the brackets and it runs anyway. aq.read() asks first — it navigates.", line(PALETTE.quiet));
+    console.log("%cbrackets optional. aq.read() wants them — it navigates.", line(PALETTE.quiet));
   },
 };
 
@@ -164,7 +177,7 @@ const RUN = {
 // `read` is the exception. Its "output" is navigating away, and a stray
 // `aq.read` in the console should not take the page with it, so that one asks
 // for the brackets rather than assuming them.
-const ASKS_FIRST = { read: "it navigates, so this one wants the brackets" };
+const ASKS_FIRST = { read: "this one navigates, so it wants the brackets" };
 
 function commands(map) {
   const out = {};
@@ -229,7 +242,7 @@ export function printConsoleBanner() {
   console.log("%cpick a team, show up, and get to work.", line(PALETTE.grape, 12, "font-weight:600;"));
 
   console.log(
-    `%c\n${COMMANDS.length} things to type. start with %caq.help()%c`,
+    "%c\nps — %caq.help()%c for the rest of it.",
     line(PALETTE.quiet),
     mono(PALETTE.green, 12, "font-weight:700;"),
     line(PALETTE.quiet)

@@ -848,6 +848,21 @@ before reversing one.
   had it removed. It was the one command that talked to the people making the
   magazine rather than the people reading it, and an issue advertising its own
   holes to anyone who opens DevTools is not the impression to leave.
+  - **It says only what the page already says.** Every figure it prints is on
+    the site — `AQ_TOTALS` is in `HeadlineNumbers`, the whole section manifest is
+    in `IssueAnatomy`, the team names and counts are on the team cards. Nothing
+    goes in that a reader can't already see.
+  - **Nothing addressed to the desk, however small.** `aq.numbers()` used to
+    close with "they move — go and re-check them", which is an instruction to
+    whoever publishes next, not a fact for whoever is reading. Same mistake as
+    `aq.todo()` in quieter clothes.
+  - **It is deliberately under-explained.** Whoever opened DevTools can read a
+    table. The commands carry no footnote each, and the banner doesn't teach —
+    it signs off with `ps — aq.help() for the rest of it.` and gets out of the
+    way. `aq.help()` is the one place explanation belongs, and it gets one line.
+  - A figure paired with a word written in this file (`aq.bananas()`) must bail
+    when the figure is missing rather than fall back to another row — printing
+    "540+ bananas distributed" would be rule 0 with a 34px font.
   - **Every command is a getter.** Typing `aq.teams` without the brackets reads
     the property and stops, so the console prints the function's source and
     nothing happens — which looks like the egg is broken. Reading one now
