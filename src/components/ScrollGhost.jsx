@@ -37,6 +37,21 @@ const ODDS = 0.5;
 // sighting 30s in, which for most visits meant never.
 const ARM_MS = 6000;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TEMPORARY — DEMO MODE. NOT FOR PUBLICATION.
+//
+// A number here puts the ghost on a plain timer: once on load, then every N ms,
+// ignoring the scroll, the travel, the cooldown and the coin flip. It is only
+// for watching the thing work.
+//
+// Set it back to `null` to restore the shipped behaviour. That single edit is
+// the whole revert — nothing else in this file is changed by demo mode, and
+// every rule above still stands underneath it.
+//
+// Reduced motion is still honoured: demo mode never reaches past that check.
+const DEMO_EVERY_MS = 30000;
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function ScrollGhost() {
   // `run` is the replay key: a new number remounts the sprite and restarts the
   // animation, the same trick the game panel and the story filter use (§4).
@@ -64,6 +79,18 @@ export default function ScrollGhost() {
       readyAt = Date.now() + COOLDOWN_MS;
       clearTimeout(hide);
       hide = setTimeout(() => setRun(0), SHOW_MS);
+    }
+
+    // Demo mode short-circuits everything below and leaves it untouched: no
+    // scroll listener is even attached, so the real rules cannot half-apply and
+    // confuse what you are looking at.
+    if (DEMO_EVERY_MS) {
+      appear();
+      const every = setInterval(appear, DEMO_EVERY_MS);
+      return () => {
+        clearInterval(every);
+        clearTimeout(hide);
+      };
     }
 
     function onScroll() {
