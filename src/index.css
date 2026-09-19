@@ -902,6 +902,55 @@ html {
   scrollbar-color: var(--issue-accent) var(--color-cream-soft);
 }
 
+/* ===== Buttons you can actually push ============================== */
+/* A hard offset shadow and a solid rim, so a control sits ON the page rather
+   than being drawn onto it: at rest it is raised, hovering lifts it further,
+   and pressing puts it flat on the paper. The desk sent the parent site's own
+   POST button as the reference.
+ 
+   The shadow has NO blur. A blurred shadow is a soft light source and reads as
+   depth-of-field; a hard one reads as a solid object with a gap under it, which
+   is the whole effect.
+ 
+   **This names its own duration, which almost nothing else may** (§4: change the
+   token, not a component). A press is feedback, not decoration — 260ms of
+   travel on the down-stroke feels like lag rather than a button, the same
+   reason the foil card tracks the pointer instead of easing after it. The lift
+   is quick and the press is quicker still.
+ 
+   Reduced motion clamps both to nothing, which is correct: the button still
+   goes down, it just gets there instantly. */
+.u-press {
+  --press-rest: 3px;
+  --press-lift: 6px;
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--press-rest) var(--press-rest) 0 var(--color-ink);
+  transition-property: box-shadow, transform, background-color, color, border-color;
+  transition-duration: 120ms;
+  transition-timing-function: var(--ease-rise);
+}
+
+/* Hover-capable pointers only, or a tap leaves the lift stuck on afterwards. */
+@media (hover: hover) and (pointer: fine) {
+  .u-press:hover {
+    box-shadow: var(--press-lift) var(--press-lift) 0 var(--color-ink);
+    transform: translate(-1px, -1px);
+  }
+}
+
+/* Down onto the paper: the shadow closes up and the button travels exactly the
+   distance it was raised by, so the bottom-right corner stays put. */
+.u-press:active {
+  box-shadow: 0 0 0 var(--color-ink);
+  transform: translate(var(--press-rest), var(--press-rest));
+  transition-duration: 60ms;
+}
+
+.u-press:disabled {
+  box-shadow: none;
+  transform: none;
+}
+
 /* horizontal scrollers: keep the scrollbar functional but visually quiet */
 .scroll-quiet {
   scrollbar-width: thin;

@@ -39,7 +39,7 @@ export default function ShowMore({
         className={cx(
           // Phones only — on desktop the rule that hides the overflow doesn't
           // apply, so this button would toggle nothing.
-          "mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors sm:hidden",
+          "u-press mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold sm:hidden",
           // Filled rather than outlined: this is the one control on a phone
           // that opens the rest of a list, and a hairline made it the faintest
           // thing on the screen.

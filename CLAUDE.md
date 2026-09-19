@@ -305,6 +305,22 @@ as text, or sat under it:
   - Filled either way, active or not. An outline on bare cream is a hairline
     holding a word; a chip has to be a surface before it reads as something you
     press. The active one goes solid, the rest stay soft.
+  - **`.u-press` makes it a thing you push.** A solid ink rim and a hard offset
+    shadow, so the control sits ON the page: raised at rest (3px), lifted on
+    hover (6px), and flat on the paper when pressed — the shadow closes to 0
+    and the button travels exactly the distance it was raised by, so its
+    bottom-right corner stays put. The parent site's own POST button is the
+    reference.
+    - **No blur on that shadow.** A blurred shadow is a soft light source and
+      reads as depth of field; a hard one reads as a solid object with a gap
+      under it, which is the entire effect.
+    - **It names its own duration, which almost nothing else may.** A press is
+      feedback, not decoration: 260ms of travel on the down-stroke feels like
+      lag rather than a button, the same reason the foil card tracks the
+      pointer rather than easing after it. 120ms to lift, 60ms to press.
+    - The lift is behind `(hover: hover)`, or a tap leaves it stuck on
+      afterwards. Reduced motion clamps both to nothing, which is right — the
+      button still goes down, it just arrives instantly.
 - `ISSUE_ACCENTS` / `SECTION_ACCENTS` in `src/lib/utils.js` — see §5.
 
 ### Typography
