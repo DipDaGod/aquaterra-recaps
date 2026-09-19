@@ -262,6 +262,32 @@ button:focus-visible,
   }
 }
 
+/* ===== Overlay entrances ========================================== */
+/* The lightbox, the team card and the stories player all used to appear at full
+   size the instant they mounted. Nothing about that is expensive to fix and
+   nothing else on the site reads as cheaply, so each now arrives: the scrim
+   fades and the panel rises into it a beat behind.
+
+   `backwards`, never `both` (§9): a finished `both` animation that touched
+   `transform` leaves an identity matrix behind, and any transform makes that
+   element the containing block for every `position: fixed` descendant. These
+   are overlays full of fixed and sticky children, so that trap is live here.
+
+   Transform and opacity only — both compositor properties, so an overlay
+   opening costs no layout and no repaint on a cheap phone. */
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes overlayPanel {
+  from { opacity: 0; transform: translate3d(0, 16px, 0) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.overlay-fade { animation: overlayFade 240ms var(--ease-rise) backwards; }
+/* Slightly longer than the scrim and started a touch later, so the panel is
+   read as landing ON the scrim rather than with it. */
+.overlay-panel { animation: overlayPanel 360ms var(--ease-rise) 60ms backwards; }
+
 /* ===== Stories =================================================== */
 /* Decoration only. The player's timing runs on requestAnimationFrame, so the
    global reduced-motion rule below can clamp every one of these to nothing and
@@ -332,6 +358,19 @@ button:focus-visible,
   to { opacity: 0.07; transform: scale(1); }
 }
 .story-ghost { animation: storyGhost 1.1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* The ground never sits still. Two blobs drifting on long, mismatched cycles
+   mean the dark middle of a card is never the same shape for long, so it stops
+   reading as a black box behind the story and starts reading as its ground.
+   Transform and nothing else, so it is a compositor job — this runs for the
+   whole time the player is open, on whatever phone is holding it. */
+@keyframes storyDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(-6%, 5%, 0) scale(1.12); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.story-drift { animation: storyDrift 19s ease-in-out infinite; }
+.story-drift--b { animation-duration: 26s; animation-direction: reverse; }
 
 /* A sweep of light across the active progress segment. */
 @keyframes storyPulse {

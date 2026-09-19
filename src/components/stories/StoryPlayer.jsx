@@ -213,7 +213,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
   // Portalled into <body> — see useOverlay for why.
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-near-black/95 p-0 sm:p-6"
+      className="overlay-fade fixed inset-0 z-50 flex items-center justify-center bg-near-black/95 p-0 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={`${slide.chapter} story, ${index + 1} of ${total}`}
@@ -227,7 +227,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           turn further round and pushed out by half the card's width, and the
           stage counter-rotates, so a move turns the cube to the next face. */}
       <div
-        className="relative flex h-full w-full items-center justify-center"
+        className="overlay-panel relative flex h-full w-full items-center justify-center"
         style={cube ? { perspective: "1400px" } : undefined}
       >
         {/* The interaction surface: stationary, exactly the size of the live

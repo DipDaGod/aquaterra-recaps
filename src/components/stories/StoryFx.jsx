@@ -68,23 +68,55 @@ export function CountUp({ value, ms = 1100, className = "" }) {
 // The colour behind a slide. Small blobs hugging the corners under a dark
 // scrim, not a full wash: at full spread it floods the card and a purple slide
 // swallows the purple team tile sitting on it.
+//
+// The scrim has to stay — white type sits on this and the blobs are bright — but
+// it used to be flat `rgb(10 10 10)`, which left a dead black slab across the
+// middle of every slide. That slab was the card reading as a BOX behind the
+// story rather than as its ground. Two things fix it without giving back any
+// contrast: the scrim is mixed with the slide's own accent so its darkest point
+// is a tinted near-black rather than a neutral one, and the blobs drift
+// continuously (`story-drift`) so the ground is never the same shape twice and
+// never reads as a rectangle someone filled in.
 export function Wash({ accent = "green", intensity = 1 }) {
   const raw = (SECTION_ACCENTS[accent] || SECTION_ACCENTS.green).raw;
+  // color-mix keeps the scrim's luminance where it was — the accent is a tenth
+  // of it — so this is a hue change, not a brightness one. Browsers without it
+  // fall back to the flat scrim, which is what shipped before.
+  const scrim = (pct, alpha) =>
+    `color-mix(in srgb, ${raw} ${pct}%, rgb(10 10 10 / ${alpha}))`;
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* Two elements per blob, not one. The entrance and the drift both animate
+          `transform`, and two animations on one element means the last one wins
+          that property outright — the blob would arrive with no entrance at all.
+          So the outer element owns the entrance and the inner one owns the
+          drift, and neither has to know about the other. */}
       <div
-        className="story-wash absolute -right-[18%] -top-[14%] h-[42%] w-[68%] rounded-full blur-[70px]"
-        style={{ background: raw, opacity: 0.5 * intensity }}
-      />
+        className="story-wash absolute -right-[18%] -top-[14%] h-[42%] w-[68%]"
+        style={{ opacity: 0.5 * intensity }}
+      >
+        <div className="story-drift h-full w-full rounded-full blur-[70px]" style={{ background: raw }} />
+      </div>
       <div
-        className="story-wash absolute -bottom-[16%] -left-[20%] h-[34%] w-[58%] rounded-full blur-[70px]"
-        style={{ background: raw, opacity: 0.26 * intensity, animationDelay: "140ms" }}
-      />
+        className="story-wash absolute -bottom-[16%] -left-[20%] h-[34%] w-[58%]"
+        style={{ opacity: 0.26 * intensity, animationDelay: "140ms" }}
+      >
+        <div
+          className="story-drift story-drift--b h-full w-full rounded-full blur-[70px]"
+          style={{ background: raw }}
+        />
+      </div>
       <div
         className="absolute inset-0"
         style={{
           background:
             "radial-gradient(85% 55% at 50% 50%, rgb(10 10 10 / 0.72) 0%, rgb(10 10 10 / 0.35) 60%, transparent 100%)",
+        }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(85% 55% at 50% 50%, ${scrim(12, 0.72)} 0%, ${scrim(9, 0.3)} 60%, transparent 100%)`,
         }}
       />
     </div>

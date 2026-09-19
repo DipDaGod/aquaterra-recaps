@@ -41,7 +41,7 @@ function Card({ entry, number, total }) {
       </div>
 
       {/* The fan motif from the grid card, set big. */}
-      <div className="relative flex flex-1 items-center justify-center py-4">
+      <div className="overlay-panel relative flex flex-1 items-center justify-center py-4">
         <span aria-hidden="true" className="relative block h-[62%] w-[68%]">
           <span className="absolute bottom-0 left-0 h-[86%] w-[40%] -rotate-[10deg] rounded-2xl bg-cream-soft shadow-md" />
           <span className="absolute bottom-0 right-0 h-[86%] w-[40%] rotate-[10deg] rounded-2xl bg-cream-soft shadow-md" />
@@ -101,7 +101,7 @@ export default function TeamCardViewer({ roster, index, collected, celebrating, 
   // Portalled into <body> — see useOverlay for why.
   return createPortal(
     <div
-      className="fixed inset-0 z-50 overflow-y-auto backdrop-blur-sm"
+      className="overlay-fade fixed inset-0 z-50 overflow-y-auto backdrop-blur-sm"
       style={{ backgroundColor: "rgb(10 10 10 / 0.9)" }}
       role="dialog"
       aria-modal="true"
