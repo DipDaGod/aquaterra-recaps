@@ -9,7 +9,6 @@ hardcoded — so **replace them in place and keep the filename.**
 | `logo.png` | the nav wordmark and the footer, via `<Logo>` in `src/components/SiteChrome.jsx` | square, 256×256 or larger, transparent background, sRGB PNG. Rendered at 28–32px and masked to a circle, so keep the mark centred with a little breathing room |
 | `opengraph.jpg` | the social preview card, via `<meta property="og:image">` in `index.html` | **1200×630 exactly.** JPEG, sRGB, under 300KB. Anything text-heavy gets unreadable in a Slack or WhatsApp preview — big type only |
 | `footer-vid.mp4` | the orbit banner above the footer, via `OrbitBanner.jsx` | H.264 MP4, **an 8:1 strip of eight square panels** — see below. The current one is 2560×320, 1.7s, 571KB. **Keep it under 3MB** and give it **no audio track** (it plays muted; an audio track is bytes nobody will ever hear) |
-| `footer-vid.jpg` | *optional.* The still the banner draws for readers on reduced motion | a frame from the video, same aspect. Its absence is silent — the bubbles keep their team-colour tint instead |
 
 ### About `footer-vid.mp4` — it is a strip, not an ordinary video
 
@@ -30,6 +29,10 @@ panel — the corners are never seen.
 It is decoded once and drawn to eight small canvases, only while the banner is
 on screen. See the comment at the top of `OrbitBanner.jsx` before changing how
 it loads.
+
+**There is no poster still, and no slot for one.** A reader on reduced motion
+gets the eight team colours — the desk picked the palette over a frame of
+footage. Don't add one. See `CLAUDE.md` §9.
 
 **`DESCRIPTION` in that file is the only thing a screen reader gets.** If you
 replace the video with different footage, change that string with it.

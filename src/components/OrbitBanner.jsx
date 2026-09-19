@@ -14,8 +14,8 @@ import { TEAMS } from "../lib/utils";
 //  - both the loop and the video stop the moment the banner scrolls out of
 //    view or the tab is hidden, which lets the decoder release its buffers
 //  - 160x160 backing stores (1.6MB for all eight) and no readbacks
-//  - under reduced motion the video is never loaded: the poster is drawn once
-//    and that is the whole effect
+//  - under reduced motion the video is never loaded and nothing is drawn: the
+//    eight team colours are the whole banner, which is the desk's call (§9)
 //
 // Before the video exists — or if it fails — each bubble keeps its team-colour
 // tint, so the banner is complete-looking either way.
@@ -26,9 +26,6 @@ import { TEAMS } from "../lib/utils";
 // banner mounts once for the whole app (App.jsx keeps it outside the routed
 // div) — anything permanent here is permanent until a reload.
 const VIDEO_SRC = "/assets/footer-vid.mp4";
-// Optional. Only fetched under reduced motion, and its absence is silent —
-// the bubbles keep their team-colour tint.
-const POSTER_SRC = "/assets/footer-vid.jpg";
 
 // What the footage shows. If footer-vid.mp4 is replaced with something else,
 // this has to change with it — it is the only description a screen reader gets.
@@ -72,6 +69,11 @@ export default function OrbitBanner() {
     const root = rootRef.current;
     const video = videoRef.current;
     if (!root || !video) return;
+
+    // Reduced motion gets the eight team colours and nothing else — no video, no
+    // still, no loop, not even a canvas context. The desk chose the palette over
+    // a frame of footage (§9), so there is deliberately nothing to draw.
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctxs = canvasRefs.current.filter(Boolean).map((c) => c.getContext("2d"));
     if (ctxs.length === 0) return;
@@ -177,20 +179,6 @@ export default function OrbitBanner() {
       };
       gesture = () => window.removeEventListener("pointerdown", go);
       window.addEventListener("pointerdown", go, { once: true, passive: true });
-    }
-
-    // One still, no decoding, no loop.
-    function paintPoster() {
-      const img = new Image();
-      img.decoding = "async";
-      img.onload = () => paint(img, img.naturalWidth, img.naturalHeight);
-      img.src = POSTER_SRC;
-    }
-
-    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (still) {
-      paintPoster();
-      return undefined;
     }
 
     // Loaded and not-loaded, as events. `playing` covers both the first start

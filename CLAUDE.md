@@ -389,7 +389,8 @@ It is deliberately cheap, and the constraints are load-bearing:
 - autoplay refused outright — iOS in Low Power Mode — is not retryable, so after
   the backoff is spent the next `pointerdown` is spent on it instead
 - 160×160 backing stores — 0.8MB for all eight — and no pixel readbacks
-- under reduced motion the video is never loaded: the poster is drawn once
+- under reduced motion the video is never loaded and nothing is drawn over the
+  bubbles: the eight team colours are the whole banner (§9)
 - the drift is a CSS animation, not a scroll or pointer handler, so it runs on
   the compositor and reduced motion switches it off for free
 
@@ -833,6 +834,15 @@ before reversing one.
     foil" in §4 for what is load-bearing in that.
   - Crftd's identity colour is `#000`, so the card and its chips carry a faint
     cream ring; without it a black card has no edge against the scrim.
+- **The orbit banner has no poster still, and reduced motion is the bare
+  palette.** A reader with reduce-motion on gets the eight team colours and
+  nothing else. The desk's call, in these words: *I would rather the colourful
+  circles than a random screenshot.* The `footer-vid.jpg` slot existed, was
+  never filled, and is now gone from the code and from
+  `public/assets/README.md` — the file was only ever requested to 404. **Don't
+  add one back**, and don't read the missing file as an unfinished asset: the
+  palette *is* the reduced-motion state. A frame pulled from AquaTerra's own
+  footage was offered and declined too, so this is not about image provenance.
 - **The console egg (`consoleBanner.js`) is for a reader, not the desk.**
   `aq.todo()` listed every still-bracketed field in the current issue; the desk
   had it removed. It was the one command that talked to the people making the
