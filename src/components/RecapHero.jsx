@@ -38,7 +38,7 @@ export default function RecapHero() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 to={`/${latestEdition.year}/${latestEdition.slug}`}
-                className="inline-flex items-center gap-2 rounded-full bg-green px-6 py-3 text-sm font-semibold text-cream-soft shadow-[0_2px_0_0_var(--color-green-deep)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
+                className="u-press inline-flex items-center gap-2 rounded-full bg-green px-6 py-3 text-sm font-semibold text-cream-soft"
               >
                 Read edition {String(latestEdition.editionNumber).padStart(2, "0")}
                 <ArrowRight className="h-4 w-4" strokeWidth={2} />

@@ -65,7 +65,7 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
               aria-selected={active === name}
               onClick={() => setActive(name)}
               className={cx(
-                "u-press inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold",
+                "inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
                 // Filled either way. An outline on bare cream is a hairline
                 // holding a word — the chip has to be a surface before it can
                 // read as something you press.

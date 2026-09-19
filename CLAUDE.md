@@ -305,6 +305,11 @@ as text, or sat under it:
   - Filled either way, active or not. An outline on bare cream is a hairline
     holding a word; a chip has to be a surface before it reads as something you
     press. The active one goes solid, the rest stay soft.
+  - **`.u-press` is for actions, not for choices.** The desk's rule: a control
+    that slides, filters or picks between options is not a button in this
+    sense, and the raised-and-pressed treatment is reserved for the things that
+    actually do something — "Read edition 01" and its like. Filter chips, year
+    pills and show-more wear the soft tints and nothing else.
   - **`.u-press` makes it a thing you push.** A solid ink rim and a hard offset
     shadow, so the control sits ON the page: raised at rest (3px), lifted on
     hover (6px), and flat on the paper when pressed — the shadow closes to 0
@@ -321,6 +326,20 @@ as text, or sat under it:
     - The lift is behind `(hover: hover)`, or a tap leaves it stuck on
       afterwards. Reduced motion clamps both to nothing, which is right — the
       button still goes down, it just arrives instantly.
+    - `.u-press--light` is the same geometry in paper colour, for a button on a
+      dark ground: an ink rim and an ink shadow on ink is no effect at all.
+- **The archive's own sections have to differ from each other.** It has four
+  where an issue has nine, so the same flatness shows up sooner:
+  - The format grid was nine entries behind hairlines — the most colourless
+    thing on the site, though every section already owns a colour. Each tile
+    now wears its own section's `-soft`, which makes it the issue's table of
+    contents rather than a list.
+  - The closing panel is **ink with the photo on the right**. It used to be a
+    mint box with the photo on the left, which is exactly the featured edition
+    card a screen above it — two different things reading as one component.
+  - That panel is the case `--spot-ground` exists for: a new dark section, and
+    the heading's knockout flipped to ink on its own because the rule keys off
+    `.bg-ink` rather than a prop somebody has to remember to pass.
 - `ISSUE_ACCENTS` / `SECTION_ACCENTS` in `src/lib/utils.js` — see §5.
 
 ### Typography

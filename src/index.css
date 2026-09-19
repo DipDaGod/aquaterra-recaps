@@ -946,6 +946,23 @@ html {
   transition-duration: 60ms;
 }
 
+/* On a dark ground the ink rim and its shadow both disappear, so the whole
+   effect does. Same geometry, paper-coloured. */
+.u-press--light {
+  border-color: var(--color-cream-soft);
+  box-shadow: var(--press-rest) var(--press-rest) 0 var(--color-cream-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .u-press--light:hover {
+    box-shadow: var(--press-lift) var(--press-lift) 0 var(--color-cream-soft);
+  }
+}
+
+.u-press--light:active {
+  box-shadow: 0 0 0 var(--color-cream-soft);
+}
+
 .u-press:disabled {
   box-shadow: none;
   transform: none;
