@@ -449,6 +449,17 @@ button:focus-visible,
    past the line box — the reference has it standing clear above and below the
    text, and a rectangle clipped to the element would square it off there. The
    knockout layer IS masked, because it must sit exactly over the base copy. */
+/* --spot-on is registered so it can be INTERPOLATED. An unregistered custom
+   property is a string to the cascade: it flips 0 to 1 with nothing in between,
+   which is why the disc used to pop on and off. Registered as a number it
+   transitions like any other animatable value, and one property then drives the
+   fade and the growth together, in step, from one declaration. */
+@property --spot-on {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 .aq-spot {
   position: relative;
   /* The radius is in `em`, so one value holds its proportion on the 84px hero
@@ -466,6 +477,11 @@ button:focus-visible,
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
+  /* The growth and the fade are the same 260ms curve as everything else (§4):
+     one token re-times the site, and this must not be the one thing that
+     doesn't. The curve leaves fast and lands slow, so the disc arrives rather
+     than appears. */
+  transition: --spot-on var(--default-transition-duration) var(--ease-rise);
 }
 
 .bg-ink .aq-spot {
@@ -493,6 +509,11 @@ button:focus-visible,
   /* The colour comes from the accent class the headline already carries, so the
      disc is the issue's accent on a hero and the section's own on an opener. */
   background: currentColor;
+  /* Grows out of the pointer and shrinks back into it. The margin above does
+     the centring, so this only ever scales — about the circle's own middle,
+     which is where the cursor is. Scale is a compositor job; animating the
+     width and height would be a layout pass every frame. */
+  transform: scale(var(--spot-on));
 }
 
 .aq-spot-lit {
@@ -526,18 +547,20 @@ button:focus-visible,
   @media (hover: hover) and (pointer: fine) {
     .aq-spot-disc,
     .aq-spot-lit {
+      /* No transition here: --spot-on is already being interpolated on the
+         heading above, and these read the value it is passing through. The
+         circle must track the POINTER exactly — a transition on the position
+         lags it behind the cursor and reads as broken — so only the growth is
+         timed, never `left`/`top`. */
       opacity: var(--spot-on, 0);
-      /* Only the fade in and out is timed. The circle itself must track the
-         pointer exactly — a transition on the position or the mask lags it
-         behind the cursor, which reads as the effect being broken. */
-      transition: opacity var(--default-transition-duration) var(--ease-rise);
     }
 
     /* A hard edge, unlike a glow: the disc has a rim, so the words have to stop
        at the same rim. The last percent is a feather, or the circle aliases. */
     .aq-spot-lit {
       --spot-mask: radial-gradient(
-        circle var(--spot-r) at calc(var(--spot-x, -999px) + var(--spot-r))
+        circle calc(var(--spot-r) * var(--spot-on)) at
+          calc(var(--spot-x, -999px) + var(--spot-r))
           calc(var(--spot-y, -999px) + var(--spot-r)),
         #000 0,
         #000 99%,

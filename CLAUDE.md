@@ -376,8 +376,17 @@ same words again in the ground colour, masked to that same circle.
   height, not the em box — at 1.15em it was a 193px circle on the hero that ate
   the line below. A fixed pixel radius swallows the small headings whole, and
   then it is not a spotlight, it is a hover colour.
-- **Only the fade in and out is timed.** A transition on the position or the
-  mask lags the circle behind the cursor, which reads as broken, not smooth.
+- **The disc grows out of the pointer and shrinks back into it**, and the mask
+  radius grows with it, or the words uncover before the circle reaches them.
+  That works because `--spot-on` is registered with `@property` as a
+  `<number>` — an unregistered custom property is a string to the cascade and
+  flips 0 to 1 with nothing in between, which is why it used to pop. One
+  property then drives the fade and the growth in step, on the site's own
+  260ms curve. The disc scales by `transform`; animating width and height
+  would be a layout pass every frame.
+- **Only the growth is timed. Never `left`/`top`.** A transition on the
+  position lags the circle behind the cursor, which reads as broken, not
+  smooth.
 - **A pointer move writes custom properties on one element inside one rAF**, the
   same discipline as the card foil. The box is read inside that frame too, so it
   is one layout read and one write per frame however fast the pointer moves.
