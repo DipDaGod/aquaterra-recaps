@@ -371,11 +371,12 @@ same words again in the ground colour, masked to that same circle.
     asserted per text node at several widths. Measure **text nodes**, not a
     range over the element: the two layers differ in structure on purpose, so
     element boxes will not match and a range picks those up too.
-- **The radius is in `em`** (`--spot-r`, 0.55), so one value holds its
+- **The radius is in `em`** (`--spot-r`, 0.42), so one value holds its
   proportion on the 84px hero and a 34px opener alike. Size it against the cap
   height, not the em box — at 1.15em it was a 193px circle on the hero that ate
-  the line below. A fixed pixel radius swallows the small headings whole, and
-  then it is not a spotlight, it is a hover colour.
+  the line below, and 0.55em still swallowed three letters at a time. A fixed
+  pixel radius swallows the small headings whole, and then it is not a
+  spotlight, it is a hover colour.
 - **The disc grows out of the pointer and shrinks back into it**, and the mask
   radius grows with it, or the words uncover before the circle reaches them.
   That works because `--spot-on` is registered with `@property` as a
@@ -396,9 +397,10 @@ same words again in the ground colour, masked to that same circle.
 - **It goes on standalone section headings**, the page heroes included. Not on
   repeated card titles: a grid of them lighting up is the screensaver problem
   the card foil already had.
-- The disc can ride up over an eyebrow label when the pointer is at the very top
-  of a heading. That is accepted — it is a transient pointer effect, and the
-  alternative is clipping the disc back into a rectangle.
+- At 0.42em the disc barely clears the cap height, so it no longer reaches an
+  eyebrow label above the heading. If the radius is ever turned back up, it can
+  — and that is accepted rather than fixed: it is a transient pointer effect,
+  and the alternative is clipping the disc back into a rectangle.
 
 ### Shape and layout
 

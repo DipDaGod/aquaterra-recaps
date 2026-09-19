@@ -506,7 +506,7 @@ button:focus-visible,
      small ones whole. Sized against the cap height rather than the em box: the
      disc should stand a little clear of the letters, not cover the line. At
      1.15em it was a 193px circle on the hero and ate the line below it. */
-  --spot-r: 0.55em;
+  --spot-r: 0.42em;
   /* What the words turn inside the disc: the ground they are printed on. Cream
      by default, and the ink sections flip it below — so a section ends up
      knocking out in whichever colour is actually behind it. */
