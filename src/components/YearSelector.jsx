@@ -44,18 +44,21 @@ export default function YearSelector({ year, onChange }) {
                 aria-current={selected ? "true" : undefined}
                 className={cx(
                   "flex shrink-0 items-baseline gap-2 rounded-full px-4 py-2 text-base font-semibold transition-colors sm:px-5 sm:text-lg",
+                  // Every year is a surface now, not just the chosen one. The
+                  // coming year stays quieter because it is not a place you can
+                  // go yet — but it is still a tile, not a word on the page.
                   selected
                     ? "bg-green text-cream-soft"
                     : soon
-                    ? "text-ink/40 hover:bg-paper hover:text-ink-soft"
-                    : "text-ink-soft hover:bg-paper hover:text-ink"
+                    ? "bg-team-crftd-soft/60 text-ink/45 hover:text-ink-soft"
+                    : "bg-team-welfare-soft text-team-welfare-ink hover:brightness-[0.97]"
                 )}
               >
                 {y}
                 <span
                   className={cx(
                     "text-xs font-medium tabular-nums",
-                    selected ? "text-cream-soft/70" : "text-ink/35"
+                    selected ? "text-cream-soft/70" : "opacity-55"
                   )}
                 >
                   {soon ? "soon" : count}

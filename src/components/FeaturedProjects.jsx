@@ -2,9 +2,11 @@ import { useMemo, useState } from "react";
 import ProjectCard from "./ProjectCard";
 import Section from "./Section";
 import ShowMore from "./ShowMore";
-import { cx } from "../lib/utils";
+import { cx, sectionAccent } from "../lib/utils";
 
 export default function FeaturedProjects({ edition, index, label, accentKey, variant, ground, size }) {
+  // The filter sits in this section, so it wears this section's colour.
+  const a = sectionAccent(accentKey);
   const projects = useMemo(() => edition.featured ?? [], [edition.featured]);
 
   // Only the first story for a team carries that team's anchor, so two stories
@@ -64,16 +66,19 @@ export default function FeaturedProjects({ edition, index, label, accentKey, var
               onClick={() => setActive(name)}
               className={cx(
                 "inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                // Filled either way. An outline on bare cream is a hairline
+                // holding a word — the chip has to be a surface before it can
+                // read as something you press.
                 active === name
-                  ? "bg-ink text-cream-soft"
-                  : "border border-ink/15 text-ink-soft hover:border-ink/40 hover:bg-cream-soft hover:text-ink"
+                  ? cx(a.rule, "text-cream-soft")
+                  : cx(a.soft, a.text, "hover:brightness-[0.97]")
               )}
             >
               {name}
               <span
                 className={cx(
                   "text-xs tabular-nums",
-                  active === name ? "text-cream-soft/60" : "text-ink/35"
+                  active === name ? "text-cream-soft/70" : "opacity-55"
                 )}
               >
                 {count}

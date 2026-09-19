@@ -54,6 +54,28 @@
   --color-team-ventures-ink: #cc2f12;
   --color-team-crftd-ink: #0b0b0b;
 
+  /* Soft: the third derived set. The block colours are for blocks and the -ink
+     variants are for type; these are for the SURFACE a control sits on, so a
+     button carries its own colour instead of floating on bare cream behind a
+     hairline. Built at the same lightness the parent site's own pastel tiles
+     use (~0.91) rather than by mixing toward cream, which drags every hue
+     grey. Crftd is #000 and has no hue to keep, so it borrows the paper's
+     warmth instead of going concrete.
+
+     **Each one is lifted until its own `-ink` clears 4.5:1 on it**, and the
+     measured ratio is written beside it. These carry 14px semibold chip
+     labels, which is not "large text", so AA-large is not the bar. Four of
+     them sat at 4.1-4.4 at a flat 0.91 lightness and had to come up; do not
+     darken one for looks without re-checking the pair. */
+  --color-team-welfare-soft: #daf6e8;  /* 6.52:1 with -welfare-ink  */
+  --color-team-events-soft: #e4eff9;   /* 4.52:1 with -events-ink    */
+  --color-team-shikshaq-soft: #f8f3e0; /* 4.51:1 with -shikshaq-ink  */
+  --color-team-hr-soft: #f8e2eb;       /* 4.51:1 with -hr-ink        */
+  --color-team-social-soft: #e3daf6;   /* 4.72:1 with -social-ink    */
+  --color-team-collabs-soft: #daf6f6;  /* 5.19:1 with -collabs-ink   */
+  --color-team-ventures-soft: #f9eae7; /* 4.51:1 with -ventures-ink  */
+  --color-team-crftd-soft: #e8e4d8;    /* 15.48:1 with -crftd-ink    */
+
   /* Green doubles as the primary accent: active nav pill, primary CTA,
      italic accent words. */
   --color-green: #1b7a4b;

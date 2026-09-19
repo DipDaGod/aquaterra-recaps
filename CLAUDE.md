@@ -284,11 +284,27 @@ The bright colours are **team identity colours**, not decoration. Each of the 8
 teams owns one. Don't reassign them, don't add a ninth, don't use a team colour
 for something that isn't that team.
 
-Two derived sets exist because the block colours were never meant to be read as
-text:
+Three derived sets exist because the block colours were never meant to be read
+as text, or sat under it:
 
 - `--color-team-*-ink` — the text-safe variant for a team-coloured link on
   cream. Lemon above all fails contrast as a text colour; use the `-ink` token.
+- `--color-team-*-soft` — the **surface** a control sits on, so a button carries
+  its own colour instead of floating on bare cream behind a hairline. Built at
+  the lightness the parent site's own pastel tiles use, not by mixing toward
+  cream, which drags every hue grey.
+  - **Each is lifted until its own `-ink` clears 4.5:1 on it**, and the measured
+    ratio is written beside the token. These carry 14px semibold chip labels,
+    which is **not** "large text", so AA-large is not the bar. Four of them sat
+    at 4.1–4.4 at a flat lightness and had to come up. Don't darken one for
+    looks without re-measuring the pair.
+  - A control wears the colour of the **field it belongs to** — a section's
+    filter chips take that section's accent, not a colour picked for variety.
+    §4 still forbids a ninth colour and still forbids using a team's colour for
+    something that isn't that team.
+  - Filled either way, active or not. An outline on bare cream is a hairline
+    holding a word; a chip has to be a surface before it reads as something you
+    press. The active one goes solid, the rest stay soft.
 - `ISSUE_ACCENTS` / `SECTION_ACCENTS` in `src/lib/utils.js` — see §5.
 
 ### Typography
