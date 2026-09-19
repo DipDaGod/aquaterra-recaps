@@ -36,12 +36,23 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
   const closeRef = useRef(null);
   const swipe = useRef(null);
   const [fill, setFill] = useState(false);
+  // Which way the last move went. A frame that always slid in from the right
+  // told you nothing about where you were going — stepping back looked
+  // identical to stepping forward. State, not a ref: it is read while
+  // rendering the incoming frame, and a ref read during render is exactly the
+  // thing that goes stale without telling you.
+  const [dir, setDir] = useState(1);
 
   useOverlay(closeRef);
 
   const go = useCallback(
-    (next) => onNavigate((next + items.length) % items.length),
-    [items.length, onNavigate]
+    (next) => {
+      // Compared before the wrap, so the first frame stepping back to the last
+      // still reads as going backwards.
+      setDir(next < index ? -1 : 1);
+      onNavigate((next + items.length) % items.length);
+    },
+    [index, items.length, onNavigate]
   );
 
   useEffect(() => {
@@ -125,7 +136,13 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
           <ChevronLeft className="h-5 w-5" strokeWidth={2} />
         </button>
 
-        <div key={index} className="story-enter-next flex h-full w-full items-center justify-center">
+        <div
+          key={index}
+          className={cx(
+            dir < 0 ? "story-enter-prev" : "story-enter-next",
+            "flex h-full w-full items-center justify-center"
+          )}
+        >
           <Frame item={item} fill={fill} />
         </div>
 
@@ -158,7 +175,7 @@ export default function Lightbox({ items, index, onClose, onNavigate }) {
               <li key={i}>
                 <button
                   type="button"
-                  onClick={() => onNavigate(i)}
+                  onClick={() => go(i)}
                   aria-label={`Frame ${i + 1}`}
                   aria-current={i === index ? "true" : undefined}
                   className={cx(

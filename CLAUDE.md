@@ -513,6 +513,30 @@ transitions use.
   descendant. That trap is in §9 and it has bitten twice.
 - Reduced motion clamps every animation *and* every transition on the page to
   0.001ms in one rule, so none of this needs a second opinion per component.
+- **Nothing appears at full size.** Every overlay arrives — the scrim fades
+  (`.overlay-fade`, 240ms) and the panel rises into it (`.overlay-panel`,
+  360ms, started 60ms later so it lands ON the scrim rather than with it). The
+  lightbox, the team card and the stories player all used to snap into
+  existence, which was the cheapest-looking thing on the site.
+  - `backwards`, never `both`: these overlays are full of `fixed` and `sticky`
+    children and that trap (§9) is live here.
+  - The panel entrance goes on a wrapper, never on `HoloCard` — that element's
+    transform is the pointer tilt, rewritten every move, and an entrance on the
+    same property is overwritten mid-flight.
+- **Two animations on one element: the last one wins that property outright.**
+  The story wash blobs animate `transform` for both their entrance and their
+  drift, so each is two elements — outer owns the entrance, inner owns the
+  drift. Put both on one element and the entrance silently never plays.
+- **Anything that enters from somewhere enters from the direction it came.**
+  The lightbox frame used `story-enter-next` whichever way you stepped, so back
+  looked identical to forward. Every path that moves the frame — keys, swipe,
+  chevrons and the thumbnail strip — goes through `go()`, which is what records
+  the direction; a path that calls `onNavigate` directly leaves it stale.
+- **A lazily loaded photo fades in** (`<Photo>`), because an image snapping to
+  full opacity is what makes a gallery read as a web page rather than a
+  magazine. A cached image can finish before React attaches `onLoad`, so the
+  ref checks `complete` on the way in, and `onError` reveals it too — a broken
+  frame must still render its alt text rather than nothing.
 
 ### The card foil
 

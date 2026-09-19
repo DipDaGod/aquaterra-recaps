@@ -43,7 +43,10 @@ function TeamCard({ entry, tilt, read, onOpen }) {
         {read && (
           <span
             aria-hidden="true"
-            className="absolute right-2.5 top-2.5 grid h-7 w-7 place-items-center rounded-full bg-cream-soft/90 text-[0.7rem] font-bold text-ink shadow-sm"
+            /* `.rise-in`, the site's own 300ms entrance, rather than a fourth
+               primitive invented for one badge (§4). You closed a card and this
+               is the answer — it should land, not be already there. */
+            className="rise-in absolute right-2.5 top-2.5 grid h-7 w-7 place-items-center rounded-full bg-cream-soft/90 text-[0.7rem] font-bold text-ink shadow-sm"
           >
             ✓
           </span>
