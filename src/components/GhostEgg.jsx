@@ -32,18 +32,14 @@ const MOOD_MIN_MS = 14000;
 const MOOD_MAX_MS = 30000;
 const MOOD_MS = 2800;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TEMPORARY — DEMO MODE. NOT FOR PUBLICATION.
-//
 // A number here replaces both the two-minute wait and the three-to-five-minute
-// gap with that one interval, so the ghost can be watched without sitting on
-// the page for minutes first. Everything else is untouched: it is still on-SITE
+// gap with that one interval, so the ghost can be watched without sitting on a
+// page for minutes first. Everything else is untouched: it is still on-SITE
 // time, it is still catchable, it still stops once caught.
 //
-// Set it back to `null` to restore the shipped behaviour. That single edit is
-// the whole revert.
-const DEMO_EVERY_MS = 20000;
-// ─────────────────────────────────────────────────────────────────────────────
+// `null` is the shipped behaviour and is what belongs on main. It stays wired
+// up because setting it is the whole of turning demoing on and off again.
+const DEMO_EVERY_MS = null;
 
 const between = (lo, hi) => lo + Math.random() * (hi - lo);
 
