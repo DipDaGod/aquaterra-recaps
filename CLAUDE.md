@@ -370,6 +370,24 @@ It is deliberately cheap, and the constraints are load-bearing:
   costs four times the CPU for nothing anyone can see
 - the loop and the video both stop when the banner scrolls out of view or the
   tab is hidden, which lets the decoder release its buffers
+- **readiness drives the loop; the loop does not poll for it.** The paint stops
+  on `waiting` and starts on `playing`, so a stall holds the last frame instead
+  of spinning at 15fps drawing nothing
+- **nothing that stops it may be permanent.** The banner mounts once for the
+  whole app — `App.jsx` keeps it outside the routed div — so anything one-way
+  here is one-way until a reload. A dropped fetch used to be exactly that: the
+  `error` handler stopped the loop and no event ever started it again, which is
+  what made the banner "sometimes not load" on mobile data. Failures now retry
+  on a short backoff, and a retry **must call `video.load()`** — after a media
+  error `play()` alone keeps failing on the same element
+- **the IntersectionObserver reads the last entry, not the first.** A fling
+  delivers several crossings in one callback, and acting on the oldest left the
+  banner stopped while it sat there on screen
+- **a `play()` rejection is only acted on if nothing superseded it** (a
+  generation counter). Otherwise a rejection from an abandoned play arrives late
+  and stops the run that replaced it
+- autoplay refused outright — iOS in Low Power Mode — is not retryable, so after
+  the backoff is spent the next `pointerdown` is spent on it instead
 - 160×160 backing stores — 0.8MB for all eight — and no pixel readbacks
 - under reduced motion the video is never loaded: the poster is drawn once
 - the drift is a CSS animation, not a scroll or pointer handler, so it runs on
