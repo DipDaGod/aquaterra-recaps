@@ -735,6 +735,27 @@ used repeatedly rather than eight bespoke sections.
     the auto-advance does.
   - The progress bar is grouped **by chapter**. Twenty-one equal segments in a
     26rem card were 12px each and told you nothing.
+  - **The way into the issue lives in the player's bottom bar, not in the
+    slide.** On a phone the card is the whole screen, so an absolutely placed
+    chip floated over the artwork and landed wherever that slide's content
+    happened to end. The bar gives it one position on every slide, above the
+    thumb, with the counter under it. It is keyed on the slide so it still
+    rises in each time.
+  - **Both ends of the card carry a scrim**, or the wash runs off a hard edge
+    and reads as the picture being cut rather than ending — most obvious on a
+    phone, where the card is full-bleed. The bottom one is taller because that
+    end carries the bar.
+  - **The chrome at both ends clears the phone's insets**
+    (`env(safe-area-inset-*)` inside a `max()`), so the progress bar and header
+    stay out from under a notch and the bar clears the home indicator. `max()`
+    leaves the desktop exactly as it was, where the insets resolve to 0.
+  - **A slide's dwell is deliberately slower than reading speed.** A story
+    slide is not a paragraph: you have to notice it, take in a figure or a
+    photograph, read the line, and decide whether to tap through, while the run
+    auto-advances out from under you. 230ms a word was a brisk 260wpm with none
+    of that slack; it is 320ms and a 1.35x base now. The teams slide sizes
+    itself off the roster rather than off words, so it does not go through
+    `dwell()` and has to be lengthened in step with it by hand.
   - Two earlier attempts at chapter navigation are worth not repeating: a row of
     text pills in a horizontal scroller (which painted `.scroll-quiet`'s cream
     scrollbar across the dark card), and a row of five rings inside the card

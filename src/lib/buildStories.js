@@ -16,9 +16,19 @@ export const CHAPTERS = [
 // A slide holds for as long as it takes to read it. A fixed duration gave a
 // three-word headline and a twenty-word one the same 3.6 seconds, so the long
 // ones got cut off and the short ones sat there.
+//
+// The rate below is deliberately slower than reading speed. A story slide is
+// not a paragraph: you have to notice it, take in a figure or a photograph,
+// read the line, and decide whether to tap through — and the run auto-advances
+// out from under you if you are still deciding. 230ms a word was a brisk 260
+// words a minute with none of that slack in it.
+const SETTLE = 1.35; // every base gets this much more room before a word is read
+const PER_WORD_MS = 320; // ~190 words a minute: reading, not skimming
+const LONGEST_MS = 9000; // even a wordy slide has to hand over eventually
+
 function dwell(base, ...text) {
   const words = text.filter(Boolean).join(" ").trim().split(/\s+/).filter(Boolean).length;
-  return Math.min(6200, base + words * 230);
+  return Math.min(LONGEST_MS, Math.round(base * SETTLE) + words * PER_WORD_MS);
 }
 
 export function buildStories(edition) {
@@ -53,7 +63,7 @@ export function buildStories(edition) {
       lockup: edition.teams.lockup,
       teams: roster.map((t) => ({ key: t.key, name: TEAMS[t.key]?.name, members: t.members })),
       section: "teams",
-      accent: "grape", ms: 3000 + roster.length * 260,
+      accent: "grape", ms: 4000 + roster.length * 340,
     });
   }
 

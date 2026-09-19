@@ -17,9 +17,14 @@ const KEN = [
 // A quiet way out of the trailer and into the thing itself. Only on slides that
 // actually came from a section of the issue.
 //
-// It arrives early on purpose: the shortest slides are only 2.4s, and a chip
-// that lands at 0.7s leaves no time to notice it, let alone reach it.
-function IntoTheIssue({ slide, onOpenSection }) {
+// It arrives early on purpose: a chip that lands late leaves no time to notice
+// it, let alone reach it.
+//
+// It lives in the player's bottom bar, not in the slide. On a phone the card is
+// the whole screen, so an absolutely placed chip floated over the artwork with
+// nothing under it and landed wherever that slide's content happened to end.
+// The bar gives it one position on every slide, on a scrim, above the thumb.
+export function IntoTheIssue({ slide, onOpenSection }) {
   if (!slide.section || !onOpenSection) return null;
   return (
     <button
@@ -27,7 +32,7 @@ function IntoTheIssue({ slide, onOpenSection }) {
       onPointerDown={swallow}
       onPointerUp={swallow}
       onClick={() => onOpenSection(slide.section)}
-      className="pointer-events-auto story-rise absolute inset-x-0 bottom-9 z-10 mx-auto flex w-fit items-center gap-1.5 rounded-full bg-cream-soft/10 px-3.5 py-1.5 text-cream-soft/70 backdrop-blur-sm transition-colors hover:bg-cream-soft/25 hover:text-cream-soft"
+      className="pointer-events-auto story-rise flex w-fit items-center gap-1.5 rounded-full bg-cream-soft/10 px-3.5 py-1.5 text-cream-soft/70 backdrop-blur-sm transition-colors hover:bg-cream-soft/25 hover:text-cream-soft"
       style={{ "--i": 3 }}
     >
       <Meta className="text-[0.55rem]">See it in the issue</Meta>
@@ -74,7 +79,6 @@ export default function StorySlide({ slide, seed = 0, onOpenSection, onReplay })
   return (
     <>
       {body(slide, seed, accent, onOpenSection, onReplay)}
-      <IntoTheIssue slide={slide} onOpenSection={onOpenSection} />
     </>
   );
 }

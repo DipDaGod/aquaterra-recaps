@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
-import StorySlide from "./StorySlide";
+import StorySlide, { IntoTheIssue } from "./StorySlide";
 import { Meta } from "../Lockup";
 import { chaptersFor } from "../../lib/buildStories";
 import { useOverlay } from "../../lib/useOverlay";
@@ -304,14 +304,17 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28"
-          style={{ background: "linear-gradient(to bottom, rgb(10 10 10 / 0.75) 0%, transparent 100%)" }}
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 sm:h-28"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgb(10 10 10 / 0.92) 0%, rgb(10 10 10 / 0.5) 45%, transparent 100%)",
+          }}
         />
 
         {/* One group per chapter. Twenty-one equal segments in a 26rem card
             were 12px each and told you nothing; grouped, you can see both where
             you are in the chapter and how many chapters are left. */}
-        <div className="absolute inset-x-0 top-0 z-20 flex gap-2.5 p-3">
+        <div className="absolute inset-x-0 top-0 z-20 flex gap-2.5 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
           {chapters.map((c) => (
             <div key={c.id} className="flex gap-1" style={{ flex: c.count }}>
               {slides.slice(c.start, c.start + c.count).map((s, n) => {
@@ -332,7 +335,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
         {/* The chapter, where a stories player puts whose story it is. The
             five-ring row that used to sit here is redundant now that forward
             and back move a topic at a time. */}
-        <div className="absolute inset-x-0 top-5 z-20 flex items-center gap-2.5 pl-3 pr-[5.5rem]">
+        <div className="absolute inset-x-0 top-[max(1.25rem,calc(env(safe-area-inset-top)+0.75rem))] z-20 flex items-center gap-2.5 pl-3 pr-[5.5rem]">
           <span
             aria-hidden="true"
             className={cx("grid h-8 w-8 shrink-0 place-items-center rounded-full p-[2px]", accentRule)}
@@ -351,7 +354,7 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           </span>
         </div>
 
-        <div className="pointer-events-auto absolute right-2 top-5 z-30 flex items-center gap-1">
+        <div className="pointer-events-auto absolute right-2 top-[max(1.25rem,calc(env(safe-area-inset-top)+0.75rem))] z-30 flex items-center gap-1">
           <button
             type="button"
             onClick={() => { holding.current = false; setPaused((p) => !p); }}
@@ -385,11 +388,31 @@ export default function StoryPlayer({ slides, startAt = 0, onClose, onOpenSectio
           </div>
         </div>
 
-        <p className="pointer-events-none absolute inset-x-0 bottom-2 z-20 text-center">
+        {/* The bottom scrim, mirroring the top one. On a phone the card is the
+            whole screen and the wash ran straight off the bottom edge, which
+            read as the picture being cut rather than ending. Taller here than
+            at the top because this end carries the bar. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 sm:h-32"
+          style={{
+            background:
+              "linear-gradient(to top, rgb(10 10 10 / 0.95) 0%, rgb(10 10 10 / 0.55) 42%, transparent 100%)",
+          }}
+        />
+
+        {/* The bottom bar: the way into the issue, and where you are in the
+            run. One position on every slide rather than wherever that slide's
+            content happened to end. `pb` clears the home indicator on a phone
+            and collapses to nothing on a desktop, where the inset is 0. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-2 px-4 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-4">
+          {/* Keyed on the slide so the chip rises in again each time, the way
+              it did when it was part of the slide's own content. */}
+          <IntoTheIssue key={slide.id} slide={slide} onOpenSection={onOpenSection} />
           <span className={cx("u-mono text-cream-soft/30", paused && "text-cream-soft/60")}>
             {paused ? "paused" : `${index + 1} / ${total}`}
           </span>
-        </p>
+        </div>
       </div>
                 ) : (
                   <ChapterFace chapter={c} />
